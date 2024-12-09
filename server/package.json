@@ -1,0 +1,29 @@
+{
+  "name": "order-management-server",
+  "version": "1.0.0",
+  "description": "The Order Management server.",
+  "private": true,
+  "type": "module",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node --env-file .env ./src/app.js",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "author": "Ryszard Kluz",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.16.0",
+    "eslint": "^9.16.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.13.0",
+    "prettier": "^3.4.2"
+  }
+}
