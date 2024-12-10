@@ -1,10 +1,7 @@
 import { Router } from 'express';
 import { homeController } from '../controllers/homeController.js';
 
-const router = Router();
-
-router.get('/', homeController.index);
-
-const homeRoutes = router;
+const homeRoutes = Router();
+homeRoutes.get('/', homeController.index);
 
 export { homeRoutes };
