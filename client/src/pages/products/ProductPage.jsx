@@ -1,7 +1,7 @@
-import { Button } from "react-bootstrap";
+import AddProduct from './AddProduct';
 
 const ProductPage = () => {
-  
+  return <AddProduct/>
 };
 
 export default ProductPage;

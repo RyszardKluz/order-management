@@ -30,7 +30,7 @@ class productController {
     const { productName, price } = req.body;
 
     if (!productName || typeof price !== "number") {
-      res.status(404).json({ message: 'Wrong product details' })
+      res.status(400).json({ message: 'Wrong product details' })
     }
 
     let newProductId;
@@ -48,7 +48,7 @@ class productController {
       productName: productName
     }
     this.products.push(newProduct)
-    res.status(200).json({ message: `Created ${productName}` })
+    res.status(201).json({ message: `Created ${productName}` })
   }
 
 }
