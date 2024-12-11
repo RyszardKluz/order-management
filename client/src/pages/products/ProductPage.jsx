@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Button } from 'react-bootstrap';
+import { Button, Container, Row, Col } from 'react-bootstrap';
 import ListOfItems from '../../components/ListOfItems';
+import AddProductModal from './components/AddProductModal';
 
 const ProductPage = () => {
   const [products, setProducts] = useState([]);
+  const [show, setShow] = useState(false);
+  const handleShow = () => setShow(true);
+  const handleClose = () => setShow(false);
 
-  // Funkcja do pobierania produktów
   const fetchItems = async () => {
     try {
       const response = await fetch(
@@ -21,23 +24,37 @@ const ProductPage = () => {
     }
   };
 
-  // Automatyczne pobranie przy pierwszym renderowaniu
   useEffect(() => {
     fetchItems();
   }, []);
 
   return (
-    <div>
-      <Button onClick={fetchItems} className="mb-3">
-        Render Products
-      </Button>
+    <>
+      <AddProductModal isVisible={show} close={handleClose} show={handleShow} />
+
       <ListOfItems
         items={products}
         head1={'Product Id'}
         head2={'Product Name'}
         head3={'Product Price'}
       />
-    </div>
+
+      <Container>
+        <Row>
+          <Col>
+            <Button onClick={fetchItems} className="mb-3">
+              Render Products
+            </Button>
+          </Col>
+          <Col xs={6}>2 of 3 (wider)</Col>
+          <Col>
+            <Button className="mb-3" onClick={handleShow}>
+              Add new Product
+            </Button>
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 };
 

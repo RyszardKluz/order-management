@@ -29,15 +29,16 @@ class ProductController {
   };
 
   addProduct = (req, res) => {
-    const { productName, price } = req.body;
+    const { productName, productPrice } = req.body;
 
-    if (!productName || typeof price !== 'number') {
+    if (!productName || typeof productPrice !== 'number') {
       res.status(400).json({ message: 'Wrong product details' });
+      return;
     }
 
     const newProduct = {
       productId: uuidv4(),
-      price: price,
+      productPrice: productPrice,
       productName: productName,
     };
     this.products.push(newProduct);
