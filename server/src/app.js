@@ -6,6 +6,7 @@ import morgan from 'morgan';
 
 import { homeRoutes } from './routes/homeRoutes.js';
 import { productsRoutes } from './routes/productsRoutes.js';
+import { clientsRoutes } from './routes/clientsRoutes.js';
 
 const app = express();
 const port = process.env.PORT;
@@ -20,6 +21,7 @@ app.use(morgan('combined'));
 
 app.use('/', homeRoutes);
 app.use('/', productsRoutes);
+app.use('/', clientsRoutes)
 
 app.listen(port, (error) => {
   if (!error) {

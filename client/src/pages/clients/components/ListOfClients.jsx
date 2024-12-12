@@ -1,6 +1,6 @@
 import { Table } from 'react-bootstrap';
 
-const ListOfItems = ({ items, head1, head2, head3, handleRowClick }) => {
+const ListOfClients = ({ items, head1, head2, head3, handleRowClick }) => {
   const onRowClick = (id) => {
     handleRowClick(id);
   };
@@ -17,15 +17,15 @@ const ListOfItems = ({ items, head1, head2, head3, handleRowClick }) => {
       <tbody>
         {items.map((item, index) => (
           <tr
-            key={item.productId}
+            key={item.clientId}
             onClick={() => {
-              onRowClick(item.productId);
+              onRowClick(item.clientId);
             }}
           >
             <td>{index + 1}</td>
-            <td>{item.productId}</td>
-            <td>{item.productName}</td>
-            <td>{item.productPrice}</td>
+            <td>{item.clientId}</td>
+            <td>{item.clientName}</td>
+            <td>{item.clientSurname}</td>
           </tr>
         ))}
       </tbody>
@@ -33,4 +33,4 @@ const ListOfItems = ({ items, head1, head2, head3, handleRowClick }) => {
   );
 };
 
-export default ListOfItems;
+export default ListOfClients;

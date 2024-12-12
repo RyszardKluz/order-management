@@ -12,14 +12,11 @@ const AddProductModal = ({ isVisible, close }) => {
       productPrice: productPrice,
     };
     try {
-      const response = await fetch(
-        'http://localhost:5000/products/add-product',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(product),
-        },
-      );
+      const response = await fetch('http://localhost:5000/products/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(product),
+      });
       if (!response.ok) {
         throw new Error('Failed to add product');
       }

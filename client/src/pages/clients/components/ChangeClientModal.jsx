@@ -1,19 +1,19 @@
 import { Button, Modal, Form, FloatingLabel } from 'react-bootstrap';
 import { useState } from 'react';
 
-const ChangeProductModal = ({ isVisible, close, productId }) => {
-  const [productPrice, setProductPrice] = useState('');
-  const [productName, setProductName] = useState('');
+const ChangeClientModal = ({ isVisible, close, clientId }) => {
+  const [clientSurname, setClientSurname] = useState('');
+  const [clientName, setClientName] = useState('');
 
   const submitHandler = async (e) => {
     e.preventDefault();
     const product = {
-      productName: productName,
-      productPrice: productPrice,
+      clientName: clientName,
+      clientSurname: clientSurname,
     };
     try {
       const response = await fetch(
-        `http://localhost:5000/products/${productId}`,
+        `http://localhost:5000/clients/${clientId}`,
         {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
@@ -21,13 +21,11 @@ const ChangeProductModal = ({ isVisible, close, productId }) => {
         },
       );
       if (!response.ok) {
-        throw new Error('Failed to update product');
+        throw new Error('Failed to update Client credentials');
       }
       const data = await response.json();
       console.log(data);
       close();
-      setProductName('');
-      setProductPrice('');
     } catch (error) {
       console.log(error);
     }
@@ -35,14 +33,14 @@ const ChangeProductModal = ({ isVisible, close, productId }) => {
   const handleDelete = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/products/${productId}`,
+        `http://localhost:5000/clients/${clientId}`,
         {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
         },
       );
       if (!response.ok) {
-        throw new Error('Failed to delete product');
+        throw new Error('Failed to delete a Client');
       }
       const data = await response.json();
       close();
@@ -57,23 +55,21 @@ const ChangeProductModal = ({ isVisible, close, productId }) => {
       <Modal show={isVisible} onHide={close}>
         <Form onSubmit={submitHandler}>
           <Modal.Header closeButton>
-            <Modal.Title>Edit product details</Modal.Title>
+            <Modal.Title>Edit client details</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <FloatingLabel label="Product Name" className="mb-3">
+            <FloatingLabel label="Client Name" className="mb-3">
               <Form.Control
-                type="productName"
-                placeholder="Product Name"
-                value={productName}
-                onChange={(e) => setProductName(e.target.value)}
+                placeholder="Client Name"
+                value={clientName}
+                onChange={(e) => setClientName(e.target.value)}
               />
             </FloatingLabel>
-            <FloatingLabel label="Product Price">
+            <FloatingLabel>
               <Form.Control
-                type="productPrice"
-                placeholder="Product Price"
-                value={productPrice}
-                onChange={(e) => setProductPrice(e.target.value)}
+                placeholder="Client Surname"
+                value={clientSurname}
+                onChange={(e) => setClientSurname(e.target.value)}
               />
             </FloatingLabel>
           </Modal.Body>
@@ -82,9 +78,9 @@ const ChangeProductModal = ({ isVisible, close, productId }) => {
               Close
             </Button>
             <Button variant="primary" type="submit">
-              Update product
+              Update client information
             </Button>
-            <Button onClick={handleDelete}>Delete Product</Button>
+            <Button onClick={handleDelete}>Delete Client</Button>
           </Modal.Footer>
         </Form>
       </Modal>
@@ -92,4 +88,4 @@ const ChangeProductModal = ({ isVisible, close, productId }) => {
   );
 };
 
-export default ChangeProductModal;
+export default ChangeClientModal;

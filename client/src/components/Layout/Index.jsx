@@ -18,6 +18,9 @@ const Layout = ({ children }) => {
               <Nav.Link as={Link} to="/products">
                 Products
               </Nav.Link>
+              <Nav.Link as={Link} to="/clients">
+                Clients
+              </Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>

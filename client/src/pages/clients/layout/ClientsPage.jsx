@@ -1,98 +1,97 @@
 import { useState, useEffect } from 'react';
 import { Button, Container, Row, Col } from 'react-bootstrap';
-import ListOfProducts from './components/ListOfProducts';
-import AddProductModal from './components/AddProductModal';
-import SearchInput from '../../components/SearchInput';
-import ChangeProductModal from './components/ChangeProductModal';
-const ProductPage = () => {
-  const [products, setProducts] = useState([]);
+import SearchInput from '../../../components/SearchInput';
+import AddClientModal from '../components/AddClientModal';
+import ChangeClientModal from '../components/ChangeClientModal';
+import ListOfClients from '../components/ListOfClients';
+const ClientsPage = () => {
+  const [clients, setClients] = useState([]);
   const [show, setShow] = useState(false);
   const [showNew, setShowNew] = useState(false);
-  const [productId, setProductId] = useState('');
+  const [clientId, setClientId] = useState('');
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
   const handleShowNew = () => setShowNew(true);
   const handleCloseNew = () => setShowNew(false);
 
-  const fetchProducts = async () => {
+  const fetchClients = async () => {
     try {
-      const response = await fetch('http://localhost:5000/products/');
+      const response = await fetch('http://localhost:5000/clients/');
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
       const data = await response.json();
-      setProducts(data);
+      setClients(data);
     } catch (error) {
-      console.log('Error fetching products:', error.message);
+      console.log('Error fetching clients:', error.message);
     }
   };
 
   useEffect(() => {
-    fetchProducts();
+    fetchClients();
   }, []);
 
   const handleSearch = async (searchValue) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/products/search?query=${encodeURIComponent(searchValue)}`,
+        `http://localhost:5000/clients/search?query=${encodeURIComponent(searchValue)}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
         },
       );
       const data = await response.json();
-      setProducts(data);
+      setClients(data);
       if (!response.ok) {
-        throw new Error('Failed to find item');
+        throw new Error('Failed to find a client');
       }
     } catch (error) {
       console.log(error);
-      setProducts([]);
+      setClients([]);
     }
   };
 
   const handleRowClick = (id) => {
     setShow(true);
-    setProductId(id);
+    setClientId(id);
   };
   return (
     <>
-      <AddProductModal
+      <AddClientModal
         isVisible={showNew}
         close={handleCloseNew}
         show={handleShowNew}
       />
-      <ChangeProductModal
-        productId={productId}
+      <ChangeClientModal
+        clientId={clientId}
         isVisible={show}
         close={handleClose}
         show={handleShow}
       />
-      <ListOfProducts
+      <ListOfClients
         handleRowClick={handleRowClick}
-        items={products}
-        head1={'Product Id'}
-        head2={'Product Name'}
-        head3={'Product Price'}
+        items={clients}
+        head1={'Client ID'}
+        head2={'Client Name'}
+        head3={'Client Surname'}
       />
 
       <Container>
         <Row>
           <Col>
-            <Button onClick={fetchProducts} className="mb-3 mt-4">
-              Render Products
+            <Button onClick={fetchClients} className="mb-3 mt-4">
+              Render Clients
             </Button>
           </Col>
           <Col xs={8}>
             <SearchInput
-              formText={'Look for products by ID, or product Name'}
-              type={'productId/productName'}
+              formText={'Look for clients by ID, or client name'}
               onSearch={handleSearch}
             />
           </Col>
           <Col>
             <Button className="mb-3 mt-4" onClick={handleShowNew}>
-              Add new Product
+              Add new Client
             </Button>
           </Col>
         </Row>
@@ -101,4 +100,4 @@ const ProductPage = () => {
   );
 };
 
-export default ProductPage;
+export default ClientsPage;
