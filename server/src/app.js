@@ -5,7 +5,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 
 import { homeRoutes } from './routes/homeRoutes.js';
-import { productRoutes } from './routes/productRoutes.js';
+import { productsRoutes } from './routes/productsRoutes.js';
 
 const app = express();
 const port = process.env.PORT;
@@ -19,7 +19,7 @@ app.use(helmet());
 app.use(morgan('combined'));
 
 app.use('/', homeRoutes);
-app.use('/', productRoutes);
+app.use('/', productsRoutes);
 
 app.listen(port, (error) => {
   if (!error) {

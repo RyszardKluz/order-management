@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-class ProductController {
+class ProductsController {
   products = [
     {
       productId: '2fbf70b4-2b67-448c-97e1-9a33dcd8de27',
@@ -17,7 +17,7 @@ class ProductController {
     res.status(200).json(this.products);
   };
 
-  getProductByValue = (req, res) => {
+  getProductByQuery = (req, res) => {
     const searchValue = req.query.query
 
     if (!searchValue) {
@@ -84,4 +84,4 @@ class ProductController {
 
 
 
-export { ProductController };
+export { ProductsController };

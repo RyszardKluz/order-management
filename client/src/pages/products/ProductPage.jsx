@@ -13,9 +13,7 @@ const ProductPage = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch(
-        'http://localhost:5000/products/get-all-products',
-      );
+      const response = await fetch('http://localhost:5000/products/');
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
@@ -31,15 +29,23 @@ const ProductPage = () => {
   }, []);
 
   const handleSearch = async (searchValue) => {
-    const response = await fetch(
-      `http://localhost:5000/products/get-product?query=${encodeURIComponent(searchValue)}`,
-      {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      },
-    );
-    const data = await response.json();
-    setProducts(data);
+    try {
+      const response = await fetch(
+        `http://localhost:5000/products/search?query=${encodeURIComponent(searchValue)}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
+      const data = await response.json();
+      setProducts(data);
+      if (!response.ok) {
+        throw new Error('Failed to find item');
+      }
+    } catch (error) {
+      console.log(error);
+      setProducts([]);
+    }
   };
 
   const handleRowClick = (id) => {

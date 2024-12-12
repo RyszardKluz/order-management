@@ -13,7 +13,7 @@ const ChangeProductModal = ({ isVisible, close, productId }) => {
     };
     try {
       const response = await fetch(
-        `http://localhost:5000/products/update-product/${productId}`,
+        `http://localhost:5000/products/${productId}`,
         {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
@@ -33,7 +33,7 @@ const ChangeProductModal = ({ isVisible, close, productId }) => {
   const handleDelete = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/products/delete-product/${productId}`,
+        `http://localhost:5000/products/${productId}`,
         {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
