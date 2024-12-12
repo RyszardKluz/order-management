@@ -5,8 +5,12 @@ const productRoutes = Router();
 const prodCtrl = new ProductController();
 
 productRoutes.get('/products/get-all-products', prodCtrl.getAllProducts);
-productRoutes.get('/products/:prodId', prodCtrl.getProdById);
+productRoutes.get('/products/get-product', prodCtrl.getProductByValue);
 
 productRoutes.post('/products/add-product', prodCtrl.addProduct);
+
+productRoutes.patch('/products/update-product/:productId', prodCtrl.changeProduct);
+
+productRoutes.delete('/products/delete-product/:productId', prodCtrl.deleteProduct)
 
 export { productRoutes };

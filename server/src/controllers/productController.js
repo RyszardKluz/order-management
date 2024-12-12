@@ -17,23 +17,27 @@ class ProductController {
     res.status(200).json(this.products);
   };
 
-  getProdById = (req, res) => {
-    const productId = +req.params.prodId;
+  getProductByValue = (req, res) => {
+    const searchValue = req.query.query
 
-    const product = this.products.find((p) => p.productId === productId);
-
-    if (!product) {
-      res.status(404).json({ message: 'Product not found' });
+    if (!searchValue) {
+      return res.status(400).json({ error: 'Search value is required!' })
     }
-    res.status(200).json(product);
-  };
+    const matchedProducts = this.products.filter((product) =>
+      product.productName.toLowerCase().includes(searchValue.toLowerCase()) || product.productId === +searchValue
+    );
 
+    if (matchedProducts.length === 0) {
+      return res.status(404).json({ error: 'No products found' })
+    }
+
+    res.status(200).json(matchedProducts)
+  }
   addProduct = (req, res) => {
     const { productName, productPrice } = req.body;
 
-    if (!productName || typeof productPrice !== 'number') {
-      res.status(400).json({ message: 'Wrong product details' });
-      return;
+    if (!productName || typeof productName !== 'string' || !productPrice || isNaN(productPrice)) {
+      return res.status(400).json({ error: 'Invalid product details!' });
     }
 
     const newProduct = {
@@ -44,6 +48,40 @@ class ProductController {
     this.products.push(newProduct);
     res.status(200).json({ message: `Created ${productName}` });
   };
+  changeProduct = (req, res) => {
+    const { productId } = req.params
+    const { productName, productPrice } = req.body
+
+    const productIndex = this.products.findIndex((product) => product.productId === productId);
+
+    if (productIndex === -1) {
+      return res.status(404).json({ error: 'Product not found!' });
+    }
+    if (productName.trim() !== '') {
+      this.products[productIndex].productName = productName;
+    }
+    if (productPrice.trim() !== '') {
+      this.products[productIndex].productPrice = parseFloat(productPrice);
+    }
+
+    res.status(200).json({
+      message: 'Product updated successfully!',
+      product: this.products[productIndex],
+    });
+  };
+  deleteProduct = (req, res) => {
+    const { productId } = req.params;
+    const productIndex = this.products.findIndex((product) => product.productId === productId);
+    if (productIndex === -1) {
+      return res.status(404).json({ error: 'Product not found!' })
+    }
+    this.products.splice(productIndex, 1)
+
+    res.status(200).json({ message: 'Product deleted succesfully' })
+
+  }
 }
+
+
 
 export { ProductController };
