@@ -1,56 +1,48 @@
-class productController {
-  products = [{
-    productId: 1,
-    productName: 'Item 1 ',
-    price: 19.99
-  },
-  {
-    productId: 2,
-    productName: 'Item2',
-    price: 25.99
-  }];
+import { v4 as uuidv4 } from 'uuid';
+class ProductController {
+  products = [
+    {
+      productId: '2fbf70b4-2b67-448c-97e1-9a33dcd8de27',
+      productName: 'Item 12',
+      productPrice: 19.99,
+    },
+    {
+      productId: '4bb7ca3a-070e-4be1-a4a1-d63c79fbce65',
+      productName: 'Item2',
+      productPrice: 25.99,
+    },
+  ];
 
   getAllProducts = (req, res) => {
-    res.status(200).json(this.products)
-  }
+    res.status(200).json(this.products);
+  };
 
   getProdById = (req, res) => {
-    const productId = +req.params.prodId
+    const productId = +req.params.prodId;
 
-    const product = this.products.find((p) => p.productId === productId)
+    const product = this.products.find((p) => p.productId === productId);
 
     if (!product) {
       res.status(404).json({ message: 'Product not found' });
     }
     res.status(200).json(product);
+  };
 
-  }
   addProduct = (req, res) => {
-
     const { productName, price } = req.body;
 
-    if (!productName || typeof price !== "number") {
-      res.status(400).json({ message: 'Wrong product details' })
-    }
-
-    let newProductId;
-    if (this.products.length > 0) {
-      newProductId = Math.max(...this.products.map(p => p.productId)) + 1;
-    }
-    else {
-      newProductId = 1;
-
+    if (!productName || typeof price !== 'number') {
+      res.status(400).json({ message: 'Wrong product details' });
     }
 
     const newProduct = {
-      productId: newProductId,
+      productId: uuidv4(),
       price: price,
-      productName: productName
-    }
-    this.products.push(newProduct)
-    res.status(201).json({ message: `Created ${productName}` })
-  }
-
+      productName: productName,
+    };
+    this.products.push(newProduct);
+    res.status(200).json({ message: `Created ${productName}` });
+  };
 }
 
-export { productController };
+export { ProductController };
