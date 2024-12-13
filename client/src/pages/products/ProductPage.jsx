@@ -1,18 +1,29 @@
 import { useState, useEffect } from 'react';
-import { Button, Container, Row, Col } from 'react-bootstrap';
+import {
+  Button,
+  Container,
+  Row,
+  Col,
+  Toast,
+  ToastContainer,
+} from 'react-bootstrap';
 import ListOfProducts from './components/ListOfProducts';
 import AddProductModal from './components/AddProductModal';
 import SearchInput from '../../components/SearchInput';
 import ChangeProductModal from './components/ChangeProductModal';
+
 const ProductPage = () => {
   const [products, setProducts] = useState([]);
-  const [show, setShow] = useState(false);
-  const [showNew, setShowNew] = useState(false);
-  const [productId, setProductId] = useState('');
-  const handleShow = () => setShow(true);
-  const handleClose = () => setShow(false);
-  const handleShowNew = () => setShowNew(true);
-  const handleCloseNew = () => setShowNew(false);
+  const [isAddModalVisible, setAddModalVisible] = useState(false);
+  const [isEditModalVisible, setEditModalVisible] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState('');
+
+  const [showToast, setShowToast] = useState(false);
+  const [toastVariant, setToastVariant] = useState('');
+  const [toastBody, setToastBody] = useState('');
+
+  const handleAddModalClose = () => setAddModalVisible(false);
+  const handleEditModalClose = () => setEditModalVisible(false);
 
   const fetchProducts = async () => {
     try {
@@ -23,7 +34,7 @@ const ProductPage = () => {
       const data = await response.json();
       setProducts(data);
     } catch (error) {
-      console.log('Error fetching products:', error.message);
+      console.error('Error fetching products:', error.message);
     }
   };
 
@@ -40,42 +51,81 @@ const ProductPage = () => {
           headers: { 'Content-Type': 'application/json' },
         },
       );
+      if (!response.ok) {
+        throw new Error('Failed to find an item');
+      }
       const data = await response.json();
       setProducts(data);
-      if (!response.ok) {
-        throw new Error('Failed to find item');
-      }
+      showSuccessToast('Successfully found an item');
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setProducts([]);
+      showErrorToast(error.message);
     }
   };
 
   const handleRowClick = (id) => {
-    setShow(true);
-    setProductId(id);
+    setEditModalVisible(true);
+    setSelectedProductId(id);
+  };
+  const showErrorToast = (body) => {
+    setToastVariant('danger');
+    setToastBody(body);
+    setShowToast(true);
+  };
+  const showSuccessToast = (body) => {
+    setToastVariant('success');
+    setToastBody(body);
+    setShowToast(true);
   };
   return (
     <>
+      <Container>
+        <Row>
+          <Col xs={6}>
+            <ToastContainer position="top-end" className="p-3">
+              <Toast
+                onClose={() => setShowToast(false)}
+                show={showToast}
+                delay={2000}
+                autohide
+                bg={toastVariant}
+              >
+                <Toast.Header>
+                  <img
+                    src="holder.js/20x20?text=%20"
+                    className="rounded me-2"
+                    alt=""
+                  />
+                </Toast.Header>
+                <Toast.Body>{toastBody}</Toast.Body>
+              </Toast>
+            </ToastContainer>
+          </Col>
+        </Row>
+      </Container>
       <AddProductModal
-        isVisible={showNew}
-        close={handleCloseNew}
-        show={handleShowNew}
+        isVisible={isAddModalVisible}
+        onClose={handleAddModalClose}
+        fetchProducts={fetchProducts}
+        onShowSuccessToast={showSuccessToast}
+        onShowErrorToast={showErrorToast}
       />
       <ChangeProductModal
-        productId={productId}
-        isVisible={show}
-        close={handleClose}
-        show={handleShow}
+        productId={selectedProductId}
+        isVisible={isEditModalVisible}
+        onClose={handleEditModalClose}
+        fetchProducts={fetchProducts}
+        onShowSuccessToast={showSuccessToast}
+        onShowErrorToast={showErrorToast}
       />
       <ListOfProducts
-        handleRowClick={handleRowClick}
+        onRowClick={handleRowClick}
         items={products}
-        head1={'Product Id'}
-        head2={'Product Name'}
-        head3={'Product Price'}
+        head1="Product Id"
+        head2="Product Name"
+        head3="Product Price"
       />
-
       <Container>
         <Row>
           <Col>
@@ -85,13 +135,16 @@ const ProductPage = () => {
           </Col>
           <Col xs={8}>
             <SearchInput
-              formText={'Look for products by ID, or product Name'}
-              type={'productId/productName'}
+              formText="Look for products by ID, or product Name"
+              type="productId/productName"
               onSearch={handleSearch}
             />
           </Col>
           <Col>
-            <Button className="mb-3 mt-4" onClick={handleShowNew}>
+            <Button
+              className="mb-3 mt-4"
+              onClick={() => setAddModalVisible(true)}
+            >
               Add new Product
             </Button>
           </Col>

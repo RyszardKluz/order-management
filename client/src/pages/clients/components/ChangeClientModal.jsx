@@ -1,15 +1,30 @@
 import { Button, Modal, Form, FloatingLabel } from 'react-bootstrap';
 import { useState } from 'react';
 
-const ChangeClientModal = ({ isVisible, close, clientId }) => {
+const ChangeClientModal = ({
+  isVisible,
+  onClose,
+  clientId,
+  onUpdateUI,
+  onShowSuccessToast,
+  onShowErrorToast,
+}) => {
   const [clientSurname, setClientSurname] = useState('');
   const [clientName, setClientName] = useState('');
+  const [clientAddress, setClientAddress] = useState('');
 
-  const submitHandler = async (e) => {
+  const handleResetInputs = () => {
+    setClientAddress('');
+    setClientName('');
+    setClientSurname('');
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const product = {
-      clientName: clientName,
-      clientSurname: clientSurname,
+    const client = {
+      clientName,
+      clientSurname,
+      clientAddress,
     };
     try {
       const response = await fetch(
@@ -17,20 +32,25 @@ const ChangeClientModal = ({ isVisible, close, clientId }) => {
         {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(product),
+          body: JSON.stringify(client),
         },
       );
       if (!response.ok) {
-        throw new Error('Failed to update Client credentials');
+        throw new Error('Failed to update client credentials');
       }
       const data = await response.json();
       console.log(data);
-      close();
+      onClose();
+      handleResetInputs();
+      onShowSuccessToast('Successfully updated client credentials ');
+      onUpdateUI();
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      onShowErrorToast(error.message);
     }
   };
-  const handleDelete = async () => {
+
+  const handleDeleteClient = async () => {
     try {
       const response = await fetch(
         `http://localhost:5000/clients/${clientId}`,
@@ -40,51 +60,67 @@ const ChangeClientModal = ({ isVisible, close, clientId }) => {
         },
       );
       if (!response.ok) {
-        throw new Error('Failed to delete a Client');
+        throw new Error('Failed to delete client');
       }
       const data = await response.json();
-      close();
+      onClose();
+      onUpdateUI();
+      onShowSuccessToast('Successfully deleted client');
       console.log(data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      onShowErrorToast(error.message);
     }
   };
 
   return (
-    <>
-      <Modal show={isVisible} onHide={close}>
-        <Form onSubmit={submitHandler}>
-          <Modal.Header closeButton>
-            <Modal.Title>Edit client details</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <FloatingLabel label="Client Name" className="mb-3">
-              <Form.Control
-                placeholder="Client Name"
-                value={clientName}
-                onChange={(e) => setClientName(e.target.value)}
-              />
-            </FloatingLabel>
-            <FloatingLabel>
-              <Form.Control
-                placeholder="Client Surname"
-                value={clientSurname}
-                onChange={(e) => setClientSurname(e.target.value)}
-              />
-            </FloatingLabel>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={close}>
-              Close
-            </Button>
-            <Button variant="primary" type="submit">
-              Update client information
-            </Button>
-            <Button onClick={handleDelete}>Delete Client</Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
-    </>
+    <Modal
+      show={isVisible}
+      onHide={() => {
+        onClose();
+        handleResetInputs();
+      }}
+    >
+      <Form onSubmit={handleSubmit}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Client Details</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <FloatingLabel label="Client Name" className="mb-3">
+            <Form.Control
+              placeholder="Client Name"
+              value={clientName}
+              onChange={(e) => setClientName(e.target.value)}
+            />
+          </FloatingLabel>
+          <FloatingLabel label="Client Surname" className="mb-3">
+            <Form.Control
+              placeholder="Client Surname"
+              value={clientSurname}
+              onChange={(e) => setClientSurname(e.target.value)}
+            />
+          </FloatingLabel>
+          <FloatingLabel label="Client Address" className="mb-3">
+            <Form.Control
+              placeholder="Client Address"
+              value={clientAddress}
+              onChange={(e) => setClientAddress(e.target.value)}
+            />
+          </FloatingLabel>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={onClose}>
+            Close
+          </Button>
+          <Button variant="primary" type="submit">
+            Update Client Information
+          </Button>
+          <Button variant="danger" onClick={handleDeleteClient}>
+            Delete Client
+          </Button>
+        </Modal.Footer>
+      </Form>
+    </Modal>
   );
 };
 

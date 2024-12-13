@@ -1,7 +1,13 @@
 import { Button, Modal, Form, FloatingLabel } from 'react-bootstrap';
 import { useState } from 'react';
 
-const AddProductModal = ({ isVisible, close }) => {
+const AddProductModal = ({
+  isVisible,
+  onClose,
+  onShowSuccessToast,
+  onShowErrorToast,
+  fetchProducts,
+}) => {
   const [productPrice, setProductPrice] = useState('');
   const [productName, setProductName] = useState('');
 
@@ -17,18 +23,35 @@ const AddProductModal = ({ isVisible, close }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(product),
       });
+      if (productName.trim() === '' || productPrice.trim() === '') {
+        throw new Error('All fields required');
+      }
       if (!response.ok) {
         throw new Error('Failed to add product');
       }
-      close();
+      fetchProducts();
+      onClose();
+      onShowSuccessToast('Successfully added product');
+      resetFormFields();
     } catch (error) {
       console.log(error);
+      onShowErrorToast(error.message);
     }
   };
 
+  const resetFormFields = () => {
+    setProductName('');
+    setProductPrice('');
+  };
   return (
     <>
-      <Modal show={isVisible} onHide={close}>
+      <Modal
+        show={isVisible}
+        onHide={() => {
+          onClose();
+          resetFormFields();
+        }}
+      >
         <Form onSubmit={submitHandler}>
           <Modal.Header closeButton>
             <Modal.Title>Enter product details</Modal.Title>

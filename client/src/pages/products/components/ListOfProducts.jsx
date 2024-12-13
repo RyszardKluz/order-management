@@ -1,8 +1,8 @@
 import { Table } from 'react-bootstrap';
 
-const ListOfProducts = ({ items, head1, head2, head3, handleRowClick }) => {
-  const onRowClick = (id) => {
-    handleRowClick(id);
+const ListOfProducts = ({ items, head1, head2, head3, onRowClick }) => {
+  const handleRowClick = (id) => {
+    onRowClick(id);
   };
   return (
     <Table striped bordered hover>
@@ -19,7 +19,7 @@ const ListOfProducts = ({ items, head1, head2, head3, handleRowClick }) => {
           <tr
             key={item.productId}
             onClick={() => {
-              onRowClick(item.productId);
+              handleRowClick(item.productId);
             }}
           >
             <td>{index + 1}</td>

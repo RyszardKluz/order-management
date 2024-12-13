@@ -1,9 +1,21 @@
 import { Button, Modal, Form, FloatingLabel } from 'react-bootstrap';
 import { useState } from 'react';
 
-const ChangeProductModal = ({ isVisible, close, productId }) => {
+const ChangeProductModal = ({
+  isVisible,
+  onClose,
+  productId,
+  onShowSuccessToast,
+  onShowErrorToast,
+  fetchProducts,
+}) => {
   const [productPrice, setProductPrice] = useState('');
   const [productName, setProductName] = useState('');
+
+  const resetFormFields = () => {
+    setProductName('');
+    setProductPrice('');
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -23,13 +35,17 @@ const ChangeProductModal = ({ isVisible, close, productId }) => {
       if (!response.ok) {
         throw new Error('Failed to update product');
       }
-      const data = await response.json();
-      console.log(data);
-      close();
+      if (productPrice.trim() === '' && productName.trim() === '') {
+        throw new Error('At lest one field required');
+      }
+      onShowSuccessToast('Updated product information');
+      onClose();
       setProductName('');
       setProductPrice('');
+      fetchProducts();
+      resetFormFields();
     } catch (error) {
-      console.log(error);
+      onShowErrorToast(error.message);
     }
   };
   const handleDelete = async () => {
@@ -44,17 +60,23 @@ const ChangeProductModal = ({ isVisible, close, productId }) => {
       if (!response.ok) {
         throw new Error('Failed to delete product');
       }
-      const data = await response.json();
-      close();
-      console.log(data);
+      onClose();
+      fetchProducts();
+      onShowSuccessToast('Successfully deleted product');
     } catch (error) {
-      console.log(error);
+      onShowErrorToast(error.message);
     }
   };
 
   return (
     <>
-      <Modal show={isVisible} onHide={close}>
+      <Modal
+        show={isVisible}
+        onHide={() => {
+          onClose();
+          resetFormFields();
+        }}
+      >
         <Form onSubmit={submitHandler}>
           <Modal.Header closeButton>
             <Modal.Title>Edit product details</Modal.Title>
@@ -78,7 +100,7 @@ const ChangeProductModal = ({ isVisible, close, productId }) => {
             </FloatingLabel>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={close}>
+            <Button variant="secondary" onClick={onClose}>
               Close
             </Button>
             <Button variant="primary" type="submit">

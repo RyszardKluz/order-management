@@ -1,18 +1,43 @@
 import { useState, useEffect } from 'react';
-import { Button, Container, Row, Col } from 'react-bootstrap';
+import {
+  Button,
+  Container,
+  Row,
+  Col,
+  Toast,
+  ToastContainer,
+} from 'react-bootstrap';
 import SearchInput from '../../../components/SearchInput';
 import AddClientModal from '../components/AddClientModal';
 import ChangeClientModal from '../components/ChangeClientModal';
-import ListOfClients from '../components/ListOfClients';
+import ClientList from '../components/ListOfClients';
+
 const ClientsPage = () => {
   const [clients, setClients] = useState([]);
-  const [show, setShow] = useState(false);
-  const [showNew, setShowNew] = useState(false);
   const [clientId, setClientId] = useState('');
-  const handleShow = () => setShow(true);
-  const handleClose = () => setShow(false);
-  const handleShowNew = () => setShowNew(true);
-  const handleCloseNew = () => setShowNew(false);
+
+  const [showEdit, setShowEdit] = useState(false);
+  const [showAdd, setShowAdd] = useState(false);
+
+  const [showToast, setShowToast] = useState(false);
+  const [toastVariant, setToastVariant] = useState('');
+  const [toastBody, setToastBody] = useState('');
+
+  const handleShowEdit = () => setShowEdit(true);
+  const handleCloseEdit = () => setShowEdit(false);
+  const handleShowAdd = () => setShowAdd(true);
+  const handleCloseAdd = () => setShowAdd(false);
+
+  const showErrorToast = (body) => {
+    setToastVariant('danger');
+    setToastBody(body);
+    setShowToast(true);
+  };
+  const showSuccessToast = (body) => {
+    setToastVariant('success');
+    setToastBody(body);
+    setShowToast(true);
+  };
 
   const fetchClients = async () => {
     try {
@@ -20,10 +45,11 @@ const ClientsPage = () => {
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
+      console.log(response);
       const data = await response.json();
       setClients(data);
     } catch (error) {
-      console.log('Error fetching clients:', error.message);
+      console.log('Error fetching clients', error.message);
     }
   };
 
@@ -40,57 +66,92 @@ const ClientsPage = () => {
           headers: { 'Content-Type': 'application/json' },
         },
       );
-      const data = await response.json();
-      setClients(data);
       if (!response.ok) {
         throw new Error('Failed to find a client');
       }
+      const data = await response.json();
+      setClients(data);
+      showSuccessToast('Successfully found a client');
     } catch (error) {
-      console.log(error);
       setClients([]);
+      showErrorToast(error.message);
     }
   };
 
   const handleRowClick = (id) => {
-    setShow(true);
+    handleShowEdit();
     setClientId(id);
   };
+
   return (
     <>
+      <Container>
+        {' '}
+        <Row>
+          <Col xs={6}>
+            <ToastContainer position="top-end" className="p-3">
+              <Toast
+                onClose={() => setShowToast(false)}
+                show={showToast}
+                delay={2000}
+                autohide
+                bg={toastVariant}
+              >
+                <Toast.Header>
+                  <img
+                    src="holder.js/20x20?text=%20"
+                    className="rounded me-2"
+                    alt=""
+                  />
+                </Toast.Header>
+                <Toast.Body>{toastBody}</Toast.Body>
+              </Toast>
+            </ToastContainer>
+          </Col>
+        </Row>
+      </Container>
+
       <AddClientModal
-        isVisible={showNew}
-        close={handleCloseNew}
-        show={handleShowNew}
+        isVisible={showAdd}
+        onClose={handleCloseAdd}
+        onAdd={fetchClients}
+        onShowSuccessToast={showSuccessToast}
+        onShowErrorToast={showErrorToast}
       />
       <ChangeClientModal
         clientId={clientId}
-        isVisible={show}
-        close={handleClose}
-        show={handleShow}
+        isVisible={showEdit}
+        onClose={handleCloseEdit}
+        onUpdateUI={fetchClients}
+        onShowSuccessToast={showSuccessToast}
+        onShowErrorToast={showErrorToast}
       />
-      <ListOfClients
-        handleRowClick={handleRowClick}
-        items={clients}
-        head1={'Client ID'}
-        head2={'Client Name'}
-        head3={'Client Surname'}
+      <ClientList
+        onRowSelect={handleRowClick}
+        clients={clients}
+        columnHeadings={[
+          'Client ID',
+          'Client Name',
+          'Client Surname',
+          'Client Address',
+        ]}
       />
-
       <Container>
+        {' '}
         <Row>
           <Col>
             <Button onClick={fetchClients} className="mb-3 mt-4">
-              Render Clients
+              Refresh Clients List
             </Button>
           </Col>
           <Col xs={8}>
             <SearchInput
-              formText={'Look for clients by ID, or client name'}
+              formText="Look for clients by ID, or client name"
               onSearch={handleSearch}
             />
           </Col>
           <Col>
-            <Button className="mb-3 mt-4" onClick={handleShowNew}>
+            <Button className="mb-3 mt-4" onClick={handleShowAdd}>
               Add new Client
             </Button>
           </Col>

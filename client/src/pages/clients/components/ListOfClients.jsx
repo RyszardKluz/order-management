@@ -1,31 +1,31 @@
 import { Table } from 'react-bootstrap';
 
-const ListOfClients = ({ items, head1, head2, head3, handleRowClick }) => {
-  const onRowClick = (id) => {
-    handleRowClick(id);
+const ClientList = ({ clients, columnHeadings, onRowSelect }) => {
+  const handleRowClick = (clientId) => {
+    onRowSelect(clientId);
   };
+
   return (
     <Table striped bordered hover>
       <thead>
         <tr>
           <th>#</th>
-          <th>{head1}</th>
-          <th>{head2}</th>
-          <th>{head3}</th>
+          {columnHeadings.map((heading, index) => (
+            <th key={index}>{heading}</th>
+          ))}
         </tr>
       </thead>
       <tbody>
-        {items.map((item, index) => (
+        {clients.map((client, index) => (
           <tr
-            key={item.clientId}
-            onClick={() => {
-              onRowClick(item.clientId);
-            }}
+            key={client.clientId}
+            onClick={() => handleRowClick(client.clientId)}
           >
             <td>{index + 1}</td>
-            <td>{item.clientId}</td>
-            <td>{item.clientName}</td>
-            <td>{item.clientSurname}</td>
+            <td>{client.clientId}</td>
+            <td>{client.clientName}</td>
+            <td>{client.clientSurname}</td>
+            <td>{client.clientAddress}</td>
           </tr>
         ))}
       </tbody>
@@ -33,4 +33,4 @@ const ListOfClients = ({ items, head1, head2, head3, handleRowClick }) => {
   );
 };
 
-export default ListOfClients;
+export default ClientList;
