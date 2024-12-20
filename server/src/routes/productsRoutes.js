@@ -4,13 +4,12 @@ import { ProductsController } from '../controllers/productsController.js';
 const productsRoutes = Router();
 const prodCtrl = new ProductsController();
 
-productsRoutes.get('/products', prodCtrl.getAllProducts);
-productsRoutes.get('/products/search', prodCtrl.getProductByQuery);
+productsRoutes.get('/', prodCtrl.getProducts);
 
-productsRoutes.post('/products', prodCtrl.addProduct);
+productsRoutes.post('/', prodCtrl.addProduct);
 
-productsRoutes.patch('/products/:productId', prodCtrl.changeProduct);
+productsRoutes.patch('/:productId', prodCtrl.changeProduct);
 
-productsRoutes.delete('/products/:productId', prodCtrl.deleteProduct)
+productsRoutes.delete('/:productId', prodCtrl.deleteProduct)
 
 export { productsRoutes };

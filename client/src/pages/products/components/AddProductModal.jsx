@@ -23,12 +23,15 @@ const AddProductModal = ({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(product),
       });
+
       if (productName.trim() === '' || productPrice.trim() === '') {
         throw new Error('All fields required');
       }
+
       if (!response.ok) {
         throw new Error('Failed to add product');
       }
+
       fetchProducts();
       onClose();
       onShowSuccessToast('Successfully added product');

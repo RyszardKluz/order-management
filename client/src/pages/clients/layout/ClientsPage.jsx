@@ -60,20 +60,23 @@ const ClientsPage = () => {
   const handleSearch = async (searchValue) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/clients/search?query=${encodeURIComponent(searchValue)}`,
+        `http://localhost:5000/clients?query=${encodeURIComponent(searchValue)}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
         },
       );
+      if (searchValue.trim() === '') {
+        throw new Error('Enter any value');
+      }
       if (!response.ok) {
+        setClients([]);
         throw new Error('Failed to find a client');
       }
       const data = await response.json();
       setClients(data);
       showSuccessToast('Successfully found a client');
     } catch (error) {
-      setClients([]);
       showErrorToast(error.message);
     }
   };

@@ -20,8 +20,8 @@ app.use(helmet());
 app.use(morgan('combined'));
 
 app.use('/', homeRoutes);
-app.use('/', productsRoutes);
-app.use('/', clientsRoutes)
+app.use('/products', productsRoutes);
+app.use('/clients', clientsRoutes)
 
 app.listen(port, (error) => {
   if (!error) {

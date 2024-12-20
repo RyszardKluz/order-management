@@ -45,21 +45,25 @@ const ProductPage = () => {
   const handleSearch = async (searchValue) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/products/search?query=${encodeURIComponent(searchValue)}`,
+        `http://localhost:5000/products?query=${encodeURIComponent(searchValue)}`,
         {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
         },
       );
+      if (searchValue.toString().trim() === '') {
+        throw new Error('Enter any value');
+      }
       if (!response.ok) {
+        setProducts([]);
         throw new Error('Failed to find an item');
       }
+
       const data = await response.json();
       setProducts(data);
       showSuccessToast('Successfully found an item');
     } catch (error) {
       console.error(error);
-      setProducts([]);
       showErrorToast(error.message);
     }
   };
@@ -122,9 +126,7 @@ const ProductPage = () => {
       <ListOfProducts
         onRowClick={handleRowClick}
         items={products}
-        head1="Product Id"
-        head2="Product Name"
-        head3="Product Price"
+        columnHeadings={['Product Id', 'Product Name', 'Product Price']}
       />
       <Container>
         <Row>

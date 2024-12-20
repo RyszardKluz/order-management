@@ -4,13 +4,12 @@ import { ClientsController } from '../controllers/clientsController.js';
 const clientsRoutes = Router();
 const clientsCntrl = new ClientsController();
 
-clientsRoutes.get('/clients', clientsCntrl.getAllClients);
-clientsRoutes.get('/clients/search', clientsCntrl.getClientByQuery);
+clientsRoutes.get('/', clientsCntrl.getClients);
 
-clientsRoutes.post('/clients', clientsCntrl.addClient);
+clientsRoutes.post('/', clientsCntrl.addClient);
 
-clientsRoutes.patch('/clients/:clientId', clientsCntrl.changeClient);
+clientsRoutes.patch('/:clientId', clientsCntrl.changeClient);
 
-clientsRoutes.delete('/clients/:clientId', clientsCntrl.deleteClient)
+clientsRoutes.delete('/:clientId', clientsCntrl.deleteClient)
 
 export { clientsRoutes };

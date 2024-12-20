@@ -6,7 +6,7 @@
   "type": "module",
   "main": "src/app.js",
   "scripts": {
-    "start": "node --env-file .env ./src/app.js",
+    "start": "nodemon --env-file .env ./src/app.js",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
@@ -25,6 +25,7 @@
     "eslint": "^9.16.0",
     "eslint-config-prettier": "^9.1.0",
     "globals": "^15.13.0",
+    "nodemon": "^3.1.9",
     "prettier": "^3.4.2"
   }
 }

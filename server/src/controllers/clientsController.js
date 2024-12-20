@@ -16,26 +16,28 @@ class ClientsController {
     },
   ];
 
-  getAllClients = (req, res) => {
-    res.status(200).json(this.clients);
+  getClients = (req, res) => {
+    if (req.query.query) {
+      const searchValue = req.query.query
+
+      if (!searchValue) {
+        return res.status(400).json({ error: 'Search value is required!' })
+      }
+      const matchedClients = this.clients.filter((client) =>
+        client.clientName.toLowerCase().includes(searchValue.toLowerCase()) || client.clientSurname.toLowerCase().includes(searchValue.toLowerCase() || client.clientAddress)
+      );
+
+      if (matchedClients.length === 0) {
+        return res.status(404).json({ error: 'No clients found' })
+      }
+
+      return res.status(200).json(matchedClients)
+    }
+
+    return res.status(200).json(this.clients);
   };
 
-  getClientByQuery = (req, res) => {
-    const searchValue = req.query.query
 
-    if (!searchValue) {
-      return res.status(400).json({ error: 'Search value is required!' })
-    }
-    const matchedClients = this.clients.filter((client) =>
-      client.clientName.toLowerCase().includes(searchValue.toLowerCase()) || client.clientSurname.toLowerCase().includes(searchValue.toLowerCase() || client.clientAddress)
-    );
-
-    if (matchedClients.length === 0) {
-      return res.status(404).json({ error: 'No clients found' })
-    }
-
-    res.status(200).json(matchedClients)
-  }
   addClient = (req, res) => {
     const { clientName, clientSurname, clientAddress } = req.body;
 

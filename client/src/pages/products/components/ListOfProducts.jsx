@@ -1,6 +1,6 @@
 import { Table } from 'react-bootstrap';
 
-const ListOfProducts = ({ items, head1, head2, head3, onRowClick }) => {
+const ListOfProducts = ({ items, columnHeadings, onRowClick }) => {
   const handleRowClick = (id) => {
     onRowClick(id);
   };
@@ -9,9 +9,9 @@ const ListOfProducts = ({ items, head1, head2, head3, onRowClick }) => {
       <thead>
         <tr>
           <th>#</th>
-          <th>{head1}</th>
-          <th>{head2}</th>
-          <th>{head3}</th>
+          {columnHeadings.map((heading, index) => (
+            <th key={index}>{heading}</th>
+          ))}
         </tr>
       </thead>
       <tbody>

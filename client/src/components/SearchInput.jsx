@@ -8,6 +8,7 @@ const SearchInput = ({ type, formText, onSearch }) => {
     onSearch(searchValue);
     setSearchValue('');
   };
+
   return (
     <>
       <Form onSubmit={handleSubmit}>

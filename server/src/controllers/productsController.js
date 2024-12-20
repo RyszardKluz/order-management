@@ -13,26 +13,27 @@ class ProductsController {
     },
   ];
 
-  getAllProducts = (req, res) => {
-    res.status(200).json(this.products);
+  getProducts = (req, res) => {
+    const searchValue = req.query.query;
+    if (req.query.query) {
+
+      if (!searchValue) {
+        return res.status(400).json({ error: 'Search value is required!' })
+      }
+      const matchedProducts = this.products.filter((product) =>
+        product.productName.toLowerCase().includes(searchValue.toLowerCase()) || product.productId === +searchValue
+      );
+
+      if (matchedProducts.length === 0) {
+        return res.status(404).json({ error: 'No products found' })
+      }
+
+      return res.status(200).json(matchedProducts)
+    }
+    return res.status(200).json(this.products);
   };
 
-  getProductByQuery = (req, res) => {
-    const searchValue = req.query.query
 
-    if (!searchValue) {
-      return res.status(400).json({ error: 'Search value is required!' })
-    }
-    const matchedProducts = this.products.filter((product) =>
-      product.productName.toLowerCase().includes(searchValue.toLowerCase()) || product.productId === +searchValue
-    );
-
-    if (matchedProducts.length === 0) {
-      return res.status(404).json({ error: 'No products found' })
-    }
-
-    res.status(200).json(matchedProducts)
-  }
   addProduct = (req, res) => {
     const { productName, productPrice } = req.body;
 
