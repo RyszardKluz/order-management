@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import Product from '../../models/product.js';
 class ProductsController {
   products = [
     {
@@ -41,11 +42,7 @@ class ProductsController {
       return res.status(400).json({ error: 'Invalid product details!' });
     }
 
-    const newProduct = {
-      productId: uuidv4(),
-      productPrice: productPrice,
-      productName: productName,
-    };
+    const newProduct = new Product(uuidv4(), productName, productPrice)
     this.products.push(newProduct);
     res.status(200).json({ message: `Created ${productName}` });
   };

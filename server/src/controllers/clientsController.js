@@ -1,5 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
+import Client from '../../models/client.js';
 class ClientsController {
+
+
+
   clients = [
     {
       clientId: '2fbf70b5-2b67-448c-97e1-9a33dcd8de27',
@@ -45,12 +49,12 @@ class ClientsController {
       return res.status(400).json({ error: 'Invalid client details!' });
     }
 
-    const newClient = {
-      clientId: uuidv4(),
-      clientSurname: clientSurname,
-      clientName: clientName,
-      clientAddress: clientAddress
-    };
+    const newClient = new Client(
+      uuidv4(),
+      clientName,
+      clientSurname,
+      clientAddress);
+
     this.clients.push(newClient);
     res.status(200).json({ message: `Created ${clientName}` });
   };
