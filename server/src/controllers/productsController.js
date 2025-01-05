@@ -27,36 +27,37 @@ class ProductsController {
       next(error)
     }
   };
-  changeProduct = (req, res) => {
+  changeProduct = (req, res, next) => {
     const { productId } = req.params
     const { productName, productPrice } = req.body
 
-    const productIndex = this.products.findIndex((product) => product.productId === productId);
+    try {
 
-    if (productIndex === -1) {
-      return res.status(404).json({ error: 'Product not found!' });
-    }
-    if (productName.trim() !== '') {
-      this.products[productIndex].productName = productName;
-    }
-    if (productPrice.trim() !== '') {
-      this.products[productIndex].productPrice = parseFloat(productPrice);
+      const product = await this.ProductsService.changeProduct(productId, productName, productPrice);
+
+      res.status(200).json({
+        message: 'Product updated successfully!',
+        product: product
+      });
+
+    } catch (error) {
+
+      next(error)
+
     }
 
-    res.status(200).json({
-      message: 'Product updated successfully!',
-      product: this.products[productIndex],
-    });
   };
-  deleteProduct = (req, res) => {
+  deleteProduct = async (req, res, next) => {
     const { productId } = req.params;
-    const productIndex = this.products.findIndex((product) => product.productId === productId);
-    if (productIndex === -1) {
-      return res.status(404).json({ error: 'Product not found!' })
-    }
-    this.products.splice(productIndex, 1)
 
-    res.status(200).json({ message: 'Product deleted succesfully' })
+    try {
+      this.ProductsService.deleteProduct(productId);
+
+      res.status(200).json({ message: 'Product deleted succesfully' });
+
+    } catch (error) {
+      next(error);
+    }
 
   }
 }

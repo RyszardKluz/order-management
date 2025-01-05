@@ -22,8 +22,32 @@ class ProductRepository {
 
     return newProduct
   }
-  static changeProduct = () => { }
-  static deleteProduct = () => { }
+  static changeProduct = (productId, productName, productPrice) => {
+    const productIndex = this.products.findIndex(product => product.productId === productId)
+
+    const updatedProduct = this.products[productIndex]
+
+    if (productIndex === -1) {
+      return null
+    }
+    if (productName.trim() !== '') {
+      updatedProduct.productName = productName;
+    }
+    if (productPrice.trim() !== '') {
+      updatedProduct.productPrice = productPrice;
+    }
+
+    return updatedProduct;
+  }
+  static deleteProduct = (productId) => {
+    const productIndex = this.products.findIndex(product => product.productId === productId);
+
+    if (productIndex === -1) {
+      return null
+    }
+
+    this.products.splice(productIndex, 1)
+  }
 }
 
 export default ProductRepository;

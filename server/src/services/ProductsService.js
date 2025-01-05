@@ -26,8 +26,35 @@ class ProductsService {
     const product = ProductRepository.addProduct(productName, productPrice)
     return product
   }
-  changeProduct = async () => { }
-  deleteProduct = async () => { }
+  changeProduct = async (productId, productName, productPrice) => {
+
+    if (!productId && !productName && !productPrice) {
+      throw new AppError('Wrong product details', 400)
+    }
+
+
+    const product = ProductRepository.changeProduct(product, productName, productPrice);
+
+    if (!product) {
+      throw new AppError('Product not found!', 404)
+    }
+
+    return product;
+
+
+
+  }
+  deleteProduct = async (productId) => {
+
+    if (!productId) {
+      throw new AppError('Failed to delete product !', 400)
+    }
+    const isProduct = ProductRepository.deleteProduct(productId);
+
+    if (!isProduct) {
+      throw new AppError('Product not found!', 404)
+    }
+  }
 }
 
 
