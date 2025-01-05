@@ -1,53 +1,31 @@
-import { v4 as uuidv4 } from 'uuid';
+import ProductsService from '../services/productsService.js';
 class ProductsController {
-  products = [
-    {
-      productId: '2fbf70b4-2b67-448c-97e1-9a33dcd8de27',
-      productName: 'Item 12',
-      productPrice: 19.99,
-    },
-    {
-      productId: '4bb7ca3a-070e-4be1-a4a1-d63c79fbce65',
-      productName: 'Item2',
-      productPrice: 25.99,
-    },
-  ];
+  constructor() {
+    this.ProductsService = new ProductsService()
+  }
 
-  getProducts = (req, res) => {
+
+  getProducts = async (req, res, next) => {
     const searchValue = req.query.query;
-    if (req.query.query) {
+    try {
+      const data = await ProductsService.getProducts(searchValue)
+      res.status(200).json(data);
 
-      if (!searchValue) {
-        return res.status(400).json({ error: 'Search value is required!' })
-      }
-      const matchedProducts = this.products.filter((product) =>
-        product.productName.toLowerCase().includes(searchValue.toLowerCase()) || product.productId === +searchValue
-      );
-
-      if (matchedProducts.length === 0) {
-        return res.status(404).json({ error: 'No products found' })
-      }
-
-      return res.status(200).json(matchedProducts)
+    } catch (error) {
+      next(error)
     }
-    return res.status(200).json(this.products);
+
   };
 
 
-  addProduct = (req, res) => {
-    const { productName, productPrice } = req.body;
+  addProduct = async (req, res, next) => {
 
-    if (!productName || typeof productName !== 'string' || !productPrice || isNaN(productPrice)) {
-      return res.status(400).json({ error: 'Invalid product details!' });
+    try {
+      const product = await this.ProductsService(req.body);
+      res.status(200).json({ message: `Created ${product}` });
+    } catch (error) {
+      next(error)
     }
-
-    const newProduct = {
-      productId: uuidv4(),
-      productPrice: productPrice,
-      productName: productName,
-    };
-    this.products.push(newProduct);
-    res.status(200).json({ message: `Created ${productName}` });
   };
   changeProduct = (req, res) => {
     const { productId } = req.params
