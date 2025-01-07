@@ -1,6 +1,6 @@
-import Order from "../../models/order.js";
+import Order from '../../models/order.js';
 class OrdersRepository {
-  static orders = []
+  static orders = [];
 
   static createOrder = (body) => {
     const {
@@ -9,7 +9,7 @@ class OrdersRepository {
       productCount,
       clientId,
       clientName,
-      clientAddress
+      clientAddress,
     } = body;
 
     const newOrder = new Order(
@@ -18,21 +18,21 @@ class OrdersRepository {
       productCount,
       clientId,
       clientName,
-      clientAddress)
+      clientAddress,
+    );
     this.orders.push(newOrder);
 
     return newOrder;
-  }
+  };
 
   static showOrderDetails = (orderId) => {
-    const order = this.orders.find(order => order.id === orderId);
+    const order = this.orders.find((order) => order.id === orderId);
 
     if (!order) {
-      return null
+      return null;
     }
-    return order
-  }
-
+    return order;
+  };
 }
 
 export default OrdersRepository;

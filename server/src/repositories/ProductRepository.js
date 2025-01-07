@@ -18,17 +18,19 @@ class ProductRepository {
     return this.products;
   }
   static addProduct = (productName, productPrice) => {
-    const newProduct = new Product(uuidv4(), productName, productPrice)
+    const newProduct = new Product(uuidv4(), productName, productPrice);
 
-    return newProduct
-  }
+    return newProduct;
+  };
   static changeProduct = (productId, productName, productPrice) => {
-    const productIndex = this.products.findIndex(product => product.productId === productId)
+    const productIndex = this.products.findIndex(
+      (product) => product.productId === productId,
+    );
 
-    const updatedProduct = this.products[productIndex]
+    const updatedProduct = this.products[productIndex];
 
     if (productIndex === -1) {
-      return null
+      return null;
     }
     if (productName.trim() !== '') {
       updatedProduct.productName = productName;
@@ -38,16 +40,18 @@ class ProductRepository {
     }
 
     return updatedProduct;
-  }
+  };
   static deleteProduct = (productId) => {
-    const productIndex = this.products.findIndex(product => product.productId === productId);
+    const productIndex = this.products.findIndex(
+      (product) => product.productId === productId,
+    );
 
     if (productIndex === -1) {
-      return null
+      return null;
     }
 
-    this.products.splice(productIndex, 1)
-  }
+    this.products.splice(productIndex, 1);
+  };
 }
 
 export default ProductRepository;
