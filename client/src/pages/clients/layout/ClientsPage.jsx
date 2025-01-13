@@ -15,20 +15,15 @@ const ClientsPage = () => {
     isEditModalVisible: false,
     isAddModalVisible: false,
     selectedClientId: '',
+    clientName: '',
+    clientSurname: '',
+    clientAddress: '',
   });
 
   const { showToast, ToastComponent } = useToast();
 
   const updateState = (newState) =>
     setState((prevState) => ({ ...prevState, ...newState }));
-
-  const resetFormFields = () => {
-    setState({
-      clientName: '',
-      clientSurname: '',
-      clientAddress: '',
-    });
-  };
 
   const handleEditModalClose = () => updateState({ isEditModalVisible: false });
   const handleAddModalClose = () => updateState({ isAddModalVisible: false });
@@ -68,9 +63,8 @@ const ClientsPage = () => {
       <AddClientModal
         isVisible={state.isAddModalVisible}
         onClose={handleAddModalClose}
-        onAdd={fetchClients}
+        fetchClients={fetchClients}
         onShowToast={showToast}
-        onResetFields={resetFormFields}
       />
       <ChangeClientModal
         clientId={state.selectedClientId}
@@ -78,7 +72,6 @@ const ClientsPage = () => {
         onClose={handleEditModalClose}
         fetchClients={fetchClients}
         onShowToast={showToast}
-        onResetFields={resetFormFields}
       />
       <ClientList
         onRowSelect={handleRowClick}

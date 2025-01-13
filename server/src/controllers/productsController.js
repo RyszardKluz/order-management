@@ -1,4 +1,4 @@
-import ProductsService from '../services/productsService.js';
+import ProductsService from '../services/ProductsService.js'
 class ProductsController {
   constructor() {
     this.productsService = new ProductsService()
@@ -21,8 +21,8 @@ class ProductsController {
   addProduct = async (req, res, next) => {
 
     try {
-      const product = await this.productsService(req.body);
-      res.status(200).json({ message: `Created ${product}` });
+      const product = await this.productsService.addProduct(req.body);
+      res.status(200).json({ message: `Created ${product}`, ok: true });
     } catch (error) {
       next(error)
     }
@@ -31,13 +31,16 @@ class ProductsController {
     const { productId } = req.params
     const { productName, productPrice } = req.body
 
+    console.log(productId, productName)
+
     try {
 
       const product = await this.productsService.changeProduct(productId, productName, productPrice);
 
       res.status(200).json({
         message: 'Product updated successfully!',
-        product: product
+        product: product,
+        ok: true
       });
 
     } catch (error) {
@@ -49,11 +52,11 @@ class ProductsController {
   };
   deleteProduct = async (req, res, next) => {
     const { productId } = req.params;
+    console.log(productId)
 
     try {
-      this.ProductsService.deleteProduct(productId);
-
-      res.status(200).json({ message: 'Product deleted succesfully' });
+      this.productsService.deleteProduct(productId)
+      res.status(200).json({ message: 'Product deleted succesfully', ok: true });
 
     } catch (error) {
       next(error);

@@ -14,7 +14,7 @@ const deleteHandler = async (
     const response = await deleteResource(
       `${url}/${productId}`,
       onShowToast,
-      'product',
+      resource
     );
 
     if (!response.ok) {

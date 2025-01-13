@@ -23,7 +23,7 @@ class ClientsController {
         clientSurname,
         clientAddress,
       );
-      res.status(200).json({ message: 'Created Client', client: newClient });
+      res.status(200).json({ message: 'Created Client', client: newClient, ok: true });
     } catch (error) {
       next(error);
     }
@@ -41,7 +41,7 @@ class ClientsController {
       );
       res
         .status(200)
-        .json({ message: 'Client updated successfully! ', client: clientData });
+        .json({ message: 'Client updated successfully! ', client: clientData, ok: true });
     } catch (error) {
       next(error);
     }
@@ -51,7 +51,7 @@ class ClientsController {
     const { clientId } = req.params;
     try {
       await this.clientsService.deleteClient(clientId);
-      res.status(200).json({ message: 'Client deleted succesfully' });
+      res.status(200).json({ message: 'Client deleted succesfully', ok: true });
     } catch (error) {
       next(error);
     }

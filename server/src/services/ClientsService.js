@@ -24,7 +24,8 @@ class ClientsService {
     return matchedClients;
   };
 
-  addClient = async ({ clientName, clientSurname, clientAddress }) => {
+  addClient = async (clientName, clientSurname, clientAddress) => {
+    console.log(clientName, clientAddress, clientSurname)
     if (
       !clientName ||
       typeof clientName !== 'string' ||

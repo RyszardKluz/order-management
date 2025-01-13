@@ -7,7 +7,7 @@ class ProductsService {
     if (!searchValue) {
       return products;
     }
-    const matchedProducts = this.products.filter(
+    const matchedProducts = products.filter(
       (product) =>
         product.productName.toLowerCase().includes(searchValue.toLowerCase()) ||
         product.productId === +searchValue,
@@ -39,7 +39,7 @@ class ProductsService {
     }
 
     const product = ProductRepository.changeProduct(
-      product,
+      productId,
       productName,
       productPrice,
     );

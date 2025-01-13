@@ -11,6 +11,7 @@ const ClientList = ({
   const handleRowClick = (clientId) => {
     onRowSelect(clientId);
   };
+  console.log(clients);
   return (
     <Table striped bordered hover>
       <thead>

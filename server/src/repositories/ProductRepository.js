@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import Product from '../../models/product.js';
+import Product from '../models/Product.js';
 class ProductRepository {
   static products = [
     {
@@ -19,6 +19,8 @@ class ProductRepository {
   }
   static addProduct = (productName, productPrice) => {
     const newProduct = new Product(uuidv4(), productName, productPrice);
+
+    this.products.push(newProduct)
 
     return newProduct;
   };
@@ -51,6 +53,7 @@ class ProductRepository {
     }
 
     this.products.splice(productIndex, 1);
+    return true;
   };
 }
 

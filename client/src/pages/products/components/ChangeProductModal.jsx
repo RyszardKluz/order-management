@@ -46,6 +46,7 @@ const ChangeProductModal = ({
 
   const handleDelete = () => {
     deleteHandler(
+      '/products',
       productId,
       'DELETE',
       'Product',

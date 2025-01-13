@@ -2,14 +2,7 @@ import { Button, Modal, Form, FloatingLabel } from 'react-bootstrap';
 import { useState } from 'react';
 import submitHandler from '../../../helpers/submitHandler';
 
-const AddClientModal = ({
-  isVisible,
-  onClose,
-  onAdd,
-  onShowToast,
-  onResetFields,
-  fetchClients,
-}) => {
+const AddClientModal = ({ isVisible, onClose, onShowToast, fetchClients }) => {
   const [state, setState] = useState({
     clientName: '',
     clientSurname: '',
@@ -30,6 +23,13 @@ const AddClientModal = ({
   const updateState = (newState) =>
     setState((prevState) => ({ ...prevState, ...newState }));
 
+  const resetFields = () =>
+    setState({
+      clientName: '',
+      clientSurname: '',
+      clientAddress: '',
+    });
+
   const handleSubmit = async (e) => {
     submitHandler(
       e,
@@ -41,7 +41,7 @@ const AddClientModal = ({
       onShowToast,
       onClose,
       fetchClients,
-      onResetFields,
+      resetFields,
     );
   };
 
@@ -50,7 +50,7 @@ const AddClientModal = ({
       show={isVisible}
       onHide={() => {
         onClose();
-        onResetFields();
+        resetFields();
       }}
     >
       <Form onSubmit={handleSubmit}>
@@ -58,7 +58,7 @@ const AddClientModal = ({
           <Modal.Title>Enter Client Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <FloatingLabel label="clientName" className="mb-3">
+          <FloatingLabel label="Client Name" className="mb-3">
             <Form.Control
               type="text"
               placeholder="Client Name"
@@ -66,7 +66,7 @@ const AddClientModal = ({
               onChange={(e) => updateState({ clientName: e.target.value })}
             />
           </FloatingLabel>
-          <FloatingLabel label="clientSurname" className="mb-3">
+          <FloatingLabel label="Client Surname" className="mb-3">
             <Form.Control
               type="text"
               placeholder="Client Surname"
@@ -74,7 +74,7 @@ const AddClientModal = ({
               onChange={(e) => updateState({ clientSurname: e.target.value })}
             />
           </FloatingLabel>
-          <FloatingLabel label="clientAddress" className="mb-3">
+          <FloatingLabel label="Client Address" className="mb-3">
             <Form.Control
               type="text"
               placeholder="Client Address"

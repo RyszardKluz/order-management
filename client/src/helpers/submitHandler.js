@@ -3,6 +3,8 @@ import generateMessage from './generateMessage';
 import validateInputData from './validateInputData';
 
 const submitHandler = async (
+
+  
   e,
   url,
   method,
@@ -15,6 +17,7 @@ const submitHandler = async (
   resetFormFields
 ) => {
   e.preventDefault();
+  console.log(resourceData)
 
   try {
     validateInputData(resourceData, resourceDataFields)

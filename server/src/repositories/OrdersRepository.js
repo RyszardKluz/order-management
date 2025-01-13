@@ -1,9 +1,11 @@
-import Order from '../../models/order.js';
+import Order from '../models/Order.js';
 class OrdersRepository {
   static orders = [];
 
   static createOrder = (body) => {
+
     const {
+      productId,
       productPrice,
       productName,
       productCount,
@@ -13,6 +15,7 @@ class OrdersRepository {
     } = body;
 
     const newOrder = new Order(
+      productId,
       productPrice,
       productName,
       productCount,
