@@ -1,54 +1,48 @@
 import { Button, Modal, Form, FloatingLabel } from 'react-bootstrap';
 import { useState } from 'react';
+import submitHandler from '../../../helpers/submitHandler';
 
 const AddClientModal = ({
   isVisible,
   onClose,
   onAdd,
-  onShowSuccessToast,
-  onShowErrorToast,
+  onShowToast,
+  onResetFields,
+  fetchClients,
 }) => {
-  const [clientSurname, setClientSurname] = useState('');
-  const [clientName, setClientName] = useState('');
-  const [clientAddress, setClientAddress] = useState('');
-
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-    const clientData = {
-      clientName,
-      clientSurname,
-      clientAddress,
-    };
-    try {
-      const response = await fetch('http://localhost:5000/clients', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(clientData),
-      });
-      if (
-        clientName.trim() === '' ||
-        clientSurname.trim() === '' ||
-        clientAddress.trim() === ''
-      ) {
-        throw new Error('All fields are required');
-      }
-      if (!response.ok) {
-        throw new Error('Failed to add client');
-      }
-      onClose();
-      resetFormFields();
-      onAdd();
-      onShowSuccessToast('Created new client');
-    } catch (error) {
-      console.error(error);
-      onShowErrorToast(error.message);
-    }
+  const [state, setState] = useState({
+    clientName: '',
+    clientSurname: '',
+    clientAddress: '',
+  });
+  const client = {
+    clientName: state.clientName,
+    clientSurname: state.clientSurname,
+    clientAddress: state.clientAddress,
   };
 
-  const resetFormFields = () => {
-    setClientName('');
-    setClientSurname('');
-    setClientAddress('');
+  const inputFieldsToValidate = [
+    'clientName',
+    'clientSurname',
+    'clientAddress',
+  ];
+
+  const updateState = (newState) =>
+    setState((prevState) => ({ ...prevState, ...newState }));
+
+  const handleSubmit = async (e) => {
+    submitHandler(
+      e,
+      `/clients`,
+      'POST',
+      client,
+      inputFieldsToValidate,
+      'Client',
+      onShowToast,
+      onClose,
+      fetchClients,
+      onResetFields,
+    );
   };
 
   return (
@@ -56,36 +50,36 @@ const AddClientModal = ({
       show={isVisible}
       onHide={() => {
         onClose();
-        resetFormFields();
+        onResetFields();
       }}
     >
-      <Form onSubmit={handleFormSubmit}>
+      <Form onSubmit={handleSubmit}>
         <Modal.Header closeButton>
           <Modal.Title>Enter Client Details</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <FloatingLabel label="Client Name" className="mb-3">
+          <FloatingLabel label="clientName" className="mb-3">
             <Form.Control
               type="text"
               placeholder="Client Name"
-              value={clientName}
-              onChange={(e) => setClientName(e.target.value)}
+              value={state.clientName}
+              onChange={(e) => updateState({ clientName: e.target.value })}
             />
           </FloatingLabel>
-          <FloatingLabel label="Client Surname" className="mb-3">
+          <FloatingLabel label="clientSurname" className="mb-3">
             <Form.Control
               type="text"
               placeholder="Client Surname"
-              value={clientSurname}
-              onChange={(e) => setClientSurname(e.target.value)}
+              value={state.clientSurname}
+              onChange={(e) => updateState({ clientSurname: e.target.value })}
             />
           </FloatingLabel>
-          <FloatingLabel label="Client Address" className="mb-3">
+          <FloatingLabel label="clientAddress" className="mb-3">
             <Form.Control
               type="text"
               placeholder="Client Address"
-              value={clientAddress}
-              onChange={(e) => setClientAddress(e.target.value)}
+              value={state.clientAddress}
+              onChange={(e) => updateState({ clientAddress: e.target.value })}
             />
           </FloatingLabel>
         </Modal.Body>

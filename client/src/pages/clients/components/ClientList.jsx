@@ -1,10 +1,16 @@
 import { Table } from 'react-bootstrap';
 
-const ClientList = ({ clients, columnHeadings, onRowSelect }) => {
+import Checkbox from '../../../components/Checkbox';
+
+const ClientList = ({
+  clients,
+  columnHeadings,
+  onRowSelect,
+  hasCheckButton,
+}) => {
   const handleRowClick = (clientId) => {
     onRowSelect(clientId);
   };
-
   return (
     <Table striped bordered hover>
       <thead>
@@ -19,13 +25,20 @@ const ClientList = ({ clients, columnHeadings, onRowSelect }) => {
         {clients.map((client, index) => (
           <tr
             key={client.clientId}
-            onClick={() => handleRowClick(client.clientId)}
+            onClick={
+              hasCheckButton ? undefined : () => handleRowClick(client.clientId)
+            }
           >
             <td>{index + 1}</td>
             <td>{client.clientId}</td>
             <td>{client.clientName}</td>
             <td>{client.clientSurname}</td>
             <td>{client.clientAddress}</td>
+            {hasCheckButton ? (
+              <td>
+                <Checkbox handleClick={handleRowClick} />
+              </td>
+            ) : null}
           </tr>
         ))}
       </tbody>

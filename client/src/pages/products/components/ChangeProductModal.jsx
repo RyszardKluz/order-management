@@ -1,71 +1,58 @@
 import { Button, Modal, Form, FloatingLabel } from 'react-bootstrap';
 import { useState } from 'react';
+import submitHandler from '../../../helpers/submitHandler';
+import deleteHandler from '../../../helpers/deleteHandler';
 
 const ChangeProductModal = ({
   isVisible,
   onClose,
   productId,
-  onShowSuccessToast,
-  onShowErrorToast,
+  onShowToast,
   fetchProducts,
 }) => {
-  const [productPrice, setProductPrice] = useState('');
-  const [productName, setProductName] = useState('');
+  const [state, setState] = useState({
+    productPrice: '',
+    productName: '',
+  });
+
+  const updateState = (newState) =>
+    setState((prevState) => ({ ...prevState, ...newState }));
+
+  const product = {
+    productName: state.productName,
+    productPrice: state.productPrice,
+  };
+
+  const inputFieldsToValidate = ['productName', 'productPrice'];
 
   const resetFormFields = () => {
-    setProductName('');
-    setProductPrice('');
+    setState({ productName: '', productPrice: '' });
   };
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
-    const product = {
-      productName: productName,
-      productPrice: productPrice,
-    };
-    try {
-      const response = await fetch(
-        `http://localhost:5000/products/${productId}`,
-        {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(product),
-        },
-      );
-      if (!response.ok) {
-        throw new Error('Failed to update product');
-      }
-      if (productPrice.trim() === '' && productName.trim() === '') {
-        throw new Error('At lest one field required');
-      }
-      onShowSuccessToast('Updated product information');
-      onClose();
-      setProductName('');
-      setProductPrice('');
-      fetchProducts();
-      resetFormFields();
-    } catch (error) {
-      onShowErrorToast(error.message);
-    }
+  const handleSubmit = (e) => {
+    submitHandler(
+      e,
+      `/products/${productId}`,
+      'PATCH',
+      product,
+      inputFieldsToValidate,
+      'Product',
+      onShowToast,
+      onClose,
+      fetchProducts,
+      resetFormFields,
+    );
   };
-  const handleDelete = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:5000/products/${productId}`,
-        {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-        },
-      );
-      if (!response.ok) {
-        throw new Error('Failed to delete product');
-      }
-      onClose();
-      fetchProducts();
-      onShowSuccessToast('Successfully deleted product');
-    } catch (error) {
-      onShowErrorToast(error.message);
-    }
+
+  const handleDelete = () => {
+    deleteHandler(
+      productId,
+      'DELETE',
+      'Product',
+      onShowToast,
+      onClose,
+      fetchProducts,
+    );
   };
 
   return (
@@ -77,7 +64,7 @@ const ChangeProductModal = ({
           resetFormFields();
         }}
       >
-        <Form onSubmit={submitHandler}>
+        <Form onSubmit={handleSubmit}>
           <Modal.Header closeButton>
             <Modal.Title>Edit product details</Modal.Title>
           </Modal.Header>
@@ -86,16 +73,16 @@ const ChangeProductModal = ({
               <Form.Control
                 type="productName"
                 placeholder="Product Name"
-                value={productName}
-                onChange={(e) => setProductName(e.target.value)}
+                value={state.productName}
+                onChange={(e) => updateState({ productName: e.target.value })}
               />
             </FloatingLabel>
             <FloatingLabel label="Product Price">
               <Form.Control
                 type="productPrice"
                 placeholder="Product Price"
-                value={productPrice}
-                onChange={(e) => setProductPrice(e.target.value)}
+                value={state.productPrice}
+                onChange={(e) => updateState({ productPrice: e.target.value })}
               />
             </FloatingLabel>
           </Modal.Body>

@@ -1,51 +1,46 @@
 import { Button, Modal, Form, FloatingLabel } from 'react-bootstrap';
 import { useState } from 'react';
+import submitHandler from '../../../helpers/submitHandler';
 
 const AddProductModal = ({
   isVisible,
   onClose,
-  onShowSuccessToast,
-  onShowErrorToast,
+  onShowToast,
   fetchProducts,
 }) => {
-  const [productPrice, setProductPrice] = useState('');
-  const [productName, setProductName] = useState('');
+  const [state, setState] = useState({
+    productName: '',
+    productPrice: '',
+  });
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
-    const product = {
-      productName: productName,
-      productPrice: productPrice,
-    };
-    try {
-      const response = await fetch('http://localhost:5000/products/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(product),
-      });
-
-      if (productName.trim() === '' || productPrice.trim() === '') {
-        throw new Error('All fields required');
-      }
-
-      if (!response.ok) {
-        throw new Error('Failed to add product');
-      }
-
-      fetchProducts();
-      onClose();
-      onShowSuccessToast('Successfully added product');
-      resetFormFields();
-    } catch (error) {
-      console.log(error);
-      onShowErrorToast(error.message);
-    }
+  const product = {
+    productPrice: state.productPrice,
+    productName: state.productName,
   };
+
+  const inputFieldsToValidate = ['productName', 'productPrice'];
+
+  const updateState = (newState) =>
+    setState((prevState) => ({ ...prevState, ...newState }));
 
   const resetFormFields = () => {
-    setProductName('');
-    setProductPrice('');
+    setState({ productPrice: '', productName: '' });
   };
+  const handleSubmit = async (e) => {
+    submitHandler(
+      e,
+      '/products',
+      'POST',
+      product,
+      inputFieldsToValidate,
+      'Product',
+      onShowToast,
+      onClose,
+      fetchProducts,
+      resetFormFields,
+    );
+  };
+
   return (
     <>
       <Modal
@@ -55,7 +50,7 @@ const AddProductModal = ({
           resetFormFields();
         }}
       >
-        <Form onSubmit={submitHandler}>
+        <Form onSubmit={handleSubmit}>
           <Modal.Header closeButton>
             <Modal.Title>Enter product details</Modal.Title>
           </Modal.Header>
@@ -64,21 +59,21 @@ const AddProductModal = ({
               <Form.Control
                 type="productName"
                 placeholder="Product Name"
-                value={productName}
-                onChange={(e) => setProductName(e.target.value)}
+                value={state.productName}
+                onChange={(e) => updateState({ productName: e.target.value })}
               />
             </FloatingLabel>
             <FloatingLabel label="Product Price">
               <Form.Control
                 type="productPrice"
                 placeholder="Product Price"
-                value={productPrice}
-                onChange={(e) => setProductPrice(e.target.value)}
+                value={state.productPrice}
+                onChange={(e) => updateState({ productPrice: e.target.value })}
               />
             </FloatingLabel>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={close}>
+            <Button variant="secondary" onClick={onClose}>
               Close
             </Button>
             <Button variant="primary" type="submit">

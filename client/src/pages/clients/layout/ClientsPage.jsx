@@ -1,56 +1,40 @@
 import { useState, useEffect } from 'react';
-import {
-  Button,
-  Container,
-  Row,
-  Col,
-  Toast,
-  ToastContainer,
-} from 'react-bootstrap';
+import { Button, Container, Row, Col } from 'react-bootstrap';
+
 import SearchInput from '../../../components/SearchInput';
 import AddClientModal from '../components/AddClientModal';
 import ChangeClientModal from '../components/ChangeClientModal';
-import ClientList from '../components/ListOfClients';
+import ClientList from '../components/ClientList';
+import { useToast } from '../../../hooks/useToast';
+import fetchResorce from '../../../helpers/fetchResource';
+import searchResource from '../../../helpers/searchResource';
 
 const ClientsPage = () => {
-  const [clients, setClients] = useState([]);
-  const [clientId, setClientId] = useState('');
+  const [state, setState] = useState({
+    clients: [],
+    isEditModalVisible: false,
+    isAddModalVisible: false,
+    selectedClientId: '',
+  });
 
-  const [showEdit, setShowEdit] = useState(false);
-  const [showAdd, setShowAdd] = useState(false);
+  const { showToast, ToastComponent } = useToast();
 
-  const [showToast, setShowToast] = useState(false);
-  const [toastVariant, setToastVariant] = useState('');
-  const [toastBody, setToastBody] = useState('');
+  const updateState = (newState) =>
+    setState((prevState) => ({ ...prevState, ...newState }));
 
-  const handleShowEdit = () => setShowEdit(true);
-  const handleCloseEdit = () => setShowEdit(false);
-  const handleShowAdd = () => setShowAdd(true);
-  const handleCloseAdd = () => setShowAdd(false);
-
-  const showErrorToast = (body) => {
-    setToastVariant('danger');
-    setToastBody(body);
-    setShowToast(true);
+  const resetFormFields = () => {
+    setState({
+      clientName: '',
+      clientSurname: '',
+      clientAddress: '',
+    });
   };
-  const showSuccessToast = (body) => {
-    setToastVariant('success');
-    setToastBody(body);
-    setShowToast(true);
-  };
+
+  const handleEditModalClose = () => updateState({ isEditModalVisible: false });
+  const handleAddModalClose = () => updateState({ isAddModalVisible: false });
 
   const fetchClients = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/clients/');
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
-      console.log(response);
-      const data = await response.json();
-      setClients(data);
-    } catch (error) {
-      console.log('Error fetching clients', error.message);
-    }
+    await fetchResorce('/clients', 'clients', setState, showToast);
   };
 
   useEffect(() => {
@@ -58,32 +42,18 @@ const ClientsPage = () => {
   }, []);
 
   const handleSearch = async (searchValue) => {
-    try {
-      const response = await fetch(
-        `http://localhost:5000/clients?query=${encodeURIComponent(searchValue)}`,
-        {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        },
-      );
-      if (searchValue.trim() === '') {
-        throw new Error('Enter any value');
-      }
-      if (!response.ok) {
-        setClients([]);
-        throw new Error('Failed to find a client');
-      }
-      const data = await response.json();
-      setClients(data);
-      showSuccessToast('Successfully found a client');
-    } catch (error) {
-      showErrorToast(error.message);
-    }
+    searchResource(
+      '/clients',
+      searchValue,
+      updateState,
+      showToast,
+      'Client',
+      'GET',
+    );
   };
 
   const handleRowClick = (id) => {
-    handleShowEdit();
-    setClientId(id);
+    updateState({ isEditModalVisible: true, selectedClientId: id });
   };
 
   return (
@@ -91,47 +61,28 @@ const ClientsPage = () => {
       <Container>
         {' '}
         <Row>
-          <Col xs={6}>
-            <ToastContainer position="top-end" className="p-3">
-              <Toast
-                onClose={() => setShowToast(false)}
-                show={showToast}
-                delay={2000}
-                autohide
-                bg={toastVariant}
-              >
-                <Toast.Header>
-                  <img
-                    src="holder.js/20x20?text=%20"
-                    className="rounded me-2"
-                    alt=""
-                  />
-                </Toast.Header>
-                <Toast.Body>{toastBody}</Toast.Body>
-              </Toast>
-            </ToastContainer>
-          </Col>
+          <Col xs={6}>{ToastComponent}</Col>
         </Row>
       </Container>
 
       <AddClientModal
-        isVisible={showAdd}
-        onClose={handleCloseAdd}
+        isVisible={state.isAddModalVisible}
+        onClose={handleAddModalClose}
         onAdd={fetchClients}
-        onShowSuccessToast={showSuccessToast}
-        onShowErrorToast={showErrorToast}
+        onShowToast={showToast}
+        onResetFields={resetFormFields}
       />
       <ChangeClientModal
-        clientId={clientId}
-        isVisible={showEdit}
-        onClose={handleCloseEdit}
-        onUpdateUI={fetchClients}
-        onShowSuccessToast={showSuccessToast}
-        onShowErrorToast={showErrorToast}
+        clientId={state.selectedClientId}
+        isVisible={state.isEditModalVisible}
+        onClose={handleEditModalClose}
+        fetchClients={fetchClients}
+        onShowToast={showToast}
+        onResetFields={resetFormFields}
       />
       <ClientList
         onRowSelect={handleRowClick}
-        clients={clients}
+        clients={state.clients}
         columnHeadings={[
           'Client ID',
           'Client Name',
@@ -154,7 +105,12 @@ const ClientsPage = () => {
             />
           </Col>
           <Col>
-            <Button className="mb-3 mt-4" onClick={handleShowAdd}>
+            <Button
+              className="mb-3 mt-4"
+              onClick={() => {
+                updateState({ isAddModalVisible: true });
+              }}
+            >
               Add new Client
             </Button>
           </Col>
