@@ -7,20 +7,21 @@ const searchResource = async (
   setResource,
   showToast,
   resource,
-  method
+  method,
 ) => {
-
   try {
     let resourceKey;
 
     if (resource === 'Product') {
-      resourceKey = 'products'
+      resourceKey = 'products';
     } else if (resource === 'Client') {
-      resourceKey = 'clients'
-    } else { resourceKey = 'orders' }
+      resourceKey = 'clients';
+    } else {
+      resourceKey = 'orders';
+    }
 
     const data = await fetchFromAPI(
-      `${url}?query=${encodeURIComponent(searchValue)}`
+      `${url}?query=${encodeURIComponent(searchValue)}`,
     );
     if (searchValue.toString().trim() === '') {
       throw new Error('Enter any value');

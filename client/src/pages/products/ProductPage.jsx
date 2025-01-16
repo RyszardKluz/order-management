@@ -1,13 +1,20 @@
 import { useState, useEffect } from 'react';
-import { Button, Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 
-import ListOfProducts from './components/ListOfProducts';
-import AddProductModal from './components/AddProductModal';
 import SearchInput from '../../components/SearchInput';
-import ChangeProductModal from './components/ChangeProductModal';
 import { useToast } from '../../hooks/useToast.jsx';
+
 import fetchResorce from '../../helpers/fetchResource.js';
 import searchResource from '../../helpers/searchResource.js';
+import AddResourceModal from '../../components/Modals/AddResourceModal.jsx';
+import EditResourceModal from '../../components/Modals/EditResourceModal.jsx';
+
+import ResourceList from '../../components/Lists/ResourceList.jsx';
+import CustomButton from '../../components/CustomButton.jsx';
+import {
+  productsFields,
+  productsHeaders,
+} from '../../config/products/productsFields.js';
 
 const ProductPage = () => {
   const [state, setState] = useState({
@@ -55,30 +62,42 @@ const ProductPage = () => {
           <Col xs={6}>{ToastComponent}</Col>
         </Row>
       </Container>
-      <AddProductModal
+      <AddResourceModal
         isVisible={state.isAddModalVisible}
+        fields={productsFields}
+        resourceName={'Product'}
+        endpoint={'/products'}
+        action={'Enter'}
+        method={'POST'}
         onClose={handleAddModalClose}
-        fetchProducts={fetchProducts}
+        onSubmitSuccess={fetchProducts}
         onShowToast={showToast}
       />
-      <ChangeProductModal
-        productId={state.selectedProductId}
+
+      <EditResourceModal
+        fields={productsFields}
+        endpoint={'/products'}
+        resourceName={'Product'}
+        resourceId={state.selectedProductId}
         isVisible={state.isEditModalVisible}
         onClose={handleEditModalClose}
-        fetchProducts={fetchProducts}
+        onSubmitSuccess={fetchProducts}
         onShowToast={showToast}
       />
-      <ListOfProducts
-        onRowClick={handleRowClick}
-        items={state.products}
-        columnHeadings={['Product Id', 'Product Name', 'Product Price']}
+
+      <ResourceList
+        columnHeadings={productsHeaders}
+        onRowSelect={handleRowClick}
+        resourceList={state.products}
       />
       <Container>
         <Row>
           <Col>
-            <Button onClick={fetchProducts} className="mb-3 mt-4">
-              Render Products
-            </Button>
+            <CustomButton
+              text={'Render Products'}
+              variantOption={'primary'}
+              callback={fetchProducts}
+            />
           </Col>
           <Col xs={8}>
             <SearchInput
@@ -88,12 +107,11 @@ const ProductPage = () => {
             />
           </Col>
           <Col>
-            <Button
-              className="mb-3 mt-4"
-              onClick={() => updateState({ isAddModalVisible: true })}
-            >
-              Add new Product
-            </Button>
+            <CustomButton
+              text={'Create Product'}
+              variantOption={'primary'}
+              callback={() => updateState({ isAddModalVisible: true })}
+            />
           </Col>
         </Row>
       </Container>

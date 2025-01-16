@@ -1,13 +1,21 @@
 import { useState, useEffect } from 'react';
-import { Button, Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 
-import SearchInput from '../../../components/SearchInput';
-import AddClientModal from '../components/AddClientModal';
-import ChangeClientModal from '../components/ChangeClientModal';
-import ClientList from '../components/ClientList';
-import { useToast } from '../../../hooks/useToast';
-import fetchResorce from '../../../helpers/fetchResource';
-import searchResource from '../../../helpers/searchResource';
+import SearchInput from '../../components/SearchInput';
+import { useToast } from '../../hooks/useToast';
+import fetchResorce from '../../helpers/fetchResource';
+import searchResource from '../../helpers/searchResource';
+
+import AddResourceModal from '../../components/Modals/AddResourceModal';
+import EditResourceModal from '../../components/Modals/EditResourceModal';
+import ResourceList from '../../components/Lists/ResourceList.jsx';
+
+import CustomButton from '../../components/CustomButton';
+
+import {
+  clientColumnHeadings,
+  clientFields,
+} from '../../config/clients/clientsFields';
 
 const ClientsPage = () => {
   const [state, setState] = useState({
@@ -54,42 +62,46 @@ const ClientsPage = () => {
   return (
     <>
       <Container>
-        {' '}
         <Row>
           <Col xs={6}>{ToastComponent}</Col>
         </Row>
       </Container>
 
-      <AddClientModal
+      <AddResourceModal
+        endpoint={'/clients'}
+        fields={clientFields}
         isVisible={state.isAddModalVisible}
         onClose={handleAddModalClose}
-        fetchClients={fetchClients}
         onShowToast={showToast}
+        onSubmitSuccess={fetchClients}
+        resourceName={'Client'}
       />
-      <ChangeClientModal
-        clientId={state.selectedClientId}
+
+      <EditResourceModal
+        endpoint={'/clients'}
+        fields={clientFields}
         isVisible={state.isEditModalVisible}
         onClose={handleEditModalClose}
-        fetchClients={fetchClients}
         onShowToast={showToast}
+        resourceId={state.selectedClientId}
+        onSubmitSuccess={fetchClients}
+        resourceName={'Client'}
       />
-      <ClientList
+
+      <ResourceList
         onRowSelect={handleRowClick}
-        clients={state.clients}
-        columnHeadings={[
-          'Client ID',
-          'Client Name',
-          'Client Surname',
-          'Client Address',
-        ]}
+        resourceList={state.clients}
+        columnHeadings={clientColumnHeadings}
       />
+
       <Container>
-        {' '}
         <Row>
           <Col>
-            <Button onClick={fetchClients} className="mb-3 mt-4">
-              Refresh Clients List
-            </Button>
+            <CustomButton
+              text={'Render Clients'}
+              variantOption={'primary'}
+              callback={fetchClients}
+            />
           </Col>
           <Col xs={8}>
             <SearchInput
@@ -98,14 +110,11 @@ const ClientsPage = () => {
             />
           </Col>
           <Col>
-            <Button
-              className="mb-3 mt-4"
-              onClick={() => {
-                updateState({ isAddModalVisible: true });
-              }}
-            >
-              Add new Client
-            </Button>
+            <CustomButton
+              text={'Create Client'}
+              variantOption={'primary'}
+              callback={() => updateState({ isAddModalVisible: true })}
+            />
           </Col>
         </Row>
       </Container>

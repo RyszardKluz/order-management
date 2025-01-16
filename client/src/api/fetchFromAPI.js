@@ -7,7 +7,7 @@ const fetchFromAPI = async function (path) {
     return await response.json();
   } catch (error) {
     console.log(error);
-    return [];
+    return null;
   }
 };
 

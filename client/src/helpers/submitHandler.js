@@ -1,41 +1,36 @@
-import sendToAPI from '../api/sendToAPI'
+import sendToAPI from '../api/sendToAPI';
 import generateMessage from './generateMessage';
 import validateInputData from './validateInputData';
 
 const submitHandler = async (
-
-  
   e,
-  url,
+  endpoint,
   method,
   resourceData,
   resourceDataFields,
-  resource,
+  resourceName,
   onShowToast,
   onClose,
-  fetchProducts,
-  resetFormFields
+  onSubmitSuccess,
+  resetFormFields,
 ) => {
   e.preventDefault();
-  console.log(resourceData)
+  console.log(resourceData);
 
   try {
-    validateInputData(resourceData, resourceDataFields)
-    const response = await sendToAPI(
-      url,
-      resourceData,
-      method
-    );
+    validateInputData(resourceData, resourceDataFields);
+
+    const response = await sendToAPI(endpoint, resourceData, method);
 
     if (!response.ok) {
-      throw new Error(generateMessage('error', method, resource));
+      throw new Error(generateMessage('error', method, resourceName));
     }
-    onShowToast('success', generateMessage('success', method, resource))
+    onShowToast('success', generateMessage('success', method, resourceName));
     onClose();
-    fetchProducts();
+    onSubmitSuccess();
     resetFormFields();
   } catch (error) {
-    console.log(error)
+    console.log(error);
     onShowToast('danger', error.message);
     return;
   }
