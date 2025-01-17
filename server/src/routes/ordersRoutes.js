@@ -2,11 +2,12 @@ import { Router } from 'express';
 import OrdersController from '../controllers/ordersController.js';
 
 const ordersRoutes = Router();
+const ordersCntrl = new OrdersController();
 
-const ordersController = new OrdersController()
+ordersRoutes.get('/', ordersCntrl.createOrder);
 
-ordersRoutes.get('/:orderId', ordersController.showOrderDetails);
+ordersRoutes.get('/details', ordersCntrl.showOrderDetails);
 
-ordersRoutes.post('/', ordersController.createOrder);
 
-export { ordersRoutes }; 
+
+export { ordersRoutes };

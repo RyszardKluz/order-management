@@ -23,10 +23,10 @@ app.use(morgan('combined'));
 
 app.use('/', homeRoutes);
 app.use('/products', productsRoutes);
-app.use('/clients', clientsRoutes)
-app.use('/orders', ordersRoutes)
+app.use('/clients', clientsRoutes);
+app.use('/orders', ordersRoutes);
 
-app.use(errorHandler)
+app.use(errorHandler);
 
 app.listen(port, (error) => {
   if (!error) {

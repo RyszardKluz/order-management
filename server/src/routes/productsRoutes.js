@@ -10,6 +10,6 @@ productsRoutes.post('/', prodCtrl.addProduct);
 
 productsRoutes.patch('/:productId', prodCtrl.changeProduct);
 
-productsRoutes.delete('/:productId', prodCtrl.deleteProduct)
+productsRoutes.delete('/:productId', prodCtrl.deleteProduct);
 
 export { productsRoutes };

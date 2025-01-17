@@ -1,81 +1,66 @@
-import { v4 as uuidv4 } from 'uuid';
-import Product from '../../models/product.js';
+import ProductsService from '../services/ProductsService.js'
 class ProductsController {
-  products = [
-    {
-      productId: '2fbf70b4-2b67-448c-97e1-9a33dcd8de27',
-      productName: 'Item 12',
-      productPrice: 19.99,
-    },
-    {
-      productId: '4bb7ca3a-070e-4be1-a4a1-d63c79fbce65',
-      productName: 'Item2',
-      productPrice: 25.99,
-    },
-  ];
+  constructor() {
+    this.productsService = new ProductsService()
+  }
 
-  getProducts = (req, res) => {
+
+  getProducts = async (req, res, next) => {
     const searchValue = req.query.query;
-    if (req.query.query) {
+    try {
+      const data = await this.productsService.getProducts(searchValue)
+      res.status(200).json(data);
 
-      if (!searchValue) {
-        return res.status(400).json({ error: 'Search value is required!' })
-      }
-      const matchedProducts = this.products.filter((product) =>
-        product.productName.toLowerCase().includes(searchValue.toLowerCase()) || product.productId === +searchValue
-      );
-
-      if (matchedProducts.length === 0) {
-        return res.status(404).json({ error: 'No products found' })
-      }
-
-      return res.status(200).json(matchedProducts)
+    } catch (error) {
+      next(error)
     }
-    return res.status(200).json(this.products);
+
   };
 
 
-  addProduct = (req, res) => {
-    const { productName, productPrice } = req.body;
+  addProduct = async (req, res, next) => {
 
-    if (!productName || typeof productName !== 'string' || !productPrice || isNaN(productPrice)) {
-      return res.status(400).json({ error: 'Invalid product details!' });
+    try {
+      const product = await this.productsService.addProduct(req.body);
+      res.status(200).json({ message: `Created ${product}`, ok: true });
+    } catch (error) {
+      next(error)
     }
-
-    const newProduct = new Product(uuidv4(), productName, productPrice)
-    this.products.push(newProduct);
-    res.status(200).json({ message: `Created ${productName}` });
   };
-  changeProduct = (req, res) => {
+  changeProduct = async (req, res, next) => {
     const { productId } = req.params
     const { productName, productPrice } = req.body
 
-    const productIndex = this.products.findIndex((product) => product.productId === productId);
+    console.log(productId, productName)
 
-    if (productIndex === -1) {
-      return res.status(404).json({ error: 'Product not found!' });
-    }
-    if (productName.trim() !== '') {
-      this.products[productIndex].productName = productName;
-    }
-    if (productPrice.trim() !== '') {
-      this.products[productIndex].productPrice = parseFloat(productPrice);
+    try {
+
+      const product = await this.productsService.changeProduct(productId, productName, productPrice);
+
+      res.status(200).json({
+        message: 'Product updated successfully!',
+        product: product,
+        ok: true
+      });
+
+    } catch (error) {
+
+      next(error)
+
     }
 
-    res.status(200).json({
-      message: 'Product updated successfully!',
-      product: this.products[productIndex],
-    });
   };
-  deleteProduct = (req, res) => {
+  deleteProduct = async (req, res, next) => {
     const { productId } = req.params;
-    const productIndex = this.products.findIndex((product) => product.productId === productId);
-    if (productIndex === -1) {
-      return res.status(404).json({ error: 'Product not found!' })
-    }
-    this.products.splice(productIndex, 1)
+    console.log(productId)
 
-    res.status(200).json({ message: 'Product deleted succesfully' })
+    try {
+      this.productsService.deleteProduct(productId)
+      res.status(200).json({ message: 'Product deleted succesfully', ok: true });
+
+    } catch (error) {
+      next(error);
+    }
 
   }
 }

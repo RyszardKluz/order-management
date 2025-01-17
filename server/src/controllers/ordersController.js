@@ -1,41 +1,27 @@
-import { v4 as uuidv4 } from 'uuid';
-import Order from '../../models/order.js';
+import OrdersService from '../services/ordersService.js';
 
 class OrdersController {
-  orders = []
-
-  createOrder = (req, res) => {
-    const {
-      productPrice,
-      productName,
-      productCount,
-      clientId,
-      clientName,
-      clientAddress
-    } = req.body;
-
-    const newOrder = new Order(
-      uuidv4(),
-      productPrice,
-      productName,
-      productCount,
-      clientId,
-      clientName,
-      clientAddress)
-
-    this.orders.push(newOrder);
-
-    res.status(200).send({ message: 'Done' })
+  constructor() {
+    this.ordersService = new OrdersService();
   }
+  createOrder = async (req, res, next) => {
+    try {
+      const order = await this.ordersService.createOrder(req.body);
+      res.status(200).send({ message: 'Created order', orderDetails: order });
+    } catch (error) {
+      next(error);
+    }
+  };
 
-  showOrderDetails = (req, res) => {
+  showOrderDetails = async (req, res, next) => {
     const orderId = req.params.orderId;
-
-    const currentOrder = this.orders.find(order => orderId === order.orderId);
-
-    res.status(200).json(currentOrder);
-  }
-
+    try {
+      const currentOrder = await this.ordersService.showOrderDetails(orderId);
+      res.status(200).json(currentOrder);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default OrdersController;
