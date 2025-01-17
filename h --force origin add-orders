@@ -1,0 +1,15 @@
+[33m32c400c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/2/add-orders[m[33m)[m created checbox component for list of clients, created few components for orders, and added basic logic for modal and orders page.
+[33m10256f2[m Added modules for clients, products and orders, created controllers and routes for orders. Started working on client-side logic for orders.
+[33mca46335[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #1 from RyszardKluz/feature/frontend-experiment
+[33m416a5ac[m[33m ([m[1;31morigin/feature/frontend-experiment[m[33m, [m[1;32mfeature/frontend-experiment[m[33m)[m Added port to .env
+[33m806253b[m Simplified routes, installed nodemon for develepoment, changed .env from localhost:3000 to 127.0.0.1
+[33mb833bb3[m Added toast for showing errors and success messages, implemented some validation logic, updated function names to be more in line with conventions
+[33mc83c88f[m Added client logic, corrected syntax issues with routes.
+[33m1523add[m Updated  routes and, name of routes and controllers for products, added fallback for handleSearch to generate an empty array if not found product by query.
+[33m848477e[m Added update and delete product logic to backend and frontend
+[33md9d4cdc[m Simplified frontend logic for adding product
+[33m41ef4fb[m Simplified frontend logic for products/productList, prepared rest of frontend product logic for future changes.
+[33m79732a6[m[33m ([m[1;32mmaster[m[33m)[m Added frontend logic for adding product, corrected status codes in REST API.
+[33mb9c6b6c[m Added ReactRoute to ProductPage
+[33m5febb29[m Added product routes, and rest APIs for products controller
+[33m8d5d93b[m Created Client and Server project.
