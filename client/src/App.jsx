@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import HomePage from './pages/home/HomePage';
 import ProductPage from './pages/products/ProductPage';
 import ClientsPage from './pages/clients/ClientsPage';
+import OrdersPage from './pages/orders/pages/OrdersPage';
 
 const App = () => {
   return (

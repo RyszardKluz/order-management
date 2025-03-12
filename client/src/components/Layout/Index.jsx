@@ -4,7 +4,12 @@ import { Link } from 'react-router-dom';
 const Layout = ({ children }) => {
   return (
     <>
-      <Navbar expand="lg" className="bg-body-tertiary">
+      <Navbar
+        style={{ zIndex: '1' }}
+        id="nav"
+        expand="lg"
+        className="bg-body-tertiary"
+      >
         <Container>
           <Navbar.Brand as={Link} to="/">
             Order Management

@@ -5,9 +5,17 @@ const CustomButton = ({
   type = 'button',
   callback = () => {},
   text,
+  buttonClassName,
+  isButtonHidden = false,
 }) => {
   return (
-    <Button variant={variantOption} type={type} onClick={callback}>
+    <Button
+      hidden={isButtonHidden}
+      className={buttonClassName}
+      variant={variantOption}
+      type={type}
+      onClick={callback}
+    >
       {text}
     </Button>
   );
