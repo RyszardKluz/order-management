@@ -15,10 +15,11 @@ const submitHandler = async (
   resetFormFields,
 ) => {
   e.preventDefault();
-  console.log(resourceData);
 
   try {
-    validateInputData(resourceData, resourceDataFields);
+    if (resourceDataFields) {
+      validateInputData(resourceData, resourceDataFields);
+    }
 
     const response = await sendToAPI(endpoint, resourceData, method);
 
@@ -27,10 +28,11 @@ const submitHandler = async (
     }
     onShowToast('success', generateMessage('success', method, resourceName));
     onClose();
-    onSubmitSuccess();
+    if (onSubmitSuccess) {
+      onSubmitSuccess();
+    }
     resetFormFields();
   } catch (error) {
-    console.log(error);
     onShowToast('danger', error.message);
     return;
   }

@@ -2,40 +2,76 @@ import { Form, FormLabel, InputGroup } from 'react-bootstrap';
 import OrderProductDetails from './OrderProductDetails';
 import { useEffect, useState } from 'react';
 import calculateAmount from '../utils/calculateTotalAmount';
-function OrderDetailsForm({ products, client }) {
-  const [clientDetails, setClientDetails] = useState({
+import CustomButton from '../../../components/CustomButton';
+import submitHandler from '../../../helpers/submitHandler';
+
+function OrderDetailsForm({
+  products,
+  client,
+  onClose,
+  onResetFormFields,
+  onShowToast,
+}) {
+  const [state, setState] = useState({
     clientName: '',
     clientAddress: '',
+    products: [],
   });
+
+  const updateState = (newState) => {
+    setState((prev) => ({ ...prev, ...newState }));
+  };
 
   useEffect(() => {
     if (client && Object.keys(client).length > 0) {
-      setClientDetails({
+      setState({
         clientName: client.clientName || '',
         clientAddress: client.clientAddress || '',
+        clientId: client.clientId || '',
       });
     }
   }, [client]);
 
-  calculateAmount(products);
+  const handleSubmit = async (e) => {
+    submitHandler(
+      e,
+      '/orders',
+      'POST',
+      state,
+      null,
+      'Order',
+      onShowToast,
+      onClose,
+      null,
+      onResetFormFields,
+    );
+  };
+  const totalAmount = calculateAmount(products);
   return (
     <>
-      <Form>
+      <Form onSubmit={handleSubmit}>
+        <Form.Label>Client details</Form.Label>
         <InputGroup className="mb-3">
           <InputGroup.Text id="client-name">Client</InputGroup.Text>
           <Form.Control
-            defaultValue={clientDetails.clientName}
+            defaultValue={state.clientName}
             placeholder="Client name"
             aria-label="Username"
+            onChange={(e) => {
+              updateState({ clientName: e.currentTarget.value });
+            }}
           />
         </InputGroup>
 
         <InputGroup className="mb-3">
           <InputGroup.Text id="client-address">Address</InputGroup.Text>
           <Form.Control
-            defaultValue={clientDetails.clientAddress}
+            defaultValue={state.clientAddress}
             placeholder="Client address"
             aria-label="Recipient's username"
+            onChange={(e) => {
+              updateState({ clientAddress: e.currentTarget.value });
+            }}
           />
         </InputGroup>
 
@@ -48,9 +84,18 @@ function OrderDetailsForm({ products, client }) {
           <InputGroup.Text>$</InputGroup.Text>
           <Form.Control
             aria-label="Amount (to the nearest dollar)"
-            type="number"
+            type="text"
+            value={totalAmount}
+            readOnly={true}
           />
-          <InputGroup.Text>.00</InputGroup.Text>
+          <CustomButton
+            variantOption={'primary'}
+            text={'Submit order'}
+            type="submit"
+            callback={() => {
+              updateState({ products: products });
+            }}
+          />
         </InputGroup>
       </Form>
     </>

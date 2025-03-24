@@ -27,7 +27,7 @@ const ProductPage = () => {
   const { showToast, ToastComponent } = useToast();
 
   const updateState = (newState) =>
-    setState((prevState) => ({ ...prevState, ...newState })); //do setState automatycznie React przekazuje poprzedni stan - prevState (w argumenvcie przekazywana funkcja)
+    setState((prevState) => ({ ...prevState, ...newState }));
 
   const handleAddModalClose = () => updateState({ isAddModalVisible: false });
   const handleEditModalClose = () => updateState({ isEditModalVisible: false });

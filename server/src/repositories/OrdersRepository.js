@@ -3,28 +3,11 @@ class OrdersRepository {
   static orders = [];
 
   static createOrder = (body) => {
+    const { products, clientId, clientName, clientAddress } = body;
 
-    const {
-      productId,
-      productPrice,
-      productName,
-      productCount,
-      clientId,
-      clientName,
-      clientAddress,
-    } = body;
-
-    const newOrder = new Order(
-      productId,
-      productPrice,
-      productName,
-      productCount,
-      clientId,
-      clientName,
-      clientAddress,
-    );
+    const newOrder = new Order(products, clientId, clientName, clientAddress);
     this.orders.push(newOrder);
-
+    console.log(this.orders);
     return newOrder;
   };
 

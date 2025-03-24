@@ -1,5 +1,7 @@
 import ResourceListTable from './ResourceListTable';
-import { v4 as uuidv4 } from 'uuid';
+import getKeys from '../../helpers/getKeys';
+import uniqueById from '../../helpers/uniqueById';
+import getResourceId from '../../helpers/getResourceId';
 
 const ResourceList = ({
   resourceList,
@@ -10,29 +12,13 @@ const ResourceList = ({
   hasCountInput,
   isOrderDetailsList,
 }) => {
-  const getResourceId = () => {
-    if (!resourceList || resourceList.length === 0) {
-      return [];
-    }
-    const keys = Object.keys(resourceList[0]);
-    return keys[0];
-  };
+  const filteredResourceList = isOrderDetailsList
+    ? uniqueById(resourceList)
+    : resourceList;
 
-  const getKeys = () => {
-    if (!resourceList || resourceList.length === 0) {
-      return [];
-    }
-    const keys = Object.keys(resourceList[0]);
-    const filteredKeys = isOrderDetailsList
-      ? keys.filter((key) => key !== 'productId' && key !== 'count')
-      : keys;
+  const keyList = getKeys(resourceList, isOrderDetailsList);
 
-    return filteredKeys;
-  };
-
-  const keyList = getKeys();
-
-  const resourceId = getResourceId();
+  const resourceId = getResourceId(resourceList);
 
   const handleCheckboxClick = (resource) => {
     if (!keyList || keyList.length === 0) {
@@ -56,7 +42,7 @@ const ResourceList = ({
       handleCheckboxClick={handleCheckboxClick}
       hasCheckButton={hasCheckButton}
       resourceId={resourceId}
-      resourceList={resourceList}
+      resourceList={filteredResourceList}
       keyList={keyList}
       hasCountInput={hasCountInput}
       isOrderDetailsList={isOrderDetailsList}

@@ -5,7 +5,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import NewOrderModal from '../components/NewOrderModal';
 import CustomButton from '../../../components/CustomButton';
 import fetchResorce from '../../../helpers/fetchResource';
-
+import { useToast } from '../../../hooks/useToast';
 const OrdersPage = () => {
   const [state, setState] = useState({
     isButtonHidden: false,
@@ -14,6 +14,7 @@ const OrdersPage = () => {
     products: [],
     selectedId: '',
   });
+  const { showToast, ToastComponent } = useToast();
 
   const updateState = (newState) =>
     setState((prevState) => ({ ...prevState, ...newState }));
@@ -29,8 +30,14 @@ const OrdersPage = () => {
 
   return (
     <>
+      <Container>
+        <Row>
+          <Col xs={6}>{ToastComponent}</Col>
+        </Row>
+      </Container>
       <div id="newOrder">
         <NewOrderModal
+          onShowToast={showToast}
           isVisible={state.isCreateModalVisible}
           onClose={handleHideCreateModal}
           clients={state.clients}

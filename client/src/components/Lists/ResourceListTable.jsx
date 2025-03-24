@@ -59,11 +59,14 @@ const ResourceListTable = ({
                   min={1}
                   value={
                     isOrderDetailsList
-                      ? resource.count || 1
+                      ? resource.productCount || 1
                       : productCounts[resource[resourceId]] || 1
                   }
                   onChange={(e) =>
-                    handleCountChange(resource[resourceId], e.target.value++)
+                    handleCountChange(
+                      resource[resourceId],
+                      Number(e.target.value),
+                    )
                   }
                 />
               </td>
@@ -74,7 +77,7 @@ const ResourceListTable = ({
                   handleClick={() => {
                     handleCheckboxClick({
                       ...resource,
-                      count: productCounts[resource[resourceId]] || 1,
+                      productCount: productCounts[resource[resourceId]] || 1,
                     });
                   }}
                 />

@@ -8,11 +8,22 @@ import { clientsOrdersHeadings } from '../../../config/clients/clientsFields';
 import { productsOrdersHeadings } from '../../../config/products/productsFields';
 import { useState } from 'react';
 
-const NewOrderModal = ({ isVisible, onClose, clients, products }) => {
+const NewOrderModal = ({
+  isVisible,
+  onClose,
+  clients,
+  products,
+  onShowToast,
+}) => {
   const [activeKey, setActiveKey] = useState('0');
 
   const [selectedClients, setSelectedClients] = useState({});
   const [selectedProducts, setSelectedProducts] = useState([]);
+
+  const handleResetFormFields = () => {
+    setSelectedClients({});
+    setSelectedProducts([]);
+  };
 
   const handleCheckboxClick = (resource, type, keyNumber) => {
     if (type === 'client') {
@@ -99,8 +110,11 @@ const NewOrderModal = ({ isVisible, onClose, clients, products }) => {
                 </Accordion.Header>
                 <Accordion.Body>
                   <OrderDetailsForm
+                    onShowToast={onShowToast}
+                    onResetFormFields={handleResetFormFields}
                     products={selectedProducts}
                     client={selectedClients}
+                    onClose={onClose}
                   />
                 </Accordion.Body>
               </Accordion.Item>
