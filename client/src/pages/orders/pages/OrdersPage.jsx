@@ -1,11 +1,10 @@
 import { useState } from 'react';
-
 import { Container, Row, Col } from 'react-bootstrap';
-
 import NewOrderModal from '../components/NewOrderModal';
 import CustomButton from '../../../components/CustomButton';
 import fetchResorce from '../../../helpers/fetchResource';
 import { useToast } from '../../../hooks/useToast';
+
 const OrdersPage = () => {
   const [state, setState] = useState({
     isButtonHidden: false,
@@ -13,6 +12,7 @@ const OrdersPage = () => {
     clients: [],
     products: [],
     selectedId: '',
+    isLoading: false,
   });
   const { showToast, ToastComponent } = useToast();
 
@@ -22,10 +22,24 @@ const OrdersPage = () => {
   const handleHideCreateModal = () => {
     updateState({ isCreateModalVisible: false, isButtonHidden: false });
   };
-  const handleshowCreateModal = () => {
-    fetchResorce('/clients', 'clients', updateState);
-    fetchResorce('/products', 'products', updateState);
-    updateState({ isCreateModalVisible: true, isButtonHidden: true });
+
+  const handleshowCreateModal = async () => {
+    updateState({ isLoading: true });
+
+    try {
+      await fetchResorce('/clients', 'clients', updateState);
+
+      await fetchResorce('/products', 'products', updateState);
+
+      updateState({ isCreateModalVisible: true, isButtonHidden: true });
+    } catch (err) {
+      showToast(
+        'danger',
+        'Error loading clients or products. Please try again.',
+      );
+    } finally {
+      updateState({ isLoading: false });
+    }
   };
 
   return (
@@ -35,6 +49,7 @@ const OrdersPage = () => {
           <Col xs={6}>{ToastComponent}</Col>
         </Row>
       </Container>
+
       <div id="newOrder">
         <NewOrderModal
           onShowToast={showToast}
@@ -44,6 +59,7 @@ const OrdersPage = () => {
           products={state.products}
         />
       </div>
+
       <Container className="mt-3">
         <Row
           className="d-flex justify-content-center align-items-center mt-5"
@@ -51,7 +67,6 @@ const OrdersPage = () => {
         >
           <Col xs="auto">
             <CustomButton
-              isButtonHidden={state.isButtonHidden}
               buttonClassName={'mb-3'}
               text={'Get orders details'}
               variantOption={'primary'}
@@ -59,7 +74,6 @@ const OrdersPage = () => {
           </Col>
           <Col xs="auto">
             <CustomButton
-              isButtonHidden={state.isButtonHidden}
               buttonClassName={'mb-3'}
               text={'Create order'}
               variantOption={'dark'}

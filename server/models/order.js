@@ -7,7 +7,8 @@ class Order {
     productCount,
     clientId,
     clientName,
-    clientAddress) {
+    clientAddress,
+  ) {
     this.orderId = orderId;
     this.productId = productId;
     this.productName = productName;
@@ -18,8 +19,8 @@ class Order {
     this.clientAddress = clientAddress;
   }
   get price() {
-    return this.productCount * this.productPrice
+    return this.productCount * this.productPrice;
   }
 }
 
-export default Order; 
+export default Order;

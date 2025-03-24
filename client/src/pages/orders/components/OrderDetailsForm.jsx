@@ -33,6 +33,18 @@ function OrderDetailsForm({
   }, [client]);
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (Object.keys(client).length === 0) {
+      onShowToast('danger', 'Please select a client.');
+      return;
+    }
+
+    if (products.length === 0) {
+      onShowToast('danger', 'Please select at least one product.');
+      return;
+    }
+
     submitHandler(
       e,
       '/orders',

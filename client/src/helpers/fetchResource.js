@@ -13,9 +13,10 @@ const fetchResorce = async (url, resourceKey, setResource, showToast) => {
   } catch (error) {
     console.log(error);
     if (showToast) {
-      showToast('danger', error.message);
+      showToast('danger', `Failed to fetch ${resourceKey}`);
     }
-    setResource([]);
+    setResource({ [resourceKey]: [] });
+    throw error
   }
 };
 
