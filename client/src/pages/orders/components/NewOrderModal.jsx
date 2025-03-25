@@ -41,7 +41,7 @@ const NewOrderModal = ({
       <Stack gap={5} className="col-md-10 mx-auto">
         <Modal
           size="lg"
-          onExit={onClose}
+          onExit={(onClose, handleResetFormFields)}
           scrollable={true}
           backdrop="static"
           show={isVisible}
