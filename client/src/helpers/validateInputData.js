@@ -1,9 +1,8 @@
 const validateInputData = (inputData, inputFields) => {
-
-
   for (const [key] of Object.entries(inputData)) {
-    if (key === 'productPrice' && isNaN(Number(inputData[key]))
-    ) { throw new Error('Product Price must be a number value!') }
+    if (key === 'productPrice' && isNaN(Number(inputData[key]))) {
+      throw new Error('Product Price must be a number value!');
+    }
   }
 
   const missingData = inputFields.filter(

@@ -7,7 +7,9 @@ class OrdersController {
   createOrder = async (req, res, next) => {
     try {
       const order = await this.ordersService.createOrder(req.body);
-      res.status(200).send({ message: 'Created order', orderDetails: order, ok: true });
+      res
+        .status(200)
+        .send({ message: 'Created order', orderDetails: order, ok: true });
     } catch (error) {
       next(error);
     }

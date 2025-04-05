@@ -8,8 +8,8 @@ const ResourceListTable = ({
   resourceId,
   hasCheckButton,
   hasCountInput,
-  handleRowClick,
-  handleCheckboxClick,
+  onRowClick,
+  onCheckboxClick,
   keyList,
   isOrderDetailsList,
 }) => {
@@ -43,7 +43,7 @@ const ResourceListTable = ({
             onClick={
               hasCheckButton || hasCountInput
                 ? undefined
-                : () => handleRowClick(resource)
+                : () => onRowClick(resource)
             }
           >
             <td>{index + 1}</td>
@@ -75,7 +75,7 @@ const ResourceListTable = ({
               <td>
                 <Checkbox
                   handleClick={() => {
-                    handleCheckboxClick({
+                    onCheckboxClick({
                       ...resource,
                       productCount: productCounts[resource[resourceId]] || 1,
                     });

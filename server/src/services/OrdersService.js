@@ -19,12 +19,7 @@ class OrdersService {
     ) {
       throw new AppError('Missing or invalid order details', 400);
     }
-    // if (
-    //   body.products.some((product) => { typeof product.productPrice !== 'number' }) ||
-    //   typeof body.productName !== 'string'
-    // ) {
-    //   throw new AppError('Invalid product price or name format', 400);
-    // }
+
     const order = OrdersRepository.createOrder(body);
 
     return order;

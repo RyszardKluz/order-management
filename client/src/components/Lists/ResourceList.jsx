@@ -38,8 +38,8 @@ const ResourceList = ({
   return (
     <ResourceListTable
       columnHeadings={columnHeadings}
-      handleRowClick={handleRowClick}
-      handleCheckboxClick={handleCheckboxClick}
+      onRowClick={handleRowClick}
+      onCheckboxClick={handleCheckboxClick}
       hasCheckButton={hasCheckButton}
       resourceId={resourceId}
       resourceList={filteredResourceList}

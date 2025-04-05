@@ -22,12 +22,12 @@ class Order {
   }
 
   get totalPrice() {
-    let totalPrice = 0
+    let totalPrice = 0;
     for (const productItem of this.products) {
-      const price = productItem.productCount * productItem.productPrice
-      totalPrice += price
+      const price = productItem.productCount * productItem.productPrice;
+      totalPrice += price;
     }
-    return totalPrice
+    return totalPrice;
   }
 }
 export default Order;

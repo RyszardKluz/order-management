@@ -16,7 +16,7 @@ const fetchResorce = async (url, resourceKey, setResource, showToast) => {
       showToast('danger', `Failed to fetch ${resourceKey}`);
     }
     setResource({ [resourceKey]: [] });
-    throw error
+    throw error;
   }
 };
 
