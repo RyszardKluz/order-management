@@ -24,6 +24,15 @@ class OrdersService {
 
     return order;
   };
+
+  getOrders = async () => {
+    const orders = OrdersRepository.getOrders();
+    if (!orders) {
+      throw new AppError('No orders found!', 404);
+    }
+    return orders;
+  };
+
   showOrderDetails = async (orderId) => {
     const order = OrdersRepository.showOrderDetails(orderId);
     if (!order) {

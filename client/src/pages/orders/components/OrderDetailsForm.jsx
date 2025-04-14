@@ -11,6 +11,7 @@ function OrderDetailsForm({
   onClose,
   onResetFormFields,
   onShowToast,
+  onGetOrderDetails,
 }) {
   const [state, setState] = useState({
     clientName: '',
@@ -56,6 +57,7 @@ function OrderDetailsForm({
       onClose,
       null,
       onResetFormFields,
+      onGetOrderDetails,
     );
   };
   const totalAmount = calculateAmount(products);

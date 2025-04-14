@@ -15,6 +15,15 @@ class OrdersController {
     }
   };
 
+  getOrders = async (req, res, next) => {
+    try {
+      const orders = await this.ordersService.getOrders();
+      res.status(200).json(orders);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   showOrderDetails = async (req, res, next) => {
     const orderId = req.params.orderId;
     try {

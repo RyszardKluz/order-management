@@ -11,6 +11,7 @@ const ResourceList = ({
   hasCheckButton,
   hasCountInput,
   isOrderDetailsList,
+  isOrderList,
 }) => {
   const filteredResourceList = isOrderDetailsList
     ? uniqueById(resourceList)
@@ -46,6 +47,7 @@ const ResourceList = ({
       keyList={keyList}
       hasCountInput={hasCountInput}
       isOrderDetailsList={isOrderDetailsList}
+      isOrderList={isOrderList}
     />
   );
 };

@@ -4,6 +4,9 @@ import NewOrderModal from '../components/NewOrderModal';
 import CustomButton from '../../../components/CustomButton';
 import fetchResorce from '../../../helpers/fetchResource';
 import { useToast } from '../../../hooks/useToast';
+import ResourceList from '../../../components/Lists/ResourceList';
+import { ordersHeadeings } from '../../../config/orders/ordersFields';
+import OrderProductList from '../components/OrderProductList';
 
 const OrdersPage = () => {
   const [state, setState] = useState({
@@ -11,9 +14,12 @@ const OrdersPage = () => {
     isCreateModalVisible: false,
     clients: [],
     products: [],
+    orders: [],
+    filteredOrders: [],
     selectedId: '',
     isLoading: false,
   });
+
   const { showToast, ToastComponent } = useToast();
 
   const updateState = (newState) =>
@@ -21,6 +27,35 @@ const OrdersPage = () => {
 
   const handleHideCreateModal = () => {
     updateState({ isCreateModalVisible: false, isButtonHidden: false });
+  };
+
+  const handleGetOrdersDetails = async () => {
+    const orders = await fetchResorce(
+      '/orders',
+      'orders',
+      updateState,
+      showToast,
+    );
+    if (orders && orders.length > 0) {
+      updateState({ orders });
+      handleFilterOrdersList(orders);
+    }
+  };
+
+  const handleFilterOrdersList = (orders) => {
+    if (!orders || orders.length === 0) {
+      return;
+    }
+
+    const orderList = state.orders.map((order) => ({
+      orderId: order.id,
+      clientName: order.clientName,
+      clientAddress: order.clientAddress,
+      products: <OrderProductList productList={order.products} />,
+      totalPrice: order.totalPrice,
+    }));
+
+    updateState({ filteredOrders: orderList });
   };
 
   const handleshowCreateModal = async () => {
@@ -50,6 +85,11 @@ const OrdersPage = () => {
         </Row>
       </Container>
 
+      <ResourceList
+        isOrderList={true}
+        columnHeadings={ordersHeadeings}
+        resourceList={state.filteredOrders ? state.filteredOrders : []}
+      />
       <div id="newOrder">
         <NewOrderModal
           onShowToast={showToast}
@@ -57,6 +97,7 @@ const OrdersPage = () => {
           onClose={handleHideCreateModal}
           clients={state.clients}
           products={state.products}
+          onGetOrderDetails={handleGetOrdersDetails}
         />
       </div>
 
@@ -70,6 +111,7 @@ const OrdersPage = () => {
               buttonClassName={'mb-3'}
               text={'Get orders details'}
               variantOption={'primary'}
+              callback={handleGetOrdersDetails}
             />
           </Col>
           <Col xs="auto">

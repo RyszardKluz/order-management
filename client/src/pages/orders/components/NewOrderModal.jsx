@@ -14,6 +14,7 @@ const NewOrderModal = ({
   clients,
   products,
   onShowToast,
+  onGetOrderDetails,
 }) => {
   const [activeKey, setActiveKey] = useState('0');
 
@@ -115,6 +116,7 @@ const NewOrderModal = ({
                     products={selectedProducts}
                     client={selectedClients}
                     onClose={onClose}
+                    onGetOrderDetails={onGetOrderDetails}
                   />
                 </Accordion.Body>
               </Accordion.Item>

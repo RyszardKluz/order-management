@@ -22,12 +22,9 @@ class Order {
   }
 
   get totalPrice() {
-    let totalPrice = 0;
-    for (const productItem of this.products) {
-      const price = productItem.productCount * productItem.productPrice;
-      totalPrice += price;
-    }
-    return totalPrice;
+    return this.products.reduce((sum, item) => {
+      return sum + item.productCount * item.productPrice;
+    }, 0);
   }
 }
 export default Order;

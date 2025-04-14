@@ -7,8 +7,18 @@ class OrdersRepository {
 
     const newOrder = new Order(products, clientId, clientName, clientAddress);
     this.orders.push(newOrder);
-    console.log(this.orders);
     return newOrder;
+  };
+
+  static getOrders = () => {
+    if (!this.orders || this.orders.length === 0) {
+      return null;
+    }
+
+    return this.orders.map((order) => ({
+      ...order,
+      totalPrice: order.totalPrice,
+    }));
   };
 
   static showOrderDetails = (orderId) => {
@@ -17,7 +27,8 @@ class OrdersRepository {
     if (!order) {
       return null;
     }
-    return order;
+    const orderWithPrice = { ...order, totalPrice: order.totalPrice };
+    return orderWithPrice;
   };
 }
 

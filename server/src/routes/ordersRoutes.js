@@ -6,6 +6,6 @@ const ordersCntrl = new OrdersController();
 
 ordersRoutes.post('/', ordersCntrl.createOrder);
 
-ordersRoutes.get('/details', ordersCntrl.showOrderDetails);
+ordersRoutes.get('/', ordersCntrl.getOrders);
 
 export { ordersRoutes };

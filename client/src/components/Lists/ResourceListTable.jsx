@@ -12,6 +12,7 @@ const ResourceListTable = ({
   onCheckboxClick,
   keyList,
   isOrderDetailsList,
+  isOrderList,
 }) => {
   const [productCounts, setProductCounts] = useState({});
 
@@ -41,7 +42,7 @@ const ResourceListTable = ({
           <tr
             key={resource[resourceId]}
             onClick={
-              hasCheckButton || hasCountInput
+              hasCheckButton || hasCountInput || isOrderList
                 ? undefined
                 : () => onRowClick(resource)
             }
