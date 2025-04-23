@@ -1,11 +1,25 @@
+import { DataTypes } from 'sequelize';
 
-class Client {
-  constructor(id, clientName, clientSurname, clientAddress) {
-    this.clientId = id;
-    this.clientName = clientName;
-    this.clientSurname = clientSurname;
-    this.clientAddress = clientAddress;
-  }
-}
+import sequelize from '../../config/database';
+
+const Client = sequelize.define('client', {
+  id: {
+    type: DataTypes.UUIDV4,
+    allowNull: false,
+    primaryKey: true,
+  },
+  first_name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  last_name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  address: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+});
 
 export default Client;

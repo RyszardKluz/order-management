@@ -1,11 +1,23 @@
+import { DataTypes } from 'sequelize';
 
+import sequelize from '../../config/database';
 
-class Product {
-  constructor(id, productName, productPrice) {
-    this.productId = id
-    this.productName = productName;
-    this.productPrice = productPrice;
-  }
-}
+const Product = sequelize.define('product', {
+  id: {
+    type: DataTypes.UUIDV4,
+    allowNull: false,
+    primaryKey: true,
+  },
+
+  price: {
+    type: DataTypes.DECIMAL,
+    allowNull: false,
+  },
+
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+});
 
 export default Product;
