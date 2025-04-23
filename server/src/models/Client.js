@@ -1,10 +1,11 @@
 import { DataTypes } from 'sequelize';
 
-import sequelize from '../../config/database';
+import sequelize from '../../config/database.js';
 
 const Client = sequelize.define('client', {
   id: {
-    type: DataTypes.UUIDV4,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     allowNull: false,
     primaryKey: true,
   },
