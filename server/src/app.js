@@ -9,12 +9,16 @@ import { productsRoutes } from './routes/productsRoutes.js';
 import { clientsRoutes } from './routes/clientsRoutes.js';
 import { ordersRoutes } from './routes/ordersRoutes.js';
 import errorHandler from './middleware/errorMiddleware.js';
+import sequelize from '../config/database.js';
+import setupAssociations from './models/associations.js';
 
 const app = express();
 const port = process.env.PORT;
 const corsOptions = {
   origin: process.env.CLIENT_URL,
 };
+
+setupAssociations();
 
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
@@ -28,10 +32,19 @@ app.use('/orders', ordersRoutes);
 
 app.use(errorHandler);
 
-app.listen(port, (error) => {
-  if (!error) {
-    console.log(`Server is running on port: ${port}`);
-  } else {
-    console.error(`Error occurred: ${error}`);
-  }
-});
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connected to the database!');
+    return sequelize.sync({ alter: true });
+  })
+  .then(() => {
+    console.log('Database synchronized');
+    return app.listen(port);
+  })
+  .then(() => {
+    console.log(`Server is up and running at http://localhost/${port}`);
+  })
+  .catch((err) => {
+    console.error('Database connection error ', err);
+  });
