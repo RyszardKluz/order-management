@@ -1,12 +1,12 @@
 const generateMessage = (status, method, resource) => {
   const successActions = {
-    POST: 'added',
+    POST: 'created',
     DELETE: 'deleted',
     PATCH: 'updated',
     GET: 'loaded',
   };
   const failedActions = {
-    POST: 'add',
+    POST: 'create',
     DELETE: 'delete',
     PATCH: 'update',
     GET: 'load',

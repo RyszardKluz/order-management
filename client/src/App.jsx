@@ -3,14 +3,16 @@ import { Route, Routes } from 'react-router-dom';
 import HomePage from './pages/home/HomePage';
 import ProductPage from './pages/products/ProductPage';
 import ClientsPage from './pages/clients/ClientsPage';
+import OrdersPage from './pages/orders/pages/OrdersPage';
 
 const App = () => {
   return (
     <Layout>
       <Routes>
-        <Route element={<HomePage></HomePage>} path="/" />
-        <Route element={<ProductPage></ProductPage>} path="/products" />
-        <Route element={<ClientsPage></ClientsPage>} path="/clients" />
+        <Route element={<HomePage />} path="/" />
+        <Route element={<ProductPage />} path="/products" />
+        <Route element={<ClientsPage />} path="/clients" />
+        <Route element={<OrdersPage />} path="/orders" />
       </Routes>
     </Layout>
   );

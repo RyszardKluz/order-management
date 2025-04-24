@@ -4,3 +4,10 @@ export const productsFields = [
 ];
 
 export const productsHeaders = ['Product Id', 'Product Name', 'Product Price'];
+
+export const productsOrdersHeadings = [
+  'Product Id',
+  'Product Name',
+  'Product Price',
+  'Select Product',
+];

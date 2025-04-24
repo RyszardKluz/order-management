@@ -20,7 +20,7 @@ class ProductRepository {
   static addProduct = (productName, productPrice) => {
     const newProduct = new Product(uuidv4(), productName, productPrice);
 
-    this.products.push(newProduct)
+    this.products.push(newProduct);
 
     return newProduct;
   };

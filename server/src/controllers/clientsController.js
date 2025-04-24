@@ -23,7 +23,9 @@ class ClientsController {
         clientSurname,
         clientAddress,
       );
-      res.status(200).json({ message: 'Created Client', client: newClient, ok: true });
+      res
+        .status(200)
+        .json({ message: 'Created Client', client: newClient, ok: true });
     } catch (error) {
       next(error);
     }
@@ -39,9 +41,11 @@ class ClientsController {
         clientSurname,
         clientAddress,
       );
-      res
-        .status(200)
-        .json({ message: 'Client updated successfully! ', client: clientData, ok: true });
+      res.status(200).json({
+        message: 'Client updated successfully! ',
+        client: clientData,
+        ok: true,
+      });
     } catch (error) {
       next(error);
     }
