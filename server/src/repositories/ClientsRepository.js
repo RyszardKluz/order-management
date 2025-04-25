@@ -1,72 +1,69 @@
-import { v4 as uuidv4 } from 'uuid';
-import Client from '../models/Client.js'
-
+import Client from '../models/client.js'
+import { Op } from 'sequelize'
 class ClientsRepository {
-  static clients = [
-    {
-      clientId: '2fbf70b5-2b67-448c-97e1-9a33dcd8de27',
-      clientName: 'Client1',
-      clientSurname: 'Surname1',
-      clientAddress: 'Address1',
-    },
-    {
-      clientId: '4bb7ca3d-070e-4be1-a4a1-d63c79fbce65',
-      clientName: 'Client2',
-      clientSurname: 'Surname2',
-      clientAddress: 'Address2',
-    },
-  ];
 
-  static getClients = () => {
-    return this.clients;
+  static filterClients = async (query) => {
+
+    const keys = Object.keys(Client.getAttributes())
+
+    const conditions = keys.map((key) => ({ [key]: { [Op.like]: `%${query}%` } }))
+
+    const clients = await Client.findAll({
+      where: { [Op.or]: conditions },
+      attributes: ['id', 'first_name', 'last_name', 'address']
+
+    })
+
+    return clients
+  }
+
+  static getClients = async () => {
+    const clients = await Client.findAll({
+      attributes: ['id', 'first_name', 'last_name', 'address']
+    })
+
+
+    return clients;
   };
 
-  static addClient = (clientName, clientSurname, clientAddress) => {
-    const newClient = new Client(
-      uuidv4(),
-      clientName,
-      clientAddress,
-      clientSurname,
-    );
-
-    this.clients.push(newClient);
-
+  static addClient = async (clientName, clientSurname, clientAddress) => {
+    const newClient = await Client.create({
+      first_name: clientName,
+      last_name: clientSurname,
+      address: clientAddress,
+    })
     return newClient;
   };
-  static changeClient = (
+  static changeClient = async (
     clientId,
     clientName,
     clientSurname,
     clientAddress,
   ) => {
-    const clientIndex = this.clients.findIndex(
-      (client) => client.clientId === clientId,
-    );
+    const client = await Client.findByPk(clientId);
 
     if (clientName.trim() !== '') {
-      this.clients[clientIndex].clientName = clientName;
+      client.first_name = clientName;
     }
     if (clientSurname.trim() !== '') {
-      this.clients[clientIndex].clientSurname = clientSurname;
+      client.last_name = clientSurname;
     }
     if (clientAddress.trim() !== '') {
-      this.clients[clientIndex].clientAddress = clientAddress;
+      client.address = clientAddress;
     }
-    if (clientIndex === -1) {
-      return null;
-    }
-    return this.clients[clientIndex];
+
+    const updatedClient = await client.save()
+
+    return updatedClient
+
+
+
   };
 
   static deleteClient = (clientId) => {
-    const clientIndex = this.clients.findIndex(
-      (client) => client.clientId === clientId,
-    );
 
-    if (clientIndex === -1) {
-      return null;
-    }
-    this.clients.splice(clientIndex, 1);
+    Client.destroy({ where: { id: clientId } })
+
   };
 }
 

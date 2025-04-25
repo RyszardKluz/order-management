@@ -3,21 +3,17 @@ import ProductRepository from '../repositories/productRepository.js';
 
 class ProductsService {
   getProducts = async (searchValue) => {
-    const products = ProductRepository.getProducts();
     if (!searchValue) {
+      const products = await ProductRepository.getProducts();
+
       return products;
     }
-    const matchedProducts = products.filter(
-      (product) =>
-        product.productName.toLowerCase().includes(searchValue.toLowerCase()) ||
-        product.productId === +searchValue,
-    );
+    else {
+      const filteredProducts = ProductRepository.filterProducts(searchValue);
 
-    if (matchedProducts.length === 0) {
-      throw new AppError('No products found!', 404);
+      return filteredProducts;
     }
 
-    return matchedProducts;
   };
   addProduct = async (body) => {
     const { productName, productPrice } = body;
@@ -54,12 +50,9 @@ class ProductsService {
     if (!productId) {
       throw new AppError('Failed to delete product !', 400);
     }
-    const isProduct = ProductRepository.deleteProduct(productId);
 
-    if (!isProduct) {
-      throw new AppError('Product not found!', 404);
-    }
-  };
+    ProductRepository.deleteProduct(productId)
+  }
 }
 
 export default ProductsService;

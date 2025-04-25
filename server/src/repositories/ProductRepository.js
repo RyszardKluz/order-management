@@ -1,59 +1,66 @@
-import { v4 as uuidv4 } from 'uuid';
-import Product from '../models/Product.js';
+import Product from '../models/product.js'
+import { Op } from 'sequelize'
 class ProductRepository {
-  static products = [
-    {
-      productId: '2fbf70b4-2b67-448c-97e1-9a33dcd8de27',
-      productName: 'Item 12',
-      productPrice: 19.99,
-    },
-    {
-      productId: '4bb7ca3a-070e-4be1-a4a1-d63c79fbce65',
-      productName: 'Item2',
-      productPrice: 25.99,
-    },
-  ];
 
-  static getProducts() {
-    return this.products;
+  static filterProducts = async (query) => {
+
+    const keys = Object.keys(Product.getAttributes())
+
+    const conditions = keys.map((key) => ({ [key]: { [Op.like]: `%${query}%` } }))
+
+    const products = await Product.findAll({
+      where: { [Op.or]: conditions },
+      attributes: ['id', 'title', 'price']
+
+    })
+
+    return products
   }
-  static addProduct = (productName, productPrice) => {
-    const newProduct = new Product(uuidv4(), productName, productPrice);
 
-    this.products.push(newProduct)
+  static getProducts = async () => {
+    const products = await Product.findAll({
+      attributes: ['id', 'title', 'price']
+    })
 
+
+    return products;
+  };
+
+  static addProduct = async (productName, productPrice) => {
+    const newProduct = await Product.create({
+      title: productName,
+      price: productPrice
+    })
     return newProduct;
   };
-  static changeProduct = (productId, productName, productPrice) => {
-    const productIndex = this.products.findIndex(
-      (product) => product.productId === productId,
-    );
 
-    const updatedProduct = this.products[productIndex];
+  static changeProduct = async (
+    productId,
+    productName,
+    productPrice,
 
-    if (productIndex === -1) {
-      return null;
-    }
+  ) => {
+    const product = await Product.findByPk(productId);
+
     if (productName.trim() !== '') {
-      updatedProduct.productName = productName;
+      product.title = productName;
     }
-    if (productPrice.trim() !== '') {
-      updatedProduct.productPrice = productPrice;
+    if (productPrice.trim() !== '' || typeof productPrice === 'number') {
+      product.price = productPrice
     }
 
-    return updatedProduct;
+    const updatedClient = await product.save()
+
+    return updatedClient
+
+
+
   };
+
   static deleteProduct = (productId) => {
-    const productIndex = this.products.findIndex(
-      (product) => product.productId === productId,
-    );
 
-    if (productIndex === -1) {
-      return null;
-    }
+    Product.destroy({ where: { id: productId } })
 
-    this.products.splice(productIndex, 1);
-    return true;
   };
 }
 

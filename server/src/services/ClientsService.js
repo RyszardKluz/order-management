@@ -3,25 +3,17 @@ import AppError from '../errors/AppError.js';
 
 class ClientsService {
   getClients = async (searchValue) => {
-    const clients = ClientsRepository.getClients();
-
     if (!searchValue) {
+      const clients = await ClientsRepository.getClients();
+
       return clients;
     }
+    else {
+      const filteredClients = ClientsRepository.filterClients(searchValue);
 
-    const matchedClients = clients.filter(
-      (client) =>
-        client.clientName.toLowerCase().includes(searchValue.toLowerCase()) ||
-        client.clientSurname
-          .toLowerCase()
-          .includes(searchValue.toLowerCase()) ||
-        client.clientAddress.toLowerCase().includes(searchValue.toLowerCase()),
-    );
-    if (matchedClients.length === 0) {
-      throw new AppError('No client found!', 404);
+      return filteredClients;
     }
 
-    return matchedClients;
   };
 
   addClient = async (clientName, clientSurname, clientAddress) => {
