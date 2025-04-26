@@ -4,10 +4,9 @@ import sequelize from '../../config/database.js';
 
 const OrderItem = sequelize.define('order_item', {
   id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
-    allowNull: false,
+    type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
   },
   price: {
     type: DataTypes.DECIMAL,
@@ -16,7 +15,19 @@ const OrderItem = sequelize.define('order_item', {
   count: {
     type: DataTypes.DECIMAL,
     allowNull: false,
+  }, orderId: {
+    type: DataTypes.INTEGER, references: {
+      model: 'orders',
+      key: 'id'
+    }
   },
+  productId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: 'products',
+      key: 'id'
+    }
+  }
 });
 
 export default OrderItem;

@@ -1,4 +1,4 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, UUID } from 'sequelize';
 
 import sequelize from '../../config/database.js';
 
@@ -9,6 +9,11 @@ const Order = sequelize.define('order', {
     allowNull: false,
     primaryKey: true,
   },
+  clientId: {
+    type: UUID, references: {
+      model: 'clients',
+      key: 'id'
+    }
+  }
 });
 export default Order;
-

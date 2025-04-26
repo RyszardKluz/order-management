@@ -18,6 +18,8 @@
     "express": "^4.21.2",
     "helmet": "^8.0.0",
     "morgan": "^1.10.0",
+    "mysql2": "^3.14.0",
+    "sequelize": "^6.37.7",
     "uuid": "^11.0.3"
   },
   "devDependencies": {
