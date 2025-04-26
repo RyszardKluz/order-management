@@ -4,10 +4,8 @@ import OrdersController from '../controllers/ordersController.js';
 const ordersRoutes = Router();
 const ordersCntrl = new OrdersController();
 
-ordersRoutes.get('/', ordersCntrl.createOrder);
+ordersRoutes.post('/', ordersCntrl.createOrder);
 
-ordersRoutes.get('/details', ordersCntrl.showOrderDetails);
-
-
+ordersRoutes.get('/', ordersCntrl.getOrders);
 
 export { ordersRoutes };

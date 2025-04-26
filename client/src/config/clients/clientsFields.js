@@ -10,3 +10,10 @@ export const clientColumnHeadings = [
   'Client Surname',
   'Client Address',
 ];
+export const clientsOrdersHeadings = [
+  'Client ID',
+  'Client Name',
+  'Client Surname',
+  'Client Address',
+  'Select Client',
+];

@@ -11,3 +11,4 @@ const Order = sequelize.define('order', {
   },
 });
 export default Order;
+

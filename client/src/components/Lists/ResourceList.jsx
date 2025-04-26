@@ -1,24 +1,32 @@
-import { Table } from 'react-bootstrap';
-
-import Checkbox from '../Checkbox';
 import ResourceListTable from './ResourceListTable';
+import getKeys from '../../helpers/getKeys';
+import uniqueById from '../../helpers/uniqueById';
+import getResourceId from '../../helpers/getResourceId';
 
 const ResourceList = ({
   resourceList,
   columnHeadings,
   onRowSelect,
+  onCheckboxClick,
   hasCheckButton,
+  hasCountInput,
+  isOrderDetailsList,
+  isOrderList,
 }) => {
-  const getKeys = () => {
-    if (!resourceList || resourceList.length === 0) {
-      return [];
+  const filteredResourceList = isOrderDetailsList
+    ? uniqueById(resourceList)
+    : resourceList;
+
+  const keyList = getKeys(resourceList, isOrderDetailsList);
+
+  const resourceId = getResourceId(resourceList);
+
+  const handleCheckboxClick = (resource) => {
+    if (!keyList || keyList.length === 0) {
+      return;
     }
-    return Object.keys(resourceList[0]);
+    onCheckboxClick(resource);
   };
-
-  const keyList = getKeys();
-
-  const resourceId = keyList[0];
 
   const handleRowClick = (resource) => {
     if (!keyList || keyList.length === 0) {
@@ -28,16 +36,18 @@ const ResourceList = ({
     onRowSelect(resourceId);
   };
 
-  console;
-
   return (
     <ResourceListTable
       columnHeadings={columnHeadings}
-      handleRowClick={handleRowClick}
+      onRowClick={handleRowClick}
+      onCheckboxClick={handleCheckboxClick}
       hasCheckButton={hasCheckButton}
       resourceId={resourceId}
-      resourceList={resourceList}
+      resourceList={filteredResourceList}
       keyList={keyList}
+      hasCountInput={hasCountInput}
+      isOrderDetailsList={isOrderDetailsList}
+      isOrderList={isOrderList}
     />
   );
 };
