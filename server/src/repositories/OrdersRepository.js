@@ -69,7 +69,8 @@ class OrdersRepository {
         ],
       });
       const orders = ordersWithTotalPrice.map((order) => ({
-        orderId: order.id,
+        id: order.id,
+        totalPrice: order.dataValues.totalPrice,
         clientName: order.client.first_name,
         clientSurname: order.client.last_name,
         clientAddress: order.client.address,
@@ -124,7 +125,9 @@ class OrdersRepository {
       }
 
       const order = {
+
         orderId: orderWithTotalPrice.id,
+        totalPrice: orderWithTotalPrice.totalPrice,
         clientName: orderWithTotalPrice.client.first_name,
         clientSurname: orderWithTotalPrice.client.last_name,
         clientAddress: orderWithTotalPrice.client.address,
