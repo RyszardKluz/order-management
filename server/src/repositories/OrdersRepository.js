@@ -1,34 +1,143 @@
+import sequelize from '../../config/database.js';
 import Order from '../models/Order.js';
+import OrderItem from '../models/OrderItem.js';
+import Product from '../models/product.js';
+import AppError from '../errors/AppError.js';
+import Client from '../models/client.js';
+import { col } from 'sequelize';
 class OrdersRepository {
   static orders = [];
 
-  static createOrder = (body) => {
-    const { products, clientId, clientName, clientAddress } = body;
+  static createOrder = async (body) => {
+    await sequelize.transaction(async (t) => {
+      const { products, clientId } = body;
+      console.log(body);
 
-    const newOrder = new Order(products, clientId, clientName, clientAddress);
-    this.orders.push(newOrder);
-    return newOrder;
+      const newOrder = await Order.create(
+        { clientId: clientId },
+        { transaction: t },
+      );
+
+      const orderItems = products.map((product) => ({
+        price: product.price,
+        count: product.productCount,
+        productId: product.id,
+        orderId: newOrder.id,
+      }));
+
+      await OrderItem.bulkCreate(orderItems, { transaction: t });
+    });
   };
 
-  static getOrders = () => {
-    if (!this.orders || this.orders.length === 0) {
-      return null;
+  static getOrders = async () => {
+    try {
+      const ordersWithTotalPrice = await Order.findAll({
+        attributes: [
+          'id',
+          [
+            sequelize.fn(
+              'SUM',
+              sequelize.literal(
+                '`order_items`.`count` * `order_items`.`price`',
+              ),
+            ),
+            'totalPrice',
+          ],
+        ],
+        include: [
+          {
+            model: OrderItem,
+            as: 'order_items',
+            attributes: ['price', 'count'],
+            include: [
+              {
+                model: Product,
+                attributes: ['title'],
+              },
+            ],
+          },
+          {
+            model: Client,
+            attributes: ['first_name', 'last_name', 'address'],
+          },
+        ],
+        group: [
+          'Order.id',
+          'order_items.orderId',
+          'client.id',
+          'order_items.id',
+        ],
+      });
+      const orders = ordersWithTotalPrice.map((order) => ({
+        orderId: order.id,
+        clientName: order.client.first_name,
+        clientSurname: order.client.last_name,
+        clientAddress: order.client.address,
+        products: order.order_items.map((item) => ({
+          productName: item.product.title,
+          productPrice: item.price,
+          productCount: item.count,
+        })),
+      }));
+      return orders;
+    } catch (error) {
+      throw new AppError(error);
     }
-
-    return this.orders.map((order) => ({
-      ...order,
-      totalPrice: order.totalPrice,
-    }));
   };
 
-  static showOrderDetails = (orderId) => {
-    const order = this.orders.find((order) => order.id === orderId);
+  static showOrderDetails = async (orderId) => {
+    try {
+      const orderWithTotalPrice = await Order.findByPk(orderId, {
+        attributes: [
+          'id',
+          [
+            sequelize.fn(
+              'SUM',
+              sequelize.literal(
+                '`order_items`.`count` * `order_items`.`price`',
+              ),
+            ),
+            'totalPrice',
+          ],
+        ],
+        include: [
+          {
+            model: OrderItem,
+            as: 'order_items',
+            attributes: ['price', 'count'],
+            include: [
+              {
+                model: Product,
+                attributes: ['title'],
+              },
+            ],
+          },
+          {
+            model: Client,
+            attributes: ['first_name', 'last_name', 'address'],
+          },
+        ],
+      });
 
-    if (!order) {
-      return null;
+      if (!orderWithTotalPrice) {
+        throw new AppError('Order not found');
+      }
+
+      const order = {
+        orderId: orderWithTotalPrice.id,
+        clientName: orderWithTotalPrice.client.first_name,
+        clientSurname: orderWithTotalPrice.client.last_name,
+        clientAddress: orderWithTotalPrice.client.address,
+        products: orderWithTotalPrice.order_items.map((item) => ({
+          productName: item.product.title,
+          productPrice: item.price,
+          productCount: item.count,
+        })),
+      };
+      return order;
+    } catch (error) {
+      throw new AppError(error);
     }
-    const orderWithPrice = { ...order, totalPrice: order.totalPrice };
-    return orderWithPrice;
   };
 }
 

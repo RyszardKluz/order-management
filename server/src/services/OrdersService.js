@@ -3,7 +3,6 @@ import AppError from '../errors/AppError.js';
 
 class OrdersService {
   createOrder = async (body) => {
-    console.log('Dupa', body, body.products, body.clientName);
     if (
       !body ||
       !body.products ||
