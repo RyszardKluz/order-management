@@ -8,24 +8,32 @@ class OrdersRepository {
   static orders = [];
 
   static createOrder = async (body) => {
-    await sequelize.transaction(async (t) => {
-      const { products, clientId } = body;
-      console.log(body);
+    try {
+      await sequelize.transaction(async (t) => {
+        const { products, clientId } = body;
+        console.log(body);
 
-      const newOrder = await Order.create(
-        { clientId: clientId },
-        { transaction: t },
-      );
+        const newOrder = await Order.create(
+          { clientId: clientId },
+          { transaction: t },
+        );
 
-      const orderItems = products.map((product) => ({
-        price: product.price,
-        count: product.productCount,
-        productId: product.id,
-        orderId: newOrder.id,
-      }));
+        const orderItems = products.map((product) => ({
+          price: product.price,
+          count: product.productCount,
+          productId: product.id,
+          orderId: newOrder.id,
+        }));
 
-      await OrderItem.bulkCreate(orderItems, { transaction: t });
-    });
+        const newOrderItem = await OrderItem.bulkCreate(orderItems, { transaction: t });
+        if (!newOrder || !newOrderItem) {
+          throw new AppError('Failed to create order ! ', 400)
+        }
+      });
+    } catch (error) {
+      throw new AppError(error, 500)
+    }
+
   };
 
   static getOrders = async () => {
@@ -79,9 +87,12 @@ class OrdersRepository {
           productCount: item.count,
         })),
       }));
+      if (!orders || orders.length === 0) {
+        throw new AppError('Failed to fetch orders!', 404)
+      }
       return orders;
     } catch (error) {
-      throw new AppError(error, 404);
+      throw new AppError(error, 500);
     }
   };
 
@@ -119,9 +130,6 @@ class OrdersRepository {
         ],
       });
 
-      if (!orderWithTotalPrice) {
-        throw new AppError('Order not found', 404);
-      }
 
       const order = {
         orderId: orderWithTotalPrice.id,
@@ -135,9 +143,12 @@ class OrdersRepository {
           productCount: item.count,
         })),
       };
+      if (!order) {
+        throw new AppError('Failed to fetch order !', 404)
+      }
       return order;
     } catch (error) {
-      throw new AppError(error,400);
+      throw new AppError(error, 500);
     }
   };
 }
