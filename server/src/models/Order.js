@@ -10,10 +10,11 @@ const Order = sequelize.define('order', {
     primaryKey: true,
   },
   clientId: {
-    type: UUID, references: {
+    type: UUID,
+    references: {
       model: 'clients',
-      key: 'id'
-    }
-  }
+      key: 'id',
+    },
+  },
 });
 export default Order;

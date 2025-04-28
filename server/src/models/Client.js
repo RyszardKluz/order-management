@@ -24,4 +24,3 @@ const Client = sequelize.define('client', {
 });
 
 export default Client;
-

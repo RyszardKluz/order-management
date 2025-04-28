@@ -17,11 +17,11 @@ class ClientsRepository {
         attributes: ['id', 'first_name', 'last_name', 'address'],
       });
       if (!clients || clients.length === 0) {
-        throw new AppError('Failed to find client by this query');
+        throw new AppError('Failed to find client by this query', 404);
       }
       return clients;
     } catch (error) {
-      throw new AppError(error);
+      throw new AppError(error, 500);
     }
   };
 
@@ -32,11 +32,11 @@ class ClientsRepository {
       });
 
       if (!clients) {
-        throw new AppError('Failed to fetch clients!');
+        throw new AppError('Failed to fetch clients!', 404);
       }
       return clients;
     } catch (error) {
-      throw new AppError(error);
+      throw new AppError(error, 500);
     }
   };
 
@@ -48,7 +48,7 @@ class ClientsRepository {
         address: clientAddress,
       });
       if (!newClient) {
-        throw new AppError('Failed to create client!');
+        throw new AppError('Failed to create client!', 400);
       }
       return newClient;
     } catch (error) {
@@ -77,12 +77,12 @@ class ClientsRepository {
       const updatedClient = await client.save();
 
       if (!updatedClient) {
-        throw new AppError('Failed to update a client!');
+        throw new AppError('Failed to update a client!', 400);
       }
 
       return updatedClient;
     } catch (error) {
-      throw new AppError(error);
+      throw new AppError(error, 500);
     }
   };
 
@@ -90,7 +90,7 @@ class ClientsRepository {
     try {
       Client.destroy({ where: { id: clientId } });
     } catch (error) {
-      throw new AppError(error);
+      throw new AppError(error, 500);
     }
   };
 }

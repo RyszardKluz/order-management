@@ -15,19 +15,21 @@ const OrderItem = sequelize.define('order_item', {
   count: {
     type: DataTypes.DECIMAL,
     allowNull: false,
-  }, orderId: {
-    type: DataTypes.INTEGER, references: {
+  },
+  orderId: {
+    type: DataTypes.UUID,
+    references: {
       model: 'orders',
-      key: 'id'
-    }
+      key: 'id',
+    },
   },
   productId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.UUID,
     references: {
       model: 'products',
-      key: 'id'
-    }
-  }
+      key: 'id',
+    },
+  },
 });
 
 export default OrderItem;

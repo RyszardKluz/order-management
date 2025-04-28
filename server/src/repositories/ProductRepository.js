@@ -18,11 +18,11 @@ class ProductRepository {
       });
 
       if (!products || products.length === 0) {
-        throw new AppError('Failed to find product by this query!');
+        throw new AppError('Failed to find product by this query!', 404);
       }
       return products;
     } catch (error) {
-      throw new AppError(error);
+      throw new AppError(error, 500);
     }
   };
 
@@ -32,11 +32,11 @@ class ProductRepository {
         attributes: ['id', 'title', 'price'],
       });
       if (products || products.length === 0) {
-        throw new AppError('Failed to fetch products!');
+        throw new AppError('Failed to fetch products!', 404);
       }
       return products;
     } catch (error) {
-      throw new AppError(error);
+      throw new AppError(error, 500);
     }
   };
 
@@ -47,11 +47,11 @@ class ProductRepository {
         price: productPrice,
       });
       if (!newProduct) {
-        throw new AppError('Failed to create a product!');
+        throw new AppError('Failed to create a product!', 400);
       }
       return newProduct;
     } catch (error) {
-      throw new AppError(error);
+      throw new AppError(error, 500);
     }
   };
 
@@ -68,11 +68,11 @@ class ProductRepository {
 
       const updatedProduct = await product.save();
       if (!updatedProduct) {
-        throw new AppError('Failed to update product');
+        throw new AppError('Failed to update product', 400);
       }
       return updatedProduct;
     } catch (error) {
-      throw new AppError(error);
+      throw new AppError(error, 500);
     }
   };
 
@@ -80,7 +80,7 @@ class ProductRepository {
     try {
       Product.destroy({ where: { id: productId } });
     } catch (error) {
-      throw new AppError(error);
+      throw new AppError(error, 500);
     }
   };
 }

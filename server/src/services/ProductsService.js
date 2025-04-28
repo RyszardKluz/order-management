@@ -7,13 +7,11 @@ class ProductsService {
       const products = await ProductRepository.getProducts();
 
       return products;
-    }
-    else {
+    } else {
       const filteredProducts = ProductRepository.filterProducts(searchValue);
 
       return filteredProducts;
     }
-
   };
   addProduct = async (body) => {
     const { productName, productPrice } = body;
@@ -51,8 +49,8 @@ class ProductsService {
       throw new AppError('Failed to delete product !', 400);
     }
 
-    ProductRepository.deleteProduct(productId)
-  }
+    ProductRepository.deleteProduct(productId);
+  };
 }
 
 export default ProductsService;

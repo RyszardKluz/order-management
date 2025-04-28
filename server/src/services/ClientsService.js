@@ -7,13 +7,11 @@ class ClientsService {
       const clients = await ClientsRepository.getClients();
 
       return clients;
-    }
-    else {
+    } else {
       const filteredClients = ClientsRepository.filterClients(searchValue);
 
       return filteredClients;
     }
-
   };
 
   addClient = async (clientName, clientSurname, clientAddress) => {

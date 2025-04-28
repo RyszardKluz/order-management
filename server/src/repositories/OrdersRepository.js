@@ -4,7 +4,6 @@ import OrderItem from '../models/OrderItem.js';
 import Product from '../models/product.js';
 import AppError from '../errors/AppError.js';
 import Client from '../models/client.js';
-import { col } from 'sequelize';
 class OrdersRepository {
   static orders = [];
 
@@ -82,7 +81,7 @@ class OrdersRepository {
       }));
       return orders;
     } catch (error) {
-      throw new AppError(error);
+      throw new AppError(error, 404);
     }
   };
 
@@ -121,11 +120,10 @@ class OrdersRepository {
       });
 
       if (!orderWithTotalPrice) {
-        throw new AppError('Order not found');
+        throw new AppError('Order not found', 404);
       }
 
       const order = {
-
         orderId: orderWithTotalPrice.id,
         totalPrice: orderWithTotalPrice.totalPrice,
         clientName: orderWithTotalPrice.client.first_name,
@@ -139,7 +137,7 @@ class OrdersRepository {
       };
       return order;
     } catch (error) {
-      throw new AppError(error);
+      throw new AppError(error,400);
     }
   };
 }
