@@ -1,11 +1,13 @@
 const calculateTotalAmount = (products) => {
+  if (!products || products.length === 0) {
+    return 0
+  }
   let totalAmount = 0;
 
   for (const product of products) {
-    const price = product.productPrice * product.productCount;
+    const price = product.price * product.productCount;
     totalAmount += price;
-  }
-  return totalAmount;
+  } return totalAmount.toFixed(2)
 };
 
 export default calculateTotalAmount;

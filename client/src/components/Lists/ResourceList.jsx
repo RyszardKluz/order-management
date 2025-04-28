@@ -12,6 +12,7 @@ const ResourceList = ({
   hasCountInput,
   isOrderDetailsList,
   isOrderList,
+  onProductCountChange,
 }) => {
   const filteredResourceList = isOrderDetailsList
     ? uniqueById(resourceList)
@@ -38,6 +39,7 @@ const ResourceList = ({
 
   return (
     <ResourceListTable
+      onProductCountChange={onProductCountChange}
       columnHeadings={columnHeadings}
       onRowClick={handleRowClick}
       onCheckboxClick={handleCheckboxClick}

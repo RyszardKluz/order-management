@@ -17,8 +17,8 @@ function OrderDetailsForm({
     clientName: '',
     clientAddress: '',
     products: [],
+    totalPrice: 0,
   });
-
   const updateState = (newState) => {
     setState((prev) => ({ ...prev, ...newState }));
   };
@@ -26,12 +26,25 @@ function OrderDetailsForm({
   useEffect(() => {
     if (client && Object.keys(client).length > 0) {
       setState({
-        clientName: client.clientName || '',
-        clientAddress: client.clientAddress || '',
-        clientId: client.clientId || '',
+        clientName: client.first_name || '',
+        clientAddress: client.address || '',
+        clientId: client.id || '',
       });
     }
   }, [client]);
+
+  useEffect(() => {
+    if (products && products.length > 0) {
+      setState((prevState) => ({ ...prevState, products }));
+    }
+  }, [products]);
+
+  useEffect(() => {
+    if (state.products && state.products.length > 0) {
+      const totalAmount = calculateAmount(state.products);
+      updateState({ totalPrice: totalAmount });
+    }
+  }, [state.products]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,7 +73,15 @@ function OrderDetailsForm({
       onGetOrderDetails,
     );
   };
-  const totalAmount = calculateAmount(products);
+
+  const handleUpdateProductCount = (id, value) => {
+    const updatedProducts = state.products.map((product) =>
+      product.productId === id ? { ...product, productCount: value } : product,
+    );
+
+    updateState({ products: updatedProducts });
+  };
+
   return (
     <>
       <Form onSubmit={handleSubmit}>
@@ -91,7 +112,10 @@ function OrderDetailsForm({
 
         <Form.Label>Order details</Form.Label>
         <InputGroup className="mb-3">
-          <OrderProductDetails products={products} />
+          <OrderProductDetails
+            products={products}
+            onProductCountChange={handleUpdateProductCount}
+          />
         </InputGroup>
         <FormLabel style={{ marginBottom: '15px' }}>Total amount</FormLabel>
         <InputGroup className="mb-3">
@@ -99,16 +123,13 @@ function OrderDetailsForm({
           <Form.Control
             aria-label="Amount (to the nearest dollar)"
             type="text"
-            value={totalAmount}
+            value={state.totalPrice}
             readOnly={true}
           />
           <CustomButton
             variantOption={'primary'}
             text={'Submit order'}
             type="submit"
-            callback={() => {
-              updateState({ products: products });
-            }}
           />
         </InputGroup>
       </Form>

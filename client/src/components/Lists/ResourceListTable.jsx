@@ -3,6 +3,7 @@ import { Table } from 'react-bootstrap';
 import Checkbox from '../Checkbox';
 
 const ResourceListTable = ({
+  onProductCountChange,
   columnHeadings,
   resourceList,
   resourceId,
@@ -58,17 +59,23 @@ const ResourceListTable = ({
                   type="number"
                   style={{ width: '50px', fontSize: '0.8rem', padding: '2px' }}
                   min={1}
-                  value={
+                  defaultValue={
                     isOrderDetailsList
                       ? resource.productCount || 1
                       : productCounts[resource[resourceId]] || 1
                   }
-                  onChange={(e) =>
+                  onChange={(e) => {
+                    if (onProductCountChange) {
+                      onProductCountChange(
+                        resource[resourceId],
+                        Number(e.target.value),
+                      );
+                    }
                     handleCountChange(
                       resource[resourceId],
                       Number(e.target.value),
-                    )
-                  }
+                    );
+                  }}
                 />
               </td>
             )}
