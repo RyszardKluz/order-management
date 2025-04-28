@@ -1,38 +1,59 @@
-import Client from '../models/client.js'
-import { Op } from 'sequelize'
+import AppError from '../errors/AppError.js';
+import Client from '../models/client.js';
+import { Op } from 'sequelize';
 class ClientsRepository {
-
   static filterClients = async (query) => {
+    try {
+      const keys = Object.keys(Client.getAttributes());
 
-    const keys = Object.keys(Client.getAttributes())
+      const keysWithoutId = keys.filter((key) => key !== 'id');
 
-    const conditions = keys.map((key) => ({ [key]: { [Op.like]: `%${query}%` } }))
+      const conditions = keysWithoutId.map((key) => ({
+        [key]: { [Op.like]: `%${query}%` },
+      }));
 
-    const clients = await Client.findAll({
-      where: { [Op.or]: conditions },
-      attributes: ['id', 'first_name', 'last_name', 'address']
-
-    })
-
-    return clients
-  }
+      const clients = await Client.findAll({
+        where: { [Op.or]: conditions },
+        attributes: ['id', 'first_name', 'last_name', 'address'],
+      });
+      if (!clients || clients.length === 0) {
+        throw new AppError('Failed to find client by this query');
+      }
+      return clients;
+    } catch (error) {
+      throw new AppError(error);
+    }
+  };
 
   static getClients = async () => {
-    const clients = await Client.findAll({
-      attributes: ['id', 'first_name', 'last_name', 'address']
-    })
+    try {
+      const clients = await Client.findAll({
+        attributes: ['id', 'first_name', 'last_name', 'address'],
+      });
 
-
-    return clients;
+      if (!clients) {
+        throw new AppError('Failed to fetch clients!');
+      }
+      return clients;
+    } catch (error) {
+      throw new AppError(error);
+    }
   };
 
   static addClient = async (clientName, clientSurname, clientAddress) => {
-    const newClient = await Client.create({
-      first_name: clientName,
-      last_name: clientSurname,
-      address: clientAddress,
-    })
-    return newClient;
+    try {
+      const newClient = await Client.create({
+        first_name: clientName,
+        last_name: clientSurname,
+        address: clientAddress,
+      });
+      if (!newClient) {
+        throw new AppError('Failed to create client!');
+      }
+      return newClient;
+    } catch (error) {
+      throw new AppError(error);
+    }
   };
   static changeClient = async (
     clientId,
@@ -40,30 +61,37 @@ class ClientsRepository {
     clientSurname,
     clientAddress,
   ) => {
-    const client = await Client.findByPk(clientId);
+    try {
+      const client = await Client.findByPk(clientId);
 
-    if (clientName.trim() !== '') {
-      client.first_name = clientName;
+      if (clientName.trim() !== '') {
+        client.first_name = clientName;
+      }
+      if (clientSurname.trim() !== '') {
+        client.last_name = clientSurname;
+      }
+      if (clientAddress.trim() !== '') {
+        client.address = clientAddress;
+      }
+
+      const updatedClient = await client.save();
+
+      if (!updatedClient) {
+        throw new AppError('Failed to update a client!');
+      }
+
+      return updatedClient;
+    } catch (error) {
+      throw new AppError(error);
     }
-    if (clientSurname.trim() !== '') {
-      client.last_name = clientSurname;
-    }
-    if (clientAddress.trim() !== '') {
-      client.address = clientAddress;
-    }
-
-    const updatedClient = await client.save()
-
-    return updatedClient
-
-
-
   };
 
   static deleteClient = (clientId) => {
-
-    Client.destroy({ where: { id: clientId } })
-
+    try {
+      Client.destroy({ where: { id: clientId } });
+    } catch (error) {
+      throw new AppError(error);
+    }
   };
 }
 
