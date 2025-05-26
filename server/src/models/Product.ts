@@ -1,8 +1,14 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 
 import sequelize from '../../config/database';
 
-const Product = sequelize.define('product', {
+export interface ProductModel extends Model {
+  id: string;
+  price: number;
+  title: string;
+}
+
+const Product = sequelize.define<ProductModel>('product', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,

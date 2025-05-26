@@ -1,6 +1,6 @@
 import AppError from '../errors/AppError.js';
 import ProductRepository from '../repositories/ProductRepository';
-import ProductType from '../types/Product';
+import ProductType from '../types/ProductType';
 
 class ProductsService {
   getProducts = async (searchValue: string) => {
@@ -24,14 +24,13 @@ class ProductsService {
     ) {
       throw new AppError('Invalid product details', 400);
     }
-
     const product = ProductRepository.addProduct(productName, productPrice);
     return product;
   };
   changeProduct = async (
     productId: string,
     productName: string,
-    productPrice: string,
+    productPrice: number,
   ) => {
     if (!productId && !productName && !productPrice) {
       throw new AppError('Wrong product details', 400);

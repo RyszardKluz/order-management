@@ -2,12 +2,6 @@ import AppError from '../errors/AppError';
 import Client from '../models/Client';
 import { Op } from 'sequelize';
 
-type Client = {
-  first_name: string;
-  last_name: string;
-  address: string;
-};
-
 class ClientsRepository {
   static filterClients = async (query: string) => {
     try {
@@ -28,7 +22,7 @@ class ClientsRepository {
       }
       return clients;
     } catch (error) {
-      throw new AppError(error.message, 500);
+      throw new AppError((error as Error).message, 500);
     }
   };
 
@@ -73,7 +67,7 @@ class ClientsRepository {
     clientAddress: string,
   ) => {
     try {
-      const client = await Client.findByPk<Client>(clientId);
+      const client = await Client.findByPk(clientId);
       if (!client) return;
       if (clientName.trim() !== '') {
         client.first_name = clientName;
@@ -93,15 +87,15 @@ class ClientsRepository {
 
       return updatedClient;
     } catch (error) {
-      throw new AppError(error, 500);
+      throw new AppError((error as Error).message, 500);
     }
   };
 
-  static deleteClient = (clientId) => {
+  static deleteClient = (clientId: string) => {
     try {
       Client.destroy({ where: { id: clientId } });
     } catch (error) {
-      throw new AppError(error, 500);
+      throw new AppError((error as Error).message, 500);
     }
   };
 }

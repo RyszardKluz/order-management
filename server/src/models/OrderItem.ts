@@ -1,8 +1,16 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 
 import sequelize from '../../config/database';
 
-const OrderItem = sequelize.define('order_item', {
+export interface OrderItemModel extends Model {
+  id: string;
+  price: number;
+  count: number;
+  orderId: string;
+  productId: string;
+}
+
+const OrderItem = sequelize.define<OrderItemModel>('order_item', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,

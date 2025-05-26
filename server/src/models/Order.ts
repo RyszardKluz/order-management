@@ -1,8 +1,13 @@
-import { DataTypes, UUID } from 'sequelize';
+import { DataTypes, Model, UUID } from 'sequelize';
 
 import sequelize from '../../config/database';
 
-const Order = sequelize.define('order', {
+export interface OrderModel extends Model {
+  id: string;
+  clientId: string;
+}
+
+const Order = sequelize.define<OrderModel>('order', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,

@@ -1,8 +1,9 @@
 import AppError from '../errors/AppError.js';
+import checkIfPriceIsNumber from '../helpers/checkIFPriceIsNumber.js';
 import Product from '../models/Product.js';
 import { Op } from 'sequelize';
 class ProductRepository {
-  static filterProducts = async (query) => {
+  static filterProducts = async (query: string) => {
     try {
       const keys = Object.keys(Product.getAttributes());
 
@@ -22,7 +23,7 @@ class ProductRepository {
       }
       return products;
     } catch (error) {
-      throw new AppError(error, 500);
+      throw new AppError((error as Error).message, 500);
     }
   };
 
@@ -31,16 +32,16 @@ class ProductRepository {
       const products = await Product.findAll({
         attributes: ['id', 'title', 'price'],
       });
-      if (products || products.length === 0) {
+      if (!products || products.length === 0) {
         throw new AppError('Failed to fetch products!', 404);
       }
       return products;
     } catch (error) {
-      throw new AppError(error, 500);
+      throw new AppError((error as Error).message, 500);
     }
   };
 
-  static addProduct = async (productName, productPrice) => {
+  static addProduct = async (productName: string, productPrice: number) => {
     try {
       const newProduct = await Product.create({
         title: productName,
@@ -51,20 +52,33 @@ class ProductRepository {
       }
       return newProduct;
     } catch (error) {
-      throw new AppError(error, 500);
+      throw new AppError((error as Error).message, 500);
     }
   };
 
-  static changeProduct = async (productId, productName, productPrice) => {
+  static changeProduct = async (
+    productId: string,
+    productName: string,
+    productPrice: number,
+  ) => {
     try {
       const product = await Product.findByPk(productId);
+
+      if (!product) {
+        throw new AppError('Failed to find product!', 404);
+      }
+
+      const price = checkIfPriceIsNumber(productPrice);
+
+      if (typeof product.price === 'string') {
+        Number.parseInt(product.price);
+      }
 
       if (productName.trim() !== '') {
         product.title = productName;
       }
-      if (productPrice.trim() !== '' || typeof productPrice === 'number') {
-        product.price = productPrice;
-      }
+
+      product.price = price;
 
       const updatedProduct = await product.save();
       if (!updatedProduct) {
@@ -72,15 +86,15 @@ class ProductRepository {
       }
       return updatedProduct;
     } catch (error) {
-      throw new AppError(error, 500);
+      throw new AppError((error as Error).message, 500);
     }
   };
 
-  static deleteProduct = (productId) => {
+  static deleteProduct = (productId: string) => {
     try {
       Product.destroy({ where: { id: productId } });
     } catch (error) {
-      throw new AppError(error, 500);
+      throw new AppError((error as Error).message, 500);
     }
   };
 }

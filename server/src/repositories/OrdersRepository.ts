@@ -1,13 +1,15 @@
 import sequelize from '../../config/database.js';
 import Order from '../models/Order.js';
 import OrderItem from '../models/OrderItem.js';
-import Product from '../models/product.js';
+import Product from '../models/Product.js';
 import AppError from '../errors/AppError.js';
-import Client from '../models/client.js';
+import Client from '../models/Client.js';
+import CreateOrderDTO from '../types/CreateOrderDTO.js';
+import { OrderWithJoins } from '../types/OrderWithJoins.js';
 class OrdersRepository {
   static orders = [];
 
-  static createOrder = async (body) => {
+  static createOrder = async (body: CreateOrderDTO) => {
     try {
       await sequelize.transaction(async (t) => {
         const { products, clientId } = body;
@@ -25,20 +27,21 @@ class OrdersRepository {
           orderId: newOrder.id,
         }));
 
-        const newOrderItem = await OrderItem.bulkCreate(orderItems, { transaction: t });
+        const newOrderItem = await OrderItem.bulkCreate(orderItems, {
+          transaction: t,
+        });
         if (!newOrder || !newOrderItem) {
-          throw new AppError('Failed to create order ! ', 400)
+          throw new AppError('Failed to create order ! ', 400);
         }
       });
     } catch (error) {
-      throw new AppError(error, 500)
+      throw new AppError((error as Error).message, 500);
     }
-
   };
 
   static getOrders = async () => {
     try {
-      const ordersWithTotalPrice = await Order.findAll({
+      const ordersWithTotalPrice = (await Order.findAll({
         attributes: [
           'id',
           [
@@ -74,7 +77,8 @@ class OrdersRepository {
           'client.id',
           'order_items.id',
         ],
-      });
+      })) as unknown as OrderWithJoins[];
+
       const orders = ordersWithTotalPrice.map((order) => ({
         id: order.id,
         totalPrice: order.dataValues.totalPrice,
@@ -88,17 +92,17 @@ class OrdersRepository {
         })),
       }));
       if (!orders || orders.length === 0) {
-        throw new AppError('Failed to fetch orders!', 404)
+        throw new AppError('Failed to fetch orders!', 404);
       }
       return orders;
     } catch (error) {
-      throw new AppError(error, 500);
+      throw new AppError((error as Error).message, 500);
     }
   };
 
-  static showOrderDetails = async (orderId) => {
+  static showOrderDetails = async (orderId: string) => {
     try {
-      const orderWithTotalPrice = await Order.findByPk(orderId, {
+      const orderWithTotalPrice = (await Order.findByPk(orderId, {
         attributes: [
           'id',
           [
@@ -128,8 +132,11 @@ class OrdersRepository {
             attributes: ['first_name', 'last_name', 'address'],
           },
         ],
-      });
+      })) as unknown as OrderWithJoins;
 
+      if (!orderWithTotalPrice) {
+        throw new AppError('Failed to find a product', 404);
+      }
 
       const order = {
         orderId: orderWithTotalPrice.id,
@@ -144,11 +151,11 @@ class OrdersRepository {
         })),
       };
       if (!order) {
-        throw new AppError('Failed to fetch order !', 404)
+        throw new AppError('Failed to fetch order !', 404);
       }
       return order;
     } catch (error) {
-      throw new AppError(error, 500);
+      throw new AppError((error as Error).message, 500);
     }
   };
 }
