@@ -1,10 +1,12 @@
-import OrdersService from '../services/ordersService.js';
+import OrdersService from '../services/OrdersService';
+import { ControllerFunction } from '../types/ControllerFunction';
 
 class OrdersController {
+  private readonly ordersService: OrdersService;
   constructor() {
     this.ordersService = new OrdersService();
   }
-  createOrder = async (req, res, next) => {
+  createOrder: ControllerFunction = async (req, res, next) => {
     try {
       const order = await this.ordersService.createOrder(req.body);
       res
@@ -15,7 +17,7 @@ class OrdersController {
     }
   };
 
-  getOrders = async (req, res, next) => {
+  getOrders: ControllerFunction = async (req, res, next) => {
     try {
       const orders = await this.ordersService.getOrders();
       res.status(200).json(orders);
@@ -24,7 +26,7 @@ class OrdersController {
     }
   };
 
-  showOrderDetails = async (req, res, next) => {
+  showOrderDetails: ControllerFunction = async (req, res, next) => {
     const orderId = req.params.orderId;
     try {
       const currentOrder = await this.ordersService.showOrderDetails(orderId);

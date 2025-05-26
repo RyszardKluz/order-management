@@ -1,8 +1,15 @@
-import AppError from '../errors/AppError.js';
-import Client from '../models/client.js';
+import AppError from '../errors/AppError';
+import Client from '../models/Client';
 import { Op } from 'sequelize';
+
+type Client = {
+  first_name: string;
+  last_name: string;
+  address: string;
+};
+
 class ClientsRepository {
-  static filterClients = async (query) => {
+  static filterClients = async (query: string) => {
     try {
       const keys = Object.keys(Client.getAttributes());
 
@@ -21,7 +28,7 @@ class ClientsRepository {
       }
       return clients;
     } catch (error) {
-      throw new AppError(error, 500);
+      throw new AppError(error.message, 500);
     }
   };
 
@@ -36,11 +43,15 @@ class ClientsRepository {
       }
       return clients;
     } catch (error) {
-      throw new AppError(error, 500);
+      throw new AppError((error as Error).message, 500);
     }
   };
 
-  static addClient = async (clientName, clientSurname, clientAddress) => {
+  static addClient = async (
+    clientName: string,
+    clientSurname: string,
+    clientAddress: string,
+  ) => {
     try {
       const newClient = await Client.create({
         first_name: clientName,
@@ -52,18 +63,18 @@ class ClientsRepository {
       }
       return newClient;
     } catch (error) {
-      throw new AppError(error);
+      throw new AppError((error as Error).message, 500);
     }
   };
   static changeClient = async (
-    clientId,
-    clientName,
-    clientSurname,
-    clientAddress,
+    clientId: string,
+    clientName: string,
+    clientSurname: string,
+    clientAddress: string,
   ) => {
     try {
-      const client = await Client.findByPk(clientId);
-
+      const client = await Client.findByPk<Client>(clientId);
+      if (!client) return;
       if (clientName.trim() !== '') {
         client.first_name = clientName;
       }

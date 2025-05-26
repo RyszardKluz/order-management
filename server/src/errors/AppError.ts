@@ -1,8 +1,10 @@
 class AppError extends Error {
-  constructor(message, status) {
+  constructor(
+    public readonly message: string,
+    public readonly status: number,
+  ) {
     super(message);
     this.status = status || 500;
-    this.ok = false;
   }
 }
 

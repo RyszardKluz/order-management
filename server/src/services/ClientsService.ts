@@ -2,7 +2,7 @@ import ClientsRepository from '../repositories/ClientsRepository.js';
 import AppError from '../errors/AppError.js';
 
 class ClientsService {
-  getClients = async (searchValue) => {
+  getClients = async (searchValue: string) => {
     if (!searchValue) {
       const clients = await ClientsRepository.getClients();
 
@@ -14,7 +14,11 @@ class ClientsService {
     }
   };
 
-  addClient = async (clientName, clientSurname, clientAddress) => {
+  addClient = async (
+    clientName: string,
+    clientSurname: string,
+    clientAddress: string,
+  ) => {
     console.log(clientName, clientAddress, clientSurname);
     if (
       !clientName ||
@@ -33,7 +37,12 @@ class ClientsService {
     return newClient;
   };
 
-  changeClient = async (clientId, clientName, clientSurname, clientAddress) => {
+  changeClient = async (
+    clientId: string,
+    clientName: string,
+    clientSurname: string,
+    clientAddress: string,
+  ) => {
     if (!clientId && !clientName && !clientSurname && !clientAddress) {
       throw new AppError('Invalid details', 400);
     }
@@ -50,7 +59,7 @@ class ClientsService {
     return updatedClient;
   };
 
-  deleteClient = async (clientId) => {
+  deleteClient = async (clientId: string) => {
     if (!clientId) {
       throw new AppError('Client not found', 404);
     }

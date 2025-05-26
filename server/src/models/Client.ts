@@ -1,23 +1,26 @@
 import { DataTypes } from 'sequelize';
 
-import sequelize from '../../config/database.js';
+import sequelize from '../../config/database';
 
-const Product = sequelize.define('product', {
+const Client = sequelize.define('client', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     allowNull: false,
     primaryKey: true,
   },
-  price: {
-    type: DataTypes.DECIMAL(10, 2),
+  first_name: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
-
-  title: {
+  last_name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  address: {
     type: DataTypes.STRING,
     allowNull: false,
   },
 });
 
-export default Product;
+export default Client;

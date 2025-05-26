@@ -1,8 +1,9 @@
 import AppError from '../errors/AppError.js';
-import ProductRepository from '../repositories/productRepository.js';
+import ProductRepository from '../repositories/ProductRepository';
+import ProductType from '../types/Product';
 
 class ProductsService {
-  getProducts = async (searchValue) => {
+  getProducts = async (searchValue: string) => {
     if (!searchValue) {
       const products = await ProductRepository.getProducts();
 
@@ -13,7 +14,7 @@ class ProductsService {
       return filteredProducts;
     }
   };
-  addProduct = async (body) => {
+  addProduct = async (body: ProductType) => {
     const { productName, productPrice } = body;
     if (
       !productName ||
@@ -27,7 +28,11 @@ class ProductsService {
     const product = ProductRepository.addProduct(productName, productPrice);
     return product;
   };
-  changeProduct = async (productId, productName, productPrice) => {
+  changeProduct = async (
+    productId: string,
+    productName: string,
+    productPrice: string,
+  ) => {
     if (!productId && !productName && !productPrice) {
       throw new AppError('Wrong product details', 400);
     }
@@ -44,7 +49,7 @@ class ProductsService {
 
     return product;
   };
-  deleteProduct = async (productId) => {
+  deleteProduct = async (productId: string) => {
     if (!productId) {
       throw new AppError('Failed to delete product !', 400);
     }

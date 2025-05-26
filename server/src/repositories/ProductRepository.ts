@@ -1,5 +1,5 @@
 import AppError from '../errors/AppError.js';
-import Product from '../models/product.js';
+import Product from '../models/Product.js';
 import { Op } from 'sequelize';
 class ProductRepository {
   static filterProducts = async (query) => {

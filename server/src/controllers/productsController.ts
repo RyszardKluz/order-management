@@ -1,11 +1,20 @@
 import ProductsService from '../services/ProductsService.js';
+import { ControllerFunction } from '../types/ControllerFunction.js';
 class ProductsController {
+  private readonly productsService: ProductsService;
   constructor() {
     this.productsService = new ProductsService();
   }
 
-  getProducts = async (req, res, next) => {
-    const searchValue = req.query.query;
+  getProducts: ControllerFunction = async (req, res, next) => {
+    let searchValue = req.query.query;
+    if (!searchValue) {
+      throw new Error();
+    } else if (typeof searchValue !== 'string') {
+      const parsedSearchValue = JSON.stringify(searchValue);
+      searchValue = parsedSearchValue;
+    }
+
     try {
       const data = await this.productsService.getProducts(searchValue);
       res.status(200).json(data);
@@ -14,7 +23,7 @@ class ProductsController {
     }
   };
 
-  addProduct = async (req, res, next) => {
+  addProduct: ControllerFunction = async (req, res, next) => {
     try {
       const product = await this.productsService.addProduct(req.body);
       res.status(200).json({ message: `Created ${product}`, ok: true });
@@ -22,7 +31,7 @@ class ProductsController {
       next(error);
     }
   };
-  changeProduct = async (req, res, next) => {
+  changeProduct: ControllerFunction = async (req, res, next) => {
     const { productId } = req.params;
     const { productName, productPrice } = req.body;
 
@@ -44,7 +53,7 @@ class ProductsController {
       next(error);
     }
   };
-  deleteProduct = async (req, res, next) => {
+  deleteProduct: ControllerFunction = async (req, res, next) => {
     const { productId } = req.params;
     console.log(productId);
 

@@ -1,12 +1,22 @@
-import ClientsService from '../services/ClientsService.js';
+import ClientsService from '../services/ClientsService';
+import { ControllerFunction } from '../types/ControllerFunction';
+
 class ClientsController {
+  private readonly clientsService: ClientsService;
   constructor() {
     this.clientsService = new ClientsService();
   }
 
-  getClients = async (req, res, next) => {
-    const searchValue = req.query.query;
+  getClients: ControllerFunction = async (req, res, next) => {
+    let searchValue = req.query.query;
 
+    if (!searchValue) {
+      throw new Error();
+    } else if (typeof searchValue !== 'string') {
+      const parsedSearchValue = JSON.stringify(searchValue);
+      searchValue = parsedSearchValue;
+    }
+    
     try {
       const data = await this.clientsService.getClients(searchValue);
       res.status(200).json(data);
@@ -15,7 +25,7 @@ class ClientsController {
     }
   };
 
-  addClient = async (req, res, next) => {
+  addClient: ControllerFunction = async (req, res, next) => {
     const { clientName, clientSurname, clientAddress } = req.body;
     try {
       const newClient = await this.clientsService.addClient(
@@ -30,7 +40,7 @@ class ClientsController {
       next(error);
     }
   };
-  changeClient = async (req, res, next) => {
+  changeClient: ControllerFunction = async (req, res, next) => {
     const { clientId } = req.params;
     const { clientName, clientSurname, clientAddress } = req.body;
 
@@ -51,7 +61,7 @@ class ClientsController {
     }
   };
 
-  deleteClient = async (req, res, next) => {
+  deleteClient: ControllerFunction = async (req, res, next) => {
     const { clientId } = req.params;
     try {
       await this.clientsService.deleteClient(clientId);

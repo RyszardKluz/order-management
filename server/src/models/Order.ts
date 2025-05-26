@@ -1,6 +1,6 @@
 import { DataTypes, UUID } from 'sequelize';
 
-import sequelize from '../../config/database.js';
+import sequelize from '../../config/database';
 
 const Order = sequelize.define('order', {
   id: {

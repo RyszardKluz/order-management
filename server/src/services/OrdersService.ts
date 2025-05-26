@@ -1,8 +1,9 @@
-import OrdersRepository from '../repositories/OrdersRepository.js';
-import AppError from '../errors/AppError.js';
+import OrdersRepository from '../repositories/OrdersRepository';
+import AppError from '../errors/AppError';
+import CreateOrderDTO from '../types/CreateOrderDTO';
 
 class OrdersService {
-  createOrder = async (body) => {
+  createOrder = async (body: CreateOrderDTO) => {
     if (
       !body ||
       !body.products ||
@@ -32,7 +33,7 @@ class OrdersService {
     return orders;
   };
 
-  showOrderDetails = async (orderId) => {
+  showOrderDetails = async (orderId: string) => {
     const order = OrdersRepository.showOrderDetails(orderId);
     if (!order) {
       throw new AppError('Order not found!', 404);

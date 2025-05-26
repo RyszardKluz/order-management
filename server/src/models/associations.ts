@@ -1,7 +1,7 @@
-import Client from './client.js';
-import Product from './product.js';
-import Order from './Order.js';
-import OrderItem from './OrderItem.js';
+import Client from './Client';
+import Product from './Product';
+import Order from './Order';
+import OrderItem from './OrderItem';
 
 const setupAssociations = () => {
   Client.hasMany(Order, { foreignKey: 'clientId' });
