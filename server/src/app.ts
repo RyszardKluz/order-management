@@ -11,11 +11,12 @@ import { ordersRoutes } from './routes/ordersRoutes';
 import errorHandler from './middleware/errorMiddleware';
 import sequelize from '../config/database';
 import setupAssociations from './models/associations';
+import { CLIENT_URL, PORT } from '../config/env';
 
 const app = express();
-const port = process.env.PORT;
+const port = PORT;
 const corsOptions = {
-  origin: process.env.CLIENT_URL,
+  origin: CLIENT_URL,
 };
 
 setupAssociations();

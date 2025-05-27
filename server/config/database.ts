@@ -1,14 +1,13 @@
 import { Sequelize } from 'sequelize';
+import { DB_NAME, DB_HOST, DB_USER, DB_PASSWORD, DB_PORT } from './env';
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME || '',
-  process.env.DB_USER || '',
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    dialect: 'mysql',
-    port: Number.parseInt(process.env.DB_PORT || ''),
-  },
-);
+  DB_NAME,
+  DB_USER,
+  DB_PASSWORD, {
+  host: DB_HOST,
+  dialect: 'mysql',
+  port:DB_PORT,
+});
 
 export default sequelize;
