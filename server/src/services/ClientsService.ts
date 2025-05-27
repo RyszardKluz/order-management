@@ -1,5 +1,5 @@
-import ClientsRepository from '../repositories/ClientsRepository.js';
-import AppError from '../errors/AppError.js';
+import ClientsRepository from '../repositories/ClientsRepository';
+import AppError from '../errors/AppError';
 
 class ClientsService {
   getClients = async (searchValue: string) => {

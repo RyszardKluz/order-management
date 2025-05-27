@@ -1,6 +1,6 @@
-import AppError from '../errors/AppError.js';
-import checkIfPriceIsNumber from '../helpers/checkIFPriceIsNumber.js';
-import Product from '../models/Product.js';
+import AppError from '../errors/AppError';
+import checkIfPriceIsNumber from '../helpers/checkIFPriceIsNumber';
+import Product from '../models/Product';
 import { Op } from 'sequelize';
 class ProductRepository {
   static filterProducts = async (query: string) => {

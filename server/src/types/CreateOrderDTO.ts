@@ -1,4 +1,4 @@
-import Product from './Product';
+import Product from './ProductType';
 
 type CreateOrderDTO = {
   clientId: string;

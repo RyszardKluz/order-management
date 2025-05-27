@@ -4,13 +4,13 @@ import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 
-import { homeRoutes } from './routes/homeRoutes.js';
-import { productsRoutes } from './routes/productsRoutes.js';
-import { clientsRoutes } from './routes/clientsRoutes.js';
-import { ordersRoutes } from './routes/ordersRoutes.js';
-import errorHandler from './middleware/errorMiddleware.js';
-import sequelize from '../config/database.js';
-import setupAssociations from './models/associations.js';
+import { homeRoutes } from './routes/homeRoutes';
+import { productsRoutes } from './routes/productsRoutes';
+import { clientsRoutes } from './routes/clientsRoutes';
+import { ordersRoutes } from './routes/ordersRoutes';
+import errorHandler from './middleware/errorMiddleware';
+import sequelize from '../config/database';
+import setupAssociations from './models/associations';
 
 const app = express();
 const port = process.env.PORT;

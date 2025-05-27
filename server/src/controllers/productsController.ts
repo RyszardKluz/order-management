@@ -1,5 +1,5 @@
-import ProductsService from '../services/ProductsService.js';
-import { ControllerFunction } from '../types/ControllerFunction.js';
+import ProductsService from '../services/ProductsService';
+import { ControllerFunction } from '../types/ControllerFunction';
 class ProductsController {
   private readonly productsService: ProductsService;
   constructor() {

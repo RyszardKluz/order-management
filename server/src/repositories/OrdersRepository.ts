@@ -1,11 +1,11 @@
-import sequelize from '../../config/database.js';
-import Order from '../models/Order.js';
-import OrderItem from '../models/OrderItem.js';
-import Product from '../models/Product.js';
-import AppError from '../errors/AppError.js';
-import Client from '../models/Client.js';
-import CreateOrderDTO from '../types/CreateOrderDTO.js';
-import { OrderWithJoins } from '../types/OrderWithJoins.js';
+import sequelize from '../../config/database';
+import Order from '../models/Order';
+import OrderItem from '../models/OrderItem';
+import Product from '../models/Product';
+import AppError from '../errors/AppError';
+import Client from '../models/Client';
+import CreateOrderDTO from '../types/CreateOrderDTO';
+import { OrderWithJoins } from '../types/OrderWithJoins';
 class OrdersRepository {
   static orders = [];
 
@@ -21,9 +21,9 @@ class OrdersRepository {
         );
 
         const orderItems = products.map((product) => ({
-          price: product.price,
+          price: product.productPrice,
           count: product.productCount,
-          productId: product.id,
+          productId: product.productId,
           orderId: newOrder.id,
         }));
 
