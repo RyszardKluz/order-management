@@ -1,6 +1,8 @@
 import deleteResource from './deleteResource';
 import generateMessage from './generateMessage';
 
+
+
 const deleteHandler = async (
   url,
   productId,
