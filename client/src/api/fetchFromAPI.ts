@@ -1,4 +1,4 @@
-const fetchFromAPI = async function (path) {
+const fetchFromAPI = async function (path: string): Promise<unknown> {
   try {
     const response = await fetch(`http://localhost:5000${path}`);
     if (!response.ok) {

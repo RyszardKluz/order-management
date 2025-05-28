@@ -1,9 +1,8 @@
-const sendToAPI = async (path, body, method) => {
+const deleteFromAPI = async (path: string): Promise<unknown> => {
   try {
     const response = await fetch(`http://localhost:5000${path}`, {
-      method: method,
+      method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
     });
     return await response.json();
   } catch (error) {
@@ -12,4 +11,4 @@ const sendToAPI = async (path, body, method) => {
   }
 };
 
-export default sendToAPI;
+export default deleteFromAPI;

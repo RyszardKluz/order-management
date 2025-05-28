@@ -1,8 +1,9 @@
-const deleteFromAPI = async (path) => {
+const sendToAPI = async (path: string, body: {}, method: string) => {
   try {
     const response = await fetch(`http://localhost:5000${path}`, {
-      method: 'DELETE',
+      method: method,
       headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
     });
     return await response.json();
   } catch (error) {
@@ -11,4 +12,4 @@ const deleteFromAPI = async (path) => {
   }
 };
 
-export default deleteFromAPI;
+export default sendToAPI;
