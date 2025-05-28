@@ -6,11 +6,10 @@ class ProductsController {
     this.productsService = new ProductsService();
   }
 
-  getProducts: ControllerFunction = async (req, res, next) => {
+  getProducts: ControllerFunction = async (req, res, next): Promise<void> => {
     let searchValue = req.query.query;
-    if (!searchValue) {
-      throw new Error();
-    } else if (typeof searchValue !== 'string') {
+
+    if (typeof searchValue !== 'string') {
       const parsedSearchValue = JSON.stringify(searchValue);
       searchValue = parsedSearchValue;
     }
@@ -23,7 +22,7 @@ class ProductsController {
     }
   };
 
-  addProduct: ControllerFunction = async (req, res, next) => {
+  addProduct: ControllerFunction = async (req, res, next): Promise<void> => {
     try {
       const product = await this.productsService.addProduct(req.body);
       res.status(200).json({ message: `Created ${product}`, ok: true });
@@ -31,7 +30,7 @@ class ProductsController {
       next(error);
     }
   };
-  changeProduct: ControllerFunction = async (req, res, next) => {
+  changeProduct: ControllerFunction = async (req, res, next): Promise<void> => {
     const { productId } = req.params;
     const { productName, productPrice } = req.body;
 
@@ -53,7 +52,7 @@ class ProductsController {
       next(error);
     }
   };
-  deleteProduct: ControllerFunction = async (req, res, next) => {
+  deleteProduct: ControllerFunction = async (req, res, next): Promise<void> => {
     const { productId } = req.params;
     console.log(productId);
 

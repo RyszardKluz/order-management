@@ -1,9 +1,10 @@
 import AppError from '../errors/AppError';
+import { ProductModel } from '../models/Product';
 import ProductRepository from '../repositories/ProductRepository';
 import ProductType from '../types/ProductType';
 
 class ProductsService {
-  getProducts = async (searchValue: string) => {
+  getProducts = async (searchValue: string): Promise<ProductModel[]> => {
     if (!searchValue) {
       const products = await ProductRepository.getProducts();
 
@@ -31,7 +32,7 @@ class ProductsService {
     productId: string,
     productName: string,
     productPrice: number,
-  ) => {
+  ): Promise<ProductModel> => {
     if (!productId && !productName && !productPrice) {
       throw new AppError('Wrong product details', 400);
     }
@@ -48,7 +49,7 @@ class ProductsService {
 
     return product;
   };
-  deleteProduct = async (productId: string) => {
+  deleteProduct = async (productId: string): Promise<void> => {
     if (!productId) {
       throw new AppError('Failed to delete product !', 400);
     }

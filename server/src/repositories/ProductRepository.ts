@@ -1,9 +1,9 @@
 import AppError from '../errors/AppError';
 import checkIfPriceIsNumber from '../helpers/checkIFPriceIsNumber';
-import Product from '../models/Product';
+import Product, { ProductModel } from '../models/Product';
 import { Op } from 'sequelize';
 class ProductRepository {
-  static filterProducts = async (query: string) => {
+  static filterProducts = async (query: string): Promise<ProductModel[]> => {
     try {
       const keys = Object.keys(Product.getAttributes());
 
@@ -41,7 +41,10 @@ class ProductRepository {
     }
   };
 
-  static addProduct = async (productName: string, productPrice: number) => {
+  static addProduct = async (
+    productName: string,
+    productPrice: number,
+  ): Promise<ProductModel> => {
     try {
       const newProduct = await Product.create({
         title: productName,
@@ -90,7 +93,7 @@ class ProductRepository {
     }
   };
 
-  static deleteProduct = (productId: string) => {
+  static deleteProduct = (productId: string): void => {
     try {
       Product.destroy({ where: { id: productId } });
     } catch (error) {

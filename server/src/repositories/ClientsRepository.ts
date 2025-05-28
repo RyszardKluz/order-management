@@ -1,9 +1,9 @@
 import AppError from '../errors/AppError';
-import Client from '../models/Client';
+import Client, { ClientModel } from '../models/Client';
 import { Op } from 'sequelize';
 
 class ClientsRepository {
-  static filterClients = async (query: string) => {
+  static filterClients = async (query: string): Promise<ClientModel[]> => {
     try {
       const keys = Object.keys(Client.getAttributes());
 
@@ -45,7 +45,7 @@ class ClientsRepository {
     clientName: string,
     clientSurname: string,
     clientAddress: string,
-  ) => {
+  ): Promise<ClientModel> => {
     try {
       const newClient = await Client.create({
         first_name: clientName,
@@ -91,7 +91,7 @@ class ClientsRepository {
     }
   };
 
-  static deleteClient = (clientId: string) => {
+  static deleteClient = (clientId: string): void => {
     try {
       Client.destroy({ where: { id: clientId } });
     } catch (error) {

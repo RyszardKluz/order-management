@@ -8,7 +8,7 @@ type ErrorHandler = (
   next: NextFunction,
 ) => void;
 
-const errorHandler: ErrorHandler = (err, req, res, next) => {
+const errorHandler: ErrorHandler = (err, req, res, next): void => {
   const statusCode = err.status || 500;
   const message = err.message || 'Internal Server Error';
 

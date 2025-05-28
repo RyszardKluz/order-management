@@ -3,7 +3,7 @@ import Product from './Product';
 import Order from './Order';
 import OrderItem from './OrderItem';
 
-const setupAssociations = () => {
+const setupAssociations = (): void => {
   Client.hasMany(Order, { foreignKey: 'clientId' });
   Order.belongsTo(Client, { foreignKey: 'clientId' });
 

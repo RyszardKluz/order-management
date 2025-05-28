@@ -7,16 +7,14 @@ class ClientsController {
     this.clientsService = new ClientsService();
   }
 
-  getClients: ControllerFunction = async (req, res, next) => {
+  getClients: ControllerFunction = async (req, res, next): Promise<void> => {
     let searchValue = req.query.query;
 
-    if (!searchValue) {
-      throw new Error();
-    } else if (typeof searchValue !== 'string') {
+    if (typeof searchValue !== 'string') {
       const parsedSearchValue = JSON.stringify(searchValue);
       searchValue = parsedSearchValue;
     }
-    
+
     try {
       const data = await this.clientsService.getClients(searchValue);
       res.status(200).json(data);
@@ -25,7 +23,7 @@ class ClientsController {
     }
   };
 
-  addClient: ControllerFunction = async (req, res, next) => {
+  addClient: ControllerFunction = async (req, res, next): Promise<void> => {
     const { clientName, clientSurname, clientAddress } = req.body;
     try {
       const newClient = await this.clientsService.addClient(
@@ -40,7 +38,7 @@ class ClientsController {
       next(error);
     }
   };
-  changeClient: ControllerFunction = async (req, res, next) => {
+  changeClient: ControllerFunction = async (req, res, next): Promise<void> => {
     const { clientId } = req.params;
     const { clientName, clientSurname, clientAddress } = req.body;
 
@@ -61,7 +59,7 @@ class ClientsController {
     }
   };
 
-  deleteClient: ControllerFunction = async (req, res, next) => {
+  deleteClient: ControllerFunction = async (req, res, next): Promise<void> => {
     const { clientId } = req.params;
     try {
       await this.clientsService.deleteClient(clientId);

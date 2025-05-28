@@ -1,9 +1,10 @@
 import OrdersRepository from '../repositories/OrdersRepository';
 import AppError from '../errors/AppError';
 import CreateOrderDTO from '../types/CreateOrderDTO';
+import OrderDTO from '../types/OrderDTO';
 
 class OrdersService {
-  createOrder = async (body: CreateOrderDTO) => {
+  createOrder = async (body: CreateOrderDTO): Promise<void> => {
     if (
       !body ||
       !body.products ||
@@ -20,12 +21,10 @@ class OrdersService {
       throw new AppError('Missing or invalid order details', 400);
     }
 
-    const order = OrdersRepository.createOrder(body);
-
-    return order;
+    OrdersRepository.createOrder(body);
   };
 
-  getOrders = async () => {
+  getOrders = async (): Promise<OrderDTO[]> => {
     const orders = OrdersRepository.getOrders();
     if (!orders) {
       throw new AppError('No orders found!', 404);
@@ -33,7 +32,7 @@ class OrdersService {
     return orders;
   };
 
-  showOrderDetails = async (orderId: string) => {
+  showOrderDetails = async (orderId: string): Promise<OrderDTO> => {
     const order = OrdersRepository.showOrderDetails(orderId);
     if (!order) {
       throw new AppError('Order not found!', 404);

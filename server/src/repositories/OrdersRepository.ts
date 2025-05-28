@@ -6,10 +6,11 @@ import AppError from '../errors/AppError';
 import Client from '../models/Client';
 import CreateOrderDTO from '../types/CreateOrderDTO';
 import { OrderWithJoins } from '../types/OrderWithJoins';
+import OrderDTO from '../types/OrderDTO';
 class OrdersRepository {
   static orders = [];
 
-  static createOrder = async (body: CreateOrderDTO) => {
+  static createOrder = async (body: CreateOrderDTO): Promise<void> => {
     try {
       await sequelize.transaction(async (t) => {
         const { products, clientId } = body;
@@ -39,7 +40,7 @@ class OrdersRepository {
     }
   };
 
-  static getOrders = async () => {
+  static getOrders = async (): Promise<OrderDTO[]> => {
     try {
       const ordersWithTotalPrice = (await Order.findAll({
         attributes: [
@@ -80,7 +81,7 @@ class OrdersRepository {
       })) as unknown as OrderWithJoins[];
 
       const orders = ordersWithTotalPrice.map((order) => ({
-        id: order.id,
+        orderId: order.id,
         totalPrice: order.dataValues.totalPrice,
         clientName: order.client.first_name,
         clientSurname: order.client.last_name,
@@ -100,7 +101,7 @@ class OrdersRepository {
     }
   };
 
-  static showOrderDetails = async (orderId: string) => {
+  static showOrderDetails = async (orderId: string): Promise<OrderDTO> => {
     try {
       const orderWithTotalPrice = (await Order.findByPk(orderId, {
         attributes: [

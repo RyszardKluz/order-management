@@ -6,7 +6,7 @@ class OrdersController {
   constructor() {
     this.ordersService = new OrdersService();
   }
-  createOrder: ControllerFunction = async (req, res, next) => {
+  createOrder: ControllerFunction = async (req, res, next): Promise<void> => {
     try {
       const order = await this.ordersService.createOrder(req.body);
       res
@@ -17,7 +17,7 @@ class OrdersController {
     }
   };
 
-  getOrders: ControllerFunction = async (req, res, next) => {
+  getOrders: ControllerFunction = async (req, res, next): Promise<void> => {
     try {
       const orders = await this.ordersService.getOrders();
       res.status(200).json(orders);
@@ -26,7 +26,11 @@ class OrdersController {
     }
   };
 
-  showOrderDetails: ControllerFunction = async (req, res, next) => {
+  showOrderDetails: ControllerFunction = async (
+    req,
+    res,
+    next,
+  ): Promise<void> => {
     const orderId = req.params.orderId;
     try {
       const currentOrder = await this.ordersService.showOrderDetails(orderId);

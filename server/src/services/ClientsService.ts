@@ -1,8 +1,9 @@
 import ClientsRepository from '../repositories/ClientsRepository';
 import AppError from '../errors/AppError';
+import { ClientModel } from '../models/Client';
 
 class ClientsService {
-  getClients = async (searchValue: string) => {
+  getClients = async (searchValue: string): Promise<ClientModel[]> => {
     if (!searchValue) {
       const clients = await ClientsRepository.getClients();
 
@@ -18,7 +19,7 @@ class ClientsService {
     clientName: string,
     clientSurname: string,
     clientAddress: string,
-  ) => {
+  ): Promise<ClientModel> => {
     console.log(clientName, clientAddress, clientSurname);
     if (
       !clientName ||
@@ -42,12 +43,12 @@ class ClientsService {
     clientName: string,
     clientSurname: string,
     clientAddress: string,
-  ) => {
+  ): Promise<ClientModel> => {
     if (!clientId && !clientName && !clientSurname && !clientAddress) {
       throw new AppError('Invalid details', 400);
     }
 
-    const updatedClient = ClientsRepository.changeClient(
+    const updatedClient = await ClientsRepository.changeClient(
       clientId,
       clientName,
       clientSurname,

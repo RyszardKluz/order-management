@@ -1,6 +1,6 @@
 import Product from './ProductType';
 
-type CreateOrderDTO = {
+interface CreateOrderDTO {
   clientId: string;
   clientName: string;
   clientAddress: string;

@@ -1,6 +1,6 @@
 import { ControllerFunction } from '../types/ControllerFunction';
 
-const index: ControllerFunction = (req, res) => {
+const index: ControllerFunction = (req, res): void => {
   res.send('Hello world!');
 };
 
