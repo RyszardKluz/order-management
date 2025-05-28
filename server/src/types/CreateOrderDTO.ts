@@ -5,6 +5,6 @@ interface CreateOrderDTO {
   clientName: string;
   clientAddress: string;
   products: Product[];
-};
+}
 
 export default CreateOrderDTO;

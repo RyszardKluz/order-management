@@ -14,4 +14,3 @@ interface OrderDTO {
 }
 
 export default OrderDTO;
-``
