@@ -1,4 +1,8 @@
-const sendToAPI = async (path: string, body: {}, method: string) => {
+const sendToAPI = async <T>(
+  path: string,
+  body: {},
+  method: string,
+): Promise<T> => {
   try {
     const response = await fetch(`http://localhost:5000${path}`, {
       method: method,
@@ -7,8 +11,7 @@ const sendToAPI = async (path: string, body: {}, method: string) => {
     });
     return await response.json();
   } catch (error) {
-    console.log(error);
-    return null;
+    throw new Error();
   }
 };
 
