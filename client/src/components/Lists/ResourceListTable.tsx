@@ -1,23 +1,42 @@
 import { useState } from 'react';
 import { Table } from 'react-bootstrap';
 import Checkbox from '../Checkbox';
+import { useResourceContext } from '../../store/ResourceLContext';
 
-const ResourceListTable = ({
-  onProductCountChange,
-  columnHeadings,
+type HasProductCount = { productCount?: number };
+
+type Props<T extends HasProductCount> = {
+  resourceId: keyof T;
+  resourceList: T[];
+  keyList: (keyof T)[];
+};
+
+const ResourceListTable = <T extends HasProductCount>({
   resourceList,
   resourceId,
-  hasCheckButton,
-  hasCountInput,
-  onRowClick,
-  onCheckboxClick,
   keyList,
-  isOrderDetailsList,
-  isOrderList,
-}) => {
-  const [productCounts, setProductCounts] = useState({});
+}: Props<T>) => {
+  const {
+    onCheckboxClick,
+    onRowSelect,
+    onProductCountChange,
+    hasCheckButton,
+    hasCountInput,
+    isOrderDetailsList,
+    isOrderList,
+    columnHeadings,
+  } = useResourceContext<T>();
 
-  const handleCountChange = (id, value) => {
+  const [productCounts, setProductCounts] = useState<Record<string, number>>(
+    {},
+  );
+
+  const getSafeKey = (value: unknown) =>
+    typeof value === 'string' || typeof value === 'number'
+      ? value
+      : String(value);
+
+  const handleCountChange = (id: string, value: number) => {
     if (!hasCountInput) {
       return;
     }
@@ -41,16 +60,18 @@ const ResourceListTable = ({
       <tbody>
         {resourceList.map((resource, index) => (
           <tr
-            key={resource[resourceId]}
+            key={getSafeKey(resource[resourceId])}
             onClick={
-              hasCheckButton || hasCountInput || isOrderList
-                ? undefined
-                : () => onRowClick(resource)
+              onRowSelect && !(hasCheckButton || hasCountInput || isOrderList)
+                ? () => onRowSelect(resource)
+                : undefined
             }
           >
             <td>{index + 1}</td>
             {keyList.map((key) => (
-              <td key={resource[key]}>{resource[key]}</td>
+              <td key={String(resource[key as keyof T])}>
+                {String(resource[key as keyof T])}
+              </td>
             ))}
 
             {hasCountInput && (
@@ -62,17 +83,17 @@ const ResourceListTable = ({
                   defaultValue={
                     isOrderDetailsList
                       ? resource.productCount || 1
-                      : productCounts[resource[resourceId]] || 1
+                      : productCounts[String(resource[resourceId])] || 1
                   }
                   onChange={(e) => {
                     if (onProductCountChange) {
                       onProductCountChange(
-                        resource[resourceId],
+                        resource[resourceId] as string,
                         Number(e.target.value),
                       );
                     }
                     handleCountChange(
-                      resource[resourceId],
+                      resource[resourceId] as string,
                       Number(e.target.value),
                     );
                   }}
@@ -83,10 +104,13 @@ const ResourceListTable = ({
               <td>
                 <Checkbox
                   handleClick={() => {
-                    onCheckboxClick({
-                      ...resource,
-                      productCount: productCounts[resource[resourceId]] || 1,
-                    });
+                    onCheckboxClick
+                      ? onCheckboxClick({
+                          ...resource,
+                          productCount:
+                            productCounts[String(resource[resourceId])] || 1,
+                        })
+                      : undefined;
                   }}
                 />
               </td>

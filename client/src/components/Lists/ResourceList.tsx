@@ -2,54 +2,24 @@ import ResourceListTable from './ResourceListTable';
 import getKeys from '../../helpers/getKeys';
 import uniqueById from '../../helpers/uniqueById';
 import getResourceId from '../../helpers/getResourceId';
+import { useResourceContext } from '../../store/ResourceLContext';
 
-const ResourceList = ({
-  resourceList,
-  columnHeadings,
-  onRowSelect,
-  onCheckboxClick,
-  hasCheckButton,
-  hasCountInput,
-  isOrderDetailsList,
-  isOrderList,
-  onProductCountChange,
-}) => {
+const ResourceList = <T extends Object>() => {
+  const { resourceList, isOrderDetailsList } = useResourceContext<T>();
+
   const filteredResourceList = isOrderDetailsList
     ? uniqueById(resourceList)
     : resourceList;
 
   const keyList = getKeys(resourceList, isOrderDetailsList);
 
-  const resourceId = getResourceId(resourceList);
-
-  const handleCheckboxClick = (resource) => {
-    if (!keyList || keyList.length === 0) {
-      return;
-    }
-    onCheckboxClick(resource);
-  };
-
-  const handleRowClick = (resource) => {
-    if (!keyList || keyList.length === 0) {
-      return;
-    }
-    const resourceId = resource[keyList[0]];
-    onRowSelect(resourceId);
-  };
+  const resourceId = getResourceId(resourceList) as keyof T;
 
   return (
     <ResourceListTable
-      onProductCountChange={onProductCountChange}
-      columnHeadings={columnHeadings}
-      onRowClick={handleRowClick}
-      onCheckboxClick={handleCheckboxClick}
-      hasCheckButton={hasCheckButton}
       resourceId={resourceId}
       resourceList={filteredResourceList}
       keyList={keyList}
-      hasCountInput={hasCountInput}
-      isOrderDetailsList={isOrderDetailsList}
-      isOrderList={isOrderList}
     />
   );
 };
