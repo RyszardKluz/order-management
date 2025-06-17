@@ -5,7 +5,7 @@ export interface ResourceContextType<T> {
   resourceList: T[];
   onCheckboxClick?: (resource: T) => void;
   onRowSelect?: (resource: T) => void;
-  onProductCountChange: (id: string, number: number) => void;
+  onProductCountChange?: (id: string, number: number) => void;
   hasCheckButton?: boolean;
   hasCountInput?: boolean;
   isOrderDetailsList: boolean;
@@ -26,7 +26,7 @@ export const useResourceContext = <T,>(): ResourceContextType<T> => {
   return context;
 };
 
-export const ResourceProvider = <T, >({
+export const ResourceProvider = <T,>({
   value,
   children,
 }: {

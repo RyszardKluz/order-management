@@ -5,12 +5,13 @@ import CustomButton from '../CustomButton';
 import FormModal from './FormModal';
 import { Fields } from '../../types/fields';
 import { ResourceFormState } from '../../types/form';
+import { ShowToastFunction } from '../../types/toast';
 type Props = {
   isVisible: boolean;
   resourceName: string;
   endpoint: string;
   onClose: () => void;
-  onShowToast: () => void;
+  onShowToast: ShowToastFunction;
   onSubmitSuccess: () => void;
   fields: Fields;
 };
@@ -24,7 +25,6 @@ const AddResourceModal = ({
   onSubmitSuccess,
   fields,
 }: Props) => {
-
   const initialState: ResourceFormState = fields.reduce(
     (acc, field) => ({ ...acc, [field.name]: '' }),
     {},

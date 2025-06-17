@@ -15,6 +15,8 @@ import {
   productsFields,
   productsHeaders,
 } from '../../config/products/productsFields.js';
+import { Product } from '../../types/resource';
+import { ResourceProvider } from '../../store/ResourceLContext';
 
 const ProductPage = () => {
   const [state, setState] = useState({
@@ -26,32 +28,34 @@ const ProductPage = () => {
 
   const { showToast, ToastComponent } = useToast();
 
-  const updateState = (newState) =>
+  const updateState = (newState: Record<string, unknown>) =>
     setState((prevState) => ({ ...prevState, ...newState }));
 
   const handleAddModalClose = () => updateState({ isAddModalVisible: false });
   const handleEditModalClose = () => updateState({ isEditModalVisible: false });
 
-  const fetchProducts = () => {
-    fetchResorce('/products', 'products', setState, showToast);
+  const fetchProducts = async () => {
+    const products = fetchResorce('/products', 'products', showToast);
+    updateState({ products: products });
   };
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  const handleSearch = async (searchValue) => {
-    searchResource(
+  const handleSearch = async (searchValue: string) => {
+    const data = await searchResource(
       '/products',
       searchValue,
-      updateState,
       showToast,
       'Product',
       'GET',
     );
+    updateState({ products: data });
   };
 
-  const handleRowClick = (id) => {
+  const handleRowClick = (product: Product) => {
+    const id = product.productId;
     updateState({ isEditModalVisible: true, selectedProductId: id });
   };
 
@@ -67,8 +71,6 @@ const ProductPage = () => {
         fields={productsFields}
         resourceName={'Product'}
         endpoint={'/products'}
-        action={'Enter'}
-        method={'POST'}
         onClose={handleAddModalClose}
         onSubmitSuccess={fetchProducts}
         onShowToast={showToast}
@@ -84,12 +86,18 @@ const ProductPage = () => {
         onSubmitSuccess={fetchProducts}
         onShowToast={showToast}
       />
+      <ResourceProvider<Product>
+        value={{
+          resourceList: state.products,
+          onRowSelect: handleRowClick,
+          columnHeadings: productsHeaders,
+          isOrderDetailsList: false,
+          
+        }}
+      >
+        <ResourceList<Product> />
+      </ResourceProvider>
 
-      <ResourceList
-        columnHeadings={productsHeaders}
-        onRowSelect={handleRowClick}
-        resourceList={state.products}
-      />
       <Container>
         <Row>
           <Col>

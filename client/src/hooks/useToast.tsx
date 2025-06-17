@@ -6,7 +6,7 @@ export const useToast = () => {
   const [toastVariant, setToastVariant] = useState('');
   const [toastBody, setShowBody] = useState('');
 
-  const show = (variant, body) => {
+  const show = (variant: string, body: string) => {
     setShowToast(true);
     setToastVariant(variant);
     setShowBody(body);

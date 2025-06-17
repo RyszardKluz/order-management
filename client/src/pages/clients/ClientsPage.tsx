@@ -9,13 +9,14 @@ import searchResource from '../../helpers/searchResource';
 import AddResourceModal from '../../components/Modals/AddResourceModal';
 import EditResourceModal from '../../components/Modals/EditResourceModal';
 import ResourceList from '../../components/Lists/ResourceList.jsx';
-
 import CustomButton from '../../components/CustomButton';
+import { ResourceProvider } from '../../store/ResourceLContext';
 
 import {
   clientColumnHeadings,
   clientFields,
 } from '../../config/clients/clientsFields';
+import { Client } from '../../types/resource';
 
 const ClientsPage = () => {
   const [state, setState] = useState({
@@ -30,32 +31,35 @@ const ClientsPage = () => {
 
   const { showToast, ToastComponent } = useToast();
 
-  const updateState = (newState) =>
+  const updateState = (newState: Record<string, unknown>) =>
     setState((prevState) => ({ ...prevState, ...newState }));
 
   const handleEditModalClose = () => updateState({ isEditModalVisible: false });
   const handleAddModalClose = () => updateState({ isAddModalVisible: false });
 
   const fetchClients = async () => {
-    await fetchResorce('/clients', 'clients', setState, showToast);
+    const data = await fetchResorce('/clients', 'clients', showToast);
+
+    updateState({ clients: data });
   };
 
   useEffect(() => {
     fetchClients();
   }, []);
 
-  const handleSearch = async (searchValue) => {
-    searchResource(
+  const handleSearch = async (searchValue: string) => {
+    const data = await searchResource(
       '/clients',
       searchValue,
-      updateState,
       showToast,
       'Client',
       'GET',
     );
+    updateState({ clients: data });
   };
 
-  const handleRowClick = (id) => {
+  const handleRowClick = (client: Client): void => {
+    const id = client.clientId;
     updateState({ isEditModalVisible: true, selectedClientId: id });
   };
 
@@ -88,11 +92,16 @@ const ClientsPage = () => {
         resourceName={'Client'}
       />
 
-      <ResourceList
-        onRowSelect={handleRowClick}
-        resourceList={state.clients}
-        columnHeadings={clientColumnHeadings}
-      />
+      <ResourceProvider<Client>
+        value={{
+          resourceList: state.clients,
+          onRowSelect: handleRowClick,
+          columnHeadings: clientColumnHeadings,
+          isOrderDetailsList: false,
+        }}
+      >
+        <ResourceList<Client> />
+      </ResourceProvider>
 
       <Container>
         <Row>
@@ -107,6 +116,7 @@ const ClientsPage = () => {
             <SearchInput
               formText="Look for clients by ID, or client name"
               onSearch={handleSearch}
+              type={'clientName/clientSurname/clientAddress'}
             />
           </Col>
           <Col>
