@@ -1,40 +1,55 @@
 import { Modal, Form } from 'react-bootstrap';
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import submitHandler from '../../helpers/submitHandler';
-import deleteHandler from '../../helpers/deleteHandler';
-import CustomButton from '../../components/CustomButton';
+import CustomButton from '../CustomButton';
 import FormModal from './FormModal';
+import { Fields } from '../../types/fields';
+import { ResourceFormState } from '../../types/form';
+type Props = {
+  isVisible: boolean;
+  resourceName: string;
+  endpoint: string;
+  onClose: () => void;
+  onShowToast: () => void;
+  onSubmitSuccess: () => void;
+  fields: Fields;
+};
 
-const EditResourceModal = ({
-  fields,
-  endpoint,
-  resourceId,
-  resourceName,
+const AddResourceModal = ({
   isVisible,
+  resourceName,
+  endpoint,
   onClose,
   onShowToast,
   onSubmitSuccess,
-}) => {
-  const initialState = fields.reduce((acc, field) => {
-    return { ...acc, [field.name]: '' };
-  }, {});
+  fields,
+}: Props) => {
+
+  const initialState: ResourceFormState = fields.reduce(
+    (acc, field) => ({ ...acc, [field.name]: '' }),
+    {},
+  );
 
   const [state, setState] = useState(initialState);
 
-  const updateState = (newState) =>
-    setState((prevState) => ({ ...prevState, ...newState }));
-
   const inputFieldsToValidate = fields.map((field) => field.name);
+
+  const updateState = (newState: ResourceFormState) => {
+    setState((prevState) => ({
+      ...prevState,
+      ...(newState as Record<string, string>),
+    }));
+  };
 
   const resetFormFields = () => {
     setState(initialState);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     submitHandler(
       e,
-      `${endpoint}/${resourceId}`,
-      'PATCH',
+      endpoint,
+      'POST',
       state,
       inputFieldsToValidate,
       resourceName,
@@ -42,18 +57,6 @@ const EditResourceModal = ({
       onClose,
       onSubmitSuccess,
       resetFormFields,
-    );
-  };
-
-  const handleDelete = () => {
-    deleteHandler(
-      endpoint,
-      resourceId,
-      'DELETE',
-      resourceName,
-      onShowToast,
-      onClose,
-      onSubmitSuccess,
     );
   };
 
@@ -68,30 +71,26 @@ const EditResourceModal = ({
       >
         <Form onSubmit={handleSubmit}>
           <Modal.Header closeButton>
-            <Modal.Title>Edit {resourceName} details</Modal.Title>
+            <Modal.Title>Enter {resourceName} details</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <FormModal
-              fields={fields}
               state={state}
               updateState={updateState}
+              fields={fields}
             />
           </Modal.Body>
           <Modal.Footer>
             <CustomButton
-              text={'Close'}
               variantOption={'secondary'}
+              text={'Close'}
               callback={onClose}
             />
+
             <CustomButton
-              text={`Update ${resourceName}`}
               variantOption={'primary'}
+              text={`Add ${resourceName}`}
               type="submit"
-            />
-            <CustomButton
-              variantOption={'danger'}
-              callback={handleDelete}
-              text={'Delete Client'}
             />
           </Modal.Footer>
         </Form>
@@ -100,4 +99,4 @@ const EditResourceModal = ({
   );
 };
 
-export default EditResourceModal;
+export default AddResourceModal;
