@@ -1,26 +1,16 @@
 import fetchFromAPI from '../api/fetchFromAPI';
+import { ShowToastFunction } from '../types/toast';
 import generateMessage from './generateMessage';
 
-const searchResource = async (
-  url,
-  searchValue,
-  setResource,
-  showToast,
-  resource,
-  method,
-) => {
+const searchResource = async <T>(
+  url: string,
+  searchValue: string,
+  showToast: ShowToastFunction,
+  resource: string,
+  method: string,
+): Promise<T> => {
   try {
-    let resourceKey;
-
-    if (resource === 'Product') {
-      resourceKey = 'products';
-    } else if (resource === 'Client') {
-      resourceKey = 'clients';
-    } else {
-      resourceKey = 'orders';
-    }
-
-    const data = await fetchFromAPI(
+    const data = await fetchFromAPI<T>(
       `${url}?query=${encodeURIComponent(searchValue)}`,
     );
     if (searchValue.toString().trim() === '') {
@@ -28,13 +18,18 @@ const searchResource = async (
     }
     if (!data) {
       showToast('danger', generateMessage('error', method, resource));
-      setResource({ [resourceKey]: [] });
-      return;
+      throw new Error('No data found');
     }
-    setResource({ [resourceKey]: data });
     showToast('success', generateMessage('success', method, resource));
+    return data;
   } catch (error) {
-    showToast('danger', error.message);
+    if (error instanceof Error) {
+      showToast('danger', error.message);
+      throw error;
+    } else {
+      showToast('danger', 'Something went wrong');
+      throw new Error('Something went wrong');
+    }
   }
 };
 

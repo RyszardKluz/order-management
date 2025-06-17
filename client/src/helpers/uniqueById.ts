@@ -1,4 +1,6 @@
-const uniqueById = (array) => {
+import { HasProductId } from '../types/resource';
+
+const uniqueById = <T extends HasProductId>(array: T[]): T[] => {
   const filteredResourceList = new Set();
 
   return array.filter((item) => {

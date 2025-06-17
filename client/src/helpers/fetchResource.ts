@@ -1,27 +1,22 @@
+import { ShowToastFunction } from '../types/toast';
 import fetchFromAPI from '../api/fetchFromAPI';
 
-const fetchResorce = async (url, resourceKey, setResource, showToast) => {
+const fetchResorce = async <T>(
+  url: string,
+  resourceKey: string,
+  showToast: ShowToastFunction,
+): Promise<T[]> => {
   try {
-    const data = await fetchFromAPI(url);
-
-    if (setResource) {
-      if (!data) {
-        setResource({ [resourceKey]: [] });
-      } else {
-        setResource({ [resourceKey]: data });
-      }
+    const data = (await fetchFromAPI(url)) as T[];
+    if (data === undefined) {
+      throw new Error(`Failed to fetch${resourceKey}`);
     }
-
     return data;
   } catch (error) {
-    console.log(error);
-    if (showToast) {
-      showToast('danger', `Failed to fetch ${resourceKey}`);
-    }
-    if (setResource) {
-      setResource({ [resourceKey]: [] });
-    }
-    throw error;
+    showToast('error', `Failed to fetch${resourceKey}`);
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else throw new Error('Something went wrong!');
   }
 };
 

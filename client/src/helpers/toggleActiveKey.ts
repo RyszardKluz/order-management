@@ -1,4 +1,8 @@
-const toggleActiveKey = (keyNumber, activeKey, setActiveKey) => {
+const toggleActiveKey = (
+  keyNumber: string,
+  activeKey: string,
+  setActiveKey: (keyNumber: string | null) => void,
+) => {
   if (activeKey === keyNumber) {
     setActiveKey(null);
     return;

@@ -1,7 +1,12 @@
+import { ShowToastFunction } from '../types/toast';
 import deleteFromAPI from '../api/deleteFromAPI';
-const deleteResource = async (url, showToast, resourceType) => {
+const deleteResource = async (
+  url: string,
+  showToast: ShowToastFunction,
+  resourceType: string,
+) => {
   try {
-    const response = await deleteFromAPI(url);
+    const response: Response = await deleteFromAPI(url);
 
     if (!response.ok) {
       throw new Error(`Failed to update ${resourceType} `);
@@ -10,7 +15,9 @@ const deleteResource = async (url, showToast, resourceType) => {
     showToast('success', `Sucessfuly deleted ${resourceType}`);
     return response;
   } catch (error) {
-    showToast('danger', error.message);
+    if (error instanceof Error) {
+      showToast('danger', error.message);
+    } else showToast('danger', 'Unexpected error occured');
   }
 };
 
