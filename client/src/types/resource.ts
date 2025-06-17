@@ -16,8 +16,17 @@ export interface OrderProduct extends Product {
 }
 
 export interface Order {
-  orderId: string;
-  totalPrice: number;
+  id: string;
   clientId: string;
+  clientName: string;
+  clientSurname: string;
+  clientAddress: string;
+  totalPrice: number;
   products: OrderProduct[];
 }
+
+export interface HasProductId {
+  productId: string;
+}
+
+export type Resource = Order | Product | Client;
