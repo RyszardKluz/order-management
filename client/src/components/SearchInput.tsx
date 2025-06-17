@@ -1,9 +1,15 @@
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 
-const SearchInput = ({ type, formText, onSearch }) => {
+type Props = {
+  type: string;
+  formText: string;
+  onSearch: (searchValue: string) => void;
+};
+
+const SearchInput = ({ type, formText, onSearch }: Props) => {
   const [searchValue, setSearchValue] = useState('');
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     onSearch(searchValue);
     setSearchValue('');
