@@ -3,8 +3,8 @@ import { ResourceFormState } from '../../types/form';
 import { Field, Fields } from '../../types/fields';
 
 type Props = {
-  state: ResourceFormState;
-  updateState: (arg: ResourceFormState) => void;
+  state: Record<string, string | number>;
+  updateState: (arg: Record<string, string | number>) => void;
   fields: Fields;
 };
 

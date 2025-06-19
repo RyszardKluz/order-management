@@ -1,4 +1,6 @@
-const getKeys = <T extends Record<string, unknown>>(
+import { Resource } from '../types/resource';
+
+const getKeys = <T extends Resource>(
   resourceList: T[],
   isOrderDetailsList: boolean,
 ): (keyof T)[] => {

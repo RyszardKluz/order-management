@@ -12,12 +12,12 @@ const submitHandler = async <T extends Resource>(
   endpoint: string,
   method: Method,
   resourceData: ResourceFormState,
-  resourceDataFields: string[],
+  resourceDataFields: string[] | null,
   resourceName: string,
   onShowToast: ShowToastFunction,
   onClose: () => void,
-  onSubmitSuccess: () => void,
-  resetFormFields: () => void,
+  onSubmitSuccess: null | (() => void),
+  resetFormFields: null | (() => void),
 ): Promise<void> => {
   e.preventDefault();
 
@@ -36,7 +36,9 @@ const submitHandler = async <T extends Resource>(
     if (onSubmitSuccess) {
       onSubmitSuccess();
     }
-    resetFormFields();
+    if (resetFormFields) {
+      resetFormFields();
+    }
   } catch (error) {
     if (error instanceof Error) {
       onShowToast('danger', error.message);

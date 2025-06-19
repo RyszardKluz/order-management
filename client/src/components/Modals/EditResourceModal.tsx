@@ -35,7 +35,7 @@ const EditResourceModal = ({
 
   const [state, setState] = useState(initialState);
 
-  const updateState = (newState: ResourceFormState) =>
+  const updateState = (newState: Record<string, unknown>) =>
     setState((prevState) => ({ ...prevState, ...newState }));
 
   const inputFieldsToValidate = fields.map((field) => field.name);

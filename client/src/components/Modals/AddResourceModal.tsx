@@ -25,19 +25,20 @@ const AddResourceModal = ({
   onSubmitSuccess,
   fields,
 }: Props) => {
-  const initialState: ResourceFormState = fields.reduce(
+  const initialState: Record<string, string | number> = fields.reduce(
     (acc, field) => ({ ...acc, [field.name]: '' }),
     {},
   );
 
-  const [state, setState] = useState(initialState);
+  const [state, setState] =
+    useState<Record<string, string | number>>(initialState);
 
   const inputFieldsToValidate = fields.map((field) => field.name);
 
-  const updateState = (newState: ResourceFormState) => {
+  const updateState = (newState: Record<string, string | number>) => {
     setState((prevState) => ({
       ...prevState,
-      ...(newState as Record<string, string>),
+      ...(newState as Record<string, string | number>),
     }));
   };
 

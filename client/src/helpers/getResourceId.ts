@@ -1,6 +1,6 @@
-const getResourceId = <T extends Record<string, unknown>>(
-  resourceList: T[],
-): string => {
+import { Resource } from '../types/resource';
+
+const getResourceId = <T extends Resource>(resourceList: T[]): string => {
   if (!resourceList || resourceList.length === 0) {
     throw new Error('Empty list');
   }

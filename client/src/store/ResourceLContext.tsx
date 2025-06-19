@@ -1,11 +1,13 @@
 // context/ResourceContext.tsx
 import { createContext, useContext } from 'react';
+import { ShowToastFunction } from '../types/toast';
 
 export interface ResourceContextType<T> {
   resourceList: T[];
-  onCheckboxClick?: (resource: T) => void;
+  onCheckboxClick?: (resource: T, type: string, keyNumber?: string) => void;
   onRowSelect?: (resource: T) => void;
   onProductCountChange?: (id: string, number: number) => void;
+  onShowToast? :ShowToastFunction
   hasCheckButton?: boolean;
   hasCountInput?: boolean;
   isOrderDetailsList: boolean;
