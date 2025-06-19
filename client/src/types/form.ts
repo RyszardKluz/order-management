@@ -1,1 +1,1 @@
-export type ResourceFormState = Record<string, string>;
+export type ResourceFormState = Record<string, unknown>;

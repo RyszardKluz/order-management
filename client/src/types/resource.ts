@@ -13,6 +13,13 @@ export interface Product {
 
 export interface OrderProduct extends Product {
   productCount: number;
+  id: string;
+  price: number;
+}
+export interface ClientFromDatabase extends Client {
+  first_name: string;
+  id: string;
+  address: string;
 }
 
 export interface Order {
@@ -29,4 +36,33 @@ export interface HasProductId {
   productId: string;
 }
 
-export type Resource = Order | Product | Client;
+export type Resource = Order | Product | Client | OrderProduct;
+
+export const isOrderProduct = (resource: any): resource is OrderProduct[] => {
+  return (
+    resource !== null &&
+    typeof resource === 'object' &&
+    typeof resource.productCount === 'number' &&
+    typeof resource.id === 'string' &&
+    typeof resource.productId === 'string' &&
+    typeof resource.productName === 'string' &&
+    typeof resource.productPrice === 'number'
+  );
+};
+
+export const isOrderProductList = (
+  resource: any,
+): resource is OrderProduct[] => {
+  return Array.isArray(resource) && resource.every(isOrderProduct);
+};
+
+export const hasProductId = (
+  resourceList: any,
+): resourceList is HasProductId[] => {
+  return (
+    Array.isArray(resourceList) &&
+    resourceList.every((entry) => {
+      return entry && typeof entry.productId === 'string';
+    })
+  );
+};

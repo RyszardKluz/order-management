@@ -1,4 +1,6 @@
-const calculateTotalAmount = (products) => {
+import { OrderProduct } from "../../../types/resource";
+
+const calculateTotalAmount = (products: OrderProduct[]) => {
   if (!products || products.length === 0) {
     return 0
   }

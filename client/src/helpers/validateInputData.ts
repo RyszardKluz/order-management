@@ -1,5 +1,5 @@
 const validateInputData = (
-  inputData: Record<string, string>,
+  inputData: Record<string, unknown>,
   inputFields: string[],
 ): void => {
   for (const [key] of Object.entries(inputData)) {
@@ -9,7 +9,9 @@ const validateInputData = (
   }
 
   const missingData = inputFields.filter(
-    (field) => !inputData[field] || inputData[field].trim() === '',
+    (field) =>
+      typeof inputData[field] === 'string' &&
+      (!inputData[field] || inputData[field].trim() === ''),
   );
 
   if (missingData.length > 0) {
