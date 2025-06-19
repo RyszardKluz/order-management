@@ -6,7 +6,7 @@
   "type": "commonjs",
   "main": "src/app.js",
   "scripts": {
-    "start": "nodemon --env-file .env ./src/app.js",
+    "start": "nodemon dist/src/app.js",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
