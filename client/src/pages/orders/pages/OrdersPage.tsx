@@ -7,7 +7,8 @@ import { useToast } from '../../../hooks/useToast';
 import ResourceList from '../../../components/Lists/ResourceList';
 import { ordersHeadeings } from '../../../config/orders/ordersFields';
 import OrderProductList from '../components/OrderProductList';
-
+import { Order } from '../../../types/resource';
+import { ResourceProvider } from '../../../store/ResourceLContext';
 const OrdersPage = () => {
   const [state, setState] = useState({
     isButtonHidden: false,
@@ -22,32 +23,27 @@ const OrdersPage = () => {
 
   const { showToast, ToastComponent } = useToast();
 
-  const updateState = (newState) =>
+  const updateState = (newState: Record<string, unknown>) =>
     setState((prevState) => ({ ...prevState, ...newState }));
 
   const handleHideCreateModal = () => {
     updateState({ isCreateModalVisible: false, isButtonHidden: false });
   };
 
-  const handleGetOrdersDetails = async () => {
-    const orders = await fetchResorce(
-      '/orders',
-      'orders',
-      updateState,
-      showToast,
-    );
+  const handleGetOrdersDetails = async (): Promise<void> => {
+    const orders = await fetchResorce<Order>('/orders', 'orders', showToast);
     if (orders && orders.length > 0) {
-      updateState({ orders });
+      updateState({ orders: orders });
       handleFilterOrdersList(orders);
     }
   };
 
-  const handleFilterOrdersList = (orders) => {
+  const handleFilterOrdersList = (orders: Order[]) => {
     if (!orders || orders.length === 0) {
       return;
     }
 
-    const orderList = state.orders.map((order) => ({
+    const orderList = state.orders.map((order: Order) => ({
       orderId: order.id,
       clientName: order.clientName,
       clientAddress: order.clientAddress,
@@ -58,15 +54,20 @@ const OrdersPage = () => {
     updateState({ filteredOrders: orderList });
   };
 
-  const handleshowCreateModal = async () => {
+  const handleshowCreateModal = async (): Promise<void> => {
     updateState({ isLoading: true });
 
     try {
-      await fetchResorce('/clients', 'clients', updateState);
+      const clients = await fetchResorce('/clients', 'clients', useToast);
 
-      await fetchResorce('/products', 'products', updateState);
+      const products = await fetchResorce('/products', 'products', useToast);
 
-      updateState({ isCreateModalVisible: true, isButtonHidden: true });
+      updateState({
+        isCreateModalVisible: true,
+        products: products,
+        clients: clients,
+        isButtonHidden: true,
+      });
     } catch (err) {
       showToast(
         'danger',
@@ -85,11 +86,18 @@ const OrdersPage = () => {
         </Row>
       </Container>
 
-      <ResourceList
-        isOrderList={true}
-        columnHeadings={ordersHeadeings}
-        resourceList={state.filteredOrders ? state.filteredOrders : []}
-      />
+      <ResourceProvider<Order>
+        value={{
+          resourceList: state.filteredOrders ? state.filteredOrders : [],
+          columnHeadings: ordersHeadeings,
+          isOrderDetailsList: false,
+          isOrderList: true,
+          onShowToast: showToast,
+        }}
+      >
+        <ResourceList<Order> />
+      </ResourceProvider>
+
       <div id="newOrder">
         <NewOrderModal
           onShowToast={showToast}
@@ -97,7 +105,7 @@ const OrdersPage = () => {
           onClose={handleHideCreateModal}
           clients={state.clients}
           products={state.products}
-          onGetOrderDetails={handleGetOrdersDetails}
+          // onGetOrderDetails={handleGetOrdersDetails}
         />
       </div>
 

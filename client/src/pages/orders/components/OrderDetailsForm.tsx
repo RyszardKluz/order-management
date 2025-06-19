@@ -1,31 +1,54 @@
 import { Form, FormLabel, InputGroup } from 'react-bootstrap';
 import OrderProductDetails from './OrderProductDetails';
-import { useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import calculateAmount from '../utils/calculateTotalAmount';
 import CustomButton from '../../../components/CustomButton';
 import submitHandler from '../../../helpers/submitHandler';
+import {
+  OrderProduct,
+  ClientFromDatabase,
+  Order,
+} from '../../../types/resource';
+import { ShowToastFunction } from '../../../types/toast';
+import { ResourceProvider } from '../../../store/ResourceLContext';
 
+type Props = {
+  products: OrderProduct[];
+  client: ClientFromDatabase | null;
+  onClose: () => void;
+  onResetFormFields: () => void;
+  onShowToast: ShowToastFunction;
+};
+
+interface IState {
+  clientId: string;
+  clientName: string;
+  clientAddress: string;
+  products: OrderProduct[];
+  totalPrice: number;
+  [key: string]: unknown;
+}
 function OrderDetailsForm({
   products,
   client,
   onClose,
   onResetFormFields,
   onShowToast,
-  onGetOrderDetails,
-}) {
-  const [state, setState] = useState({
+}: Props) {
+  const [state, setState] = useState<IState>({
     clientName: '',
     clientAddress: '',
     products: [],
     totalPrice: 0,
+    clientId: '',
   });
-  const updateState = (newState) => {
+  const updateState = (newState: Record<string, unknown>) => {
     setState((prev) => ({ ...prev, ...newState }));
   };
 
   useEffect(() => {
     if (client && Object.keys(client).length > 0) {
-      setState({
+      updateState({
         clientName: client.first_name || '',
         clientAddress: client.address || '',
         clientId: client.id || '',
@@ -46,10 +69,10 @@ function OrderDetailsForm({
     }
   }, [state.products]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (Object.keys(client).length === 0) {
+    if (client && Object.keys(client).length === 0) {
       onShowToast('danger', 'Please select a client.');
       return;
     }
@@ -70,12 +93,11 @@ function OrderDetailsForm({
       onClose,
       null,
       onResetFormFields,
-      onGetOrderDetails,
     );
   };
 
-  const handleUpdateProductCount = (id, value) => {
-    const updatedProducts = state.products.map((product) =>
+  const handleUpdateProductCount = (id: string, value: number) => {
+    const updatedProducts = state.products.map((product: OrderProduct) =>
       product.productId === id ? { ...product, productCount: value } : product,
     );
 
@@ -112,10 +134,17 @@ function OrderDetailsForm({
 
         <Form.Label>Order details</Form.Label>
         <InputGroup className="mb-3">
-          <OrderProductDetails
-            products={products}
-            onProductCountChange={handleUpdateProductCount}
-          />
+          <ResourceProvider<OrderProduct>
+            value={{
+              columnHeadings: ['Product', 'ProductPrice', 'Count'],
+              resourceList: products,
+              isOrderDetailsList: true,
+              onProductCountChange: handleUpdateProductCount,
+              hasCountInput: true,
+            }}
+          >
+            <OrderProductDetails />
+          </ResourceProvider>
         </InputGroup>
         <FormLabel style={{ marginBottom: '15px' }}>Total amount</FormLabel>
         <InputGroup className="mb-3">

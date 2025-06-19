@@ -5,32 +5,50 @@ import toggleActiveKey from '../../../helpers/toggleActiveKey';
 import OrderDetailsForm from './OrderDetailsForm';
 
 import { clientsOrdersHeadings } from '../../../config/clients/clientsFields';
-import { productsOrdersHeadings } from '../../../config/products/productsFields';
 import { useState } from 'react';
+import {
+  Client,
+  ClientFromDatabase,
+  OrderProduct,
+  Product,
+} from '../../../types/resource';
+import { ShowToastFunction } from '../../../types/toast';
+import { ResourceProvider } from '../../../store/ResourceLContext';
 
+type Props = {
+  isVisible: boolean;
+  onClose: () => void;
+  clients: ClientFromDatabase[];
+  products: OrderProduct[];
+  onShowToast: ShowToastFunction;
+};
 const NewOrderModal = ({
   isVisible,
   onClose,
   clients,
   products,
   onShowToast,
-  onGetOrderDetails,
-}) => {
-  const [activeKey, setActiveKey] = useState('0');
+}: Props) => {
+  const [activeKey, setActiveKey] = useState<string | null>('0');
 
-  const [selectedClients, setSelectedClients] = useState({});
-  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectedClients, setSelectedClients] =
+    useState<ClientFromDatabase | null>(null);
+  const [selectedProducts, setSelectedProducts] = useState<OrderProduct[]>([]);
 
   const handleResetFormFields = () => {
-    setSelectedClients({});
+    setSelectedClients(null);
     setSelectedProducts([]);
   };
 
-  const handleCheckboxClick = (resource, type, keyNumber) => {
+  const handleCheckboxClick = (
+    resource: OrderProduct | ClientFromDatabase,
+    type: string,
+    keyNumber?: string,
+  ) => {
     if (type === 'client') {
-      setSelectedClients(resource);
+      setSelectedClients(resource as ClientFromDatabase);
     } else if (type === 'product') {
-      setSelectedProducts((prev) => [...prev, resource]);
+      setSelectedProducts((prev) => [...prev, resource as OrderProduct]);
     }
     if (keyNumber) {
       setActiveKey(`${keyNumber}`);
@@ -42,7 +60,10 @@ const NewOrderModal = ({
       <Stack gap={5} className="col-md-10 mx-auto">
         <Modal
           size="lg"
-          onExit={(onClose, handleResetFormFields)}
+          onExit={() => {
+            onClose();
+            handleResetFormFields();
+          }}
           scrollable={true}
           backdrop="static"
           show={isVisible}
@@ -57,11 +78,11 @@ const NewOrderModal = ({
             <Modal.Title>Order details</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Accordion activeKey={activeKey} defaultActiveKey={0}>
+            <Accordion activeKey={activeKey} defaultActiveKey={'0'}>
               <Accordion.Item eventKey="0">
                 <Accordion.Header
                   onClick={() => {
-                    toggleActiveKey('0', activeKey, setActiveKey);
+                    toggleActiveKey('0', activeKey as string, setActiveKey);
                   }}
                 >
                   Clients
@@ -69,20 +90,23 @@ const NewOrderModal = ({
                 <Accordion.Body
                   style={{ maxHeight: '60vh', overflowY: 'auto' }}
                 >
-                  <ResourceList
-                    columnHeadings={clientsOrdersHeadings}
-                    resourceList={clients}
-                    hasCheckButton={true}
-                    onCheckboxClick={(resource) => {
-                      handleCheckboxClick(resource, 'client', '1');
+                  <ResourceProvider<ClientFromDatabase>
+                    value={{
+                      resourceList: clients,
+                      hasCheckButton: true,
+                      columnHeadings: clientsOrdersHeadings,
+                      isOrderDetailsList: false,
+                      onCheckboxClick: handleCheckboxClick,
                     }}
-                  />
+                  >
+                    <ResourceList<Client> />
+                  </ResourceProvider>
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="1">
                 <Accordion.Header
                   onClick={() => {
-                    toggleActiveKey('1', activeKey, setActiveKey);
+                    toggleActiveKey('1', activeKey as string, setActiveKey);
                   }}
                 >
                   Products
@@ -90,21 +114,24 @@ const NewOrderModal = ({
                 <Accordion.Body
                   style={{ maxHeight: '60vh', overflowY: 'auto' }}
                 >
-                  <ResourceList
-                    columnHeadings={productsOrdersHeadings}
-                    resourceList={products}
-                    hasCountInput={true}
-                    hasCheckButton={true}
-                    onCheckboxClick={(resource) => {
-                      handleCheckboxClick(resource, 'product');
+                  <ResourceProvider<OrderProduct>
+                    value={{
+                      resourceList: products,
+                      columnHeadings: clientsOrdersHeadings,
+                      isOrderDetailsList: false,
+                      hasCountInput: true,
+                      hasCheckButton: true,
+                      onCheckboxClick: handleCheckboxClick,
                     }}
-                  />
+                  >
+                    <ResourceList<Product> />
+                  </ResourceProvider>
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="2">
                 <Accordion.Header
                   onClick={() => {
-                    toggleActiveKey('2', activeKey, setActiveKey);
+                    toggleActiveKey('2', activeKey as string, setActiveKey);
                   }}
                 >
                   Order Summary
@@ -116,7 +143,6 @@ const NewOrderModal = ({
                     products={selectedProducts}
                     client={selectedClients}
                     onClose={onClose}
-                    onGetOrderDetails={onGetOrderDetails}
                   />
                 </Accordion.Body>
               </Accordion.Item>
