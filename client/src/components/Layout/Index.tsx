@@ -1,7 +1,12 @@
+import React from 'react';
 import { Container, Navbar, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-const Layout = ({ children }) => {
+type Props = {
+  children: React.ReactNode;
+};
+
+const Layout = ({ children }: Props) => {
   return (
     <>
       <Navbar
