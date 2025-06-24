@@ -15,7 +15,7 @@ import {
   productsFields,
   productsHeaders,
 } from '../../config/products/productsFields.js';
-import { Product } from '../../types/resource';
+import { OrderProduct, Product } from '../../types/resource';
 import { ResourceProvider } from '../../store/ResourceLContext';
 
 const ProductPage = () => {
@@ -35,7 +35,7 @@ const ProductPage = () => {
   const handleEditModalClose = () => updateState({ isEditModalVisible: false });
 
   const fetchProducts = async () => {
-    const products = fetchResorce('/products', 'products', showToast);
+    const products = await fetchResorce('/products', 'products', showToast);
     updateState({ products: products });
   };
 
@@ -55,7 +55,8 @@ const ProductPage = () => {
   };
 
   const handleRowClick = (product: Product) => {
-    const id = product.productId;
+    console.log(product);
+    const id = product.id;
     updateState({ isEditModalVisible: true, selectedProductId: id });
   };
 
@@ -86,13 +87,13 @@ const ProductPage = () => {
         onSubmitSuccess={fetchProducts}
         onShowToast={showToast}
       />
-      <ResourceProvider<Product>
+      <ResourceProvider<OrderProduct>
         value={{
           resourceList: state.products,
           onRowSelect: handleRowClick,
           columnHeadings: productsHeaders,
           isOrderDetailsList: false,
-          
+          onShowToast: showToast,
         }}
       >
         <ResourceList<Product> />

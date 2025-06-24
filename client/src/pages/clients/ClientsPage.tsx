@@ -39,7 +39,6 @@ const ClientsPage = () => {
 
   const fetchClients = async () => {
     const data = await fetchResorce('/clients', 'clients', showToast);
-
     updateState({ clients: data });
   };
 
@@ -59,7 +58,7 @@ const ClientsPage = () => {
   };
 
   const handleRowClick = (client: Client): void => {
-    const id = client.clientId;
+    const id = client.id;
     updateState({ isEditModalVisible: true, selectedClientId: id });
   };
 

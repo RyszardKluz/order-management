@@ -93,9 +93,14 @@ class ProductRepository {
     }
   };
 
-  static deleteProduct = (productId: string): void => {
+  static deleteProduct = async (productId: string): Promise<void> => {
     try {
-      Product.destroy({ where: { id: productId } });
+      const numberOfDeletedItems = await Product.destroy({
+        where: { id: productId },
+      });
+      if (numberOfDeletedItems === 0) {
+        throw new AppError('Failed to delete item', 404);
+      }
     } catch (error) {
       throw new AppError((error as Error).message, 500);
     }

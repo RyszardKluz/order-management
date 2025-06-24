@@ -1,3 +1,4 @@
+import AppError from '../errors/AppError';
 import ClientsService from '../services/ClientsService';
 import { ControllerFunction } from '../types/ControllerFunction';
 
@@ -61,7 +62,16 @@ class ClientsController {
 
   deleteClient: ControllerFunction = async (req, res, next): Promise<void> => {
     const { clientId } = req.params;
+
     try {
+      if (
+        !clientId ||
+        clientId.trim() === '' ||
+        clientId === 'undefined' ||
+        clientId === 'null'
+      ) {
+        throw new AppError('Missing client ID!', 400);
+      }
       await this.clientsService.deleteClient(clientId);
       res.status(200).json({ message: 'Client deleted succesfully', ok: true });
     } catch (error) {

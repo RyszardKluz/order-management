@@ -91,9 +91,14 @@ class ClientsRepository {
     }
   };
 
-  static deleteClient = (clientId: string): void => {
+  static deleteClient = async (clientId: string): Promise<void> => {
     try {
-      Client.destroy({ where: { id: clientId } });
+      const numbersOfClientsDeleted = await Client.destroy({
+        where: { id: clientId },
+      });
+      if (numbersOfClientsDeleted === 0) {
+        throw new AppError('No client deleted!', 404);
+      }
     } catch (error) {
       throw new AppError((error as Error).message, 500);
     }

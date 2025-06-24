@@ -1,3 +1,4 @@
+import AppError from '../errors/AppError';
 import ProductsService from '../services/ProductsService';
 import { ControllerFunction } from '../types/ControllerFunction';
 class ProductsController {
@@ -52,12 +53,20 @@ class ProductsController {
       next(error);
     }
   };
+
   deleteProduct: ControllerFunction = async (req, res, next): Promise<void> => {
     const { productId } = req.params;
-    console.log(productId);
 
     try {
-      this.productsService.deleteProduct(productId);
+      if (
+        !productId ||
+        productId.trim() === '' ||
+        productId === 'undefined' ||
+        productId === 'null'
+      ) {
+        throw new AppError('Missing product ID!', 400);
+      }
+      await this.productsService.deleteProduct(productId);
       res
         .status(200)
         .json({ message: 'Product deleted succesfully', ok: true });

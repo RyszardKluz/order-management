@@ -10,7 +10,8 @@ class ProductsService {
 
       return products;
     } else {
-      const filteredProducts = ProductRepository.filterProducts(searchValue);
+      const filteredProducts =
+        await ProductRepository.filterProducts(searchValue);
 
       return filteredProducts;
     }
@@ -25,7 +26,10 @@ class ProductsService {
     ) {
       throw new AppError('Invalid product details', 400);
     }
-    const product = ProductRepository.addProduct(productName, productPrice);
+    const product = await ProductRepository.addProduct(
+      productName,
+      productPrice,
+    );
     return product;
   };
   changeProduct = async (
@@ -37,7 +41,7 @@ class ProductsService {
       throw new AppError('Wrong product details', 400);
     }
 
-    const product = ProductRepository.changeProduct(
+    const product = await ProductRepository.changeProduct(
       productId,
       productName,
       productPrice,
@@ -50,11 +54,7 @@ class ProductsService {
     return product;
   };
   deleteProduct = async (productId: string): Promise<void> => {
-    if (!productId) {
-      throw new AppError('Failed to delete product !', 400);
-    }
-
-    ProductRepository.deleteProduct(productId);
+    await ProductRepository.deleteProduct(productId);
   };
 }
 

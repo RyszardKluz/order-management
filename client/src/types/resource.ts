@@ -1,20 +1,19 @@
 export interface Client {
-  clientId: string;
+  id: string;
   clientName: string;
   clientSurname: string;
   clientAddress: string;
 }
 
 export interface Product {
-  productId: string;
+  id: string;
   productPrice: number;
   productName: string;
 }
 
 export interface OrderProduct extends Product {
+  productId: string;
   productCount: number;
-  id: string;
-  price: number;
 }
 export interface ClientFromDatabase extends Client {
   first_name: string;
@@ -23,12 +22,11 @@ export interface ClientFromDatabase extends Client {
 }
 
 export interface Order {
-  id: string;
-  clientId: string;
+  orderId: string;
+  totalPrice: number;
   clientName: string;
   clientSurname: string;
   clientAddress: string;
-  totalPrice: number;
   products: OrderProduct[];
 }
 

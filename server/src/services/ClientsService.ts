@@ -30,7 +30,7 @@ class ClientsService {
       throw new AppError('Invalid clients details', 400);
     }
 
-    const newClient = ClientsRepository.addClient(
+    const newClient = await ClientsRepository.addClient(
       clientName,
       clientSurname,
       clientAddress,
@@ -64,7 +64,7 @@ class ClientsService {
     if (!clientId) {
       throw new AppError('Client not found', 404);
     }
-    ClientsRepository.deleteClient(clientId);
+    await ClientsRepository.deleteClient(clientId);
     return;
   };
 }
