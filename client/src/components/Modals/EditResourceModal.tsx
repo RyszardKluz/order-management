@@ -105,7 +105,7 @@ const EditResourceModal = ({
             <CustomButton
               variantOption={'danger'}
               callback={handleDelete}
-              text={'Delete Client'}
+              text={`Delete ${resourceName}`}
             />
           </Modal.Footer>
         </Form>
