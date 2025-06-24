@@ -14,7 +14,6 @@ class OrdersRepository {
     try {
       await sequelize.transaction(async (t) => {
         const { products, clientId } = body;
-        console.log(body);
 
         const newOrder = await Order.create(
           { clientId: clientId },
@@ -24,7 +23,7 @@ class OrdersRepository {
         const orderItems = products.map((product) => ({
           price: product.productPrice,
           count: product.productCount,
-          productId: product.productId,
+          productId: product.id,
           orderId: newOrder.id,
         }));
 
@@ -63,7 +62,7 @@ class OrdersRepository {
             include: [
               {
                 model: Product,
-                attributes: ['title'],
+                attributes: ['title', 'id'],
               },
             ],
           },
@@ -87,6 +86,7 @@ class OrdersRepository {
         clientSurname: order.client.last_name,
         clientAddress: order.client.address,
         products: order.order_items.map((item) => ({
+          productId: item.product.id,
           productName: item.product.title,
           productPrice: item.price,
           productCount: item.count,
@@ -146,6 +146,7 @@ class OrdersRepository {
         clientSurname: orderWithTotalPrice.client.last_name,
         clientAddress: orderWithTotalPrice.client.address,
         products: orderWithTotalPrice.order_items.map((item) => ({
+          productId: item.product.id,
           productName: item.product.title,
           productPrice: item.price,
           productCount: item.count,
@@ -154,6 +155,7 @@ class OrdersRepository {
       if (!order) {
         throw new AppError('Failed to fetch order !', 404);
       }
+
       return order;
     } catch (error) {
       throw new AppError((error as Error).message, 500);

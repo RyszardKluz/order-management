@@ -35,7 +35,11 @@ class ProductRepository {
       if (!products || products.length === 0) {
         throw new AppError('Failed to fetch products!', 404);
       }
-      return products;
+      const productWithNumericPrice = products.map((product) => ({
+        ...product.get(),
+        price: Number(product.price),
+      }));
+      return productWithNumericPrice;
     } catch (error) {
       throw new AppError((error as Error).message, 500);
     }
