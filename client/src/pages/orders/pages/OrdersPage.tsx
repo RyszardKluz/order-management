@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import NewOrderModal from '../components/NewOrderModal';
 import CustomButton from '../../../components/CustomButton';
@@ -6,7 +6,6 @@ import fetchResorce from '../../../helpers/fetchResource';
 import { useToast } from '../../../hooks/useToast';
 import ResourceList from '../../../components/Lists/ResourceList';
 import { ordersHeadeings } from '../../../config/orders/ordersFields';
-import OrderProductList from '../components/OrderProductList';
 import { Order } from '../../../types/resource';
 import { ResourceProvider } from '../../../store/ResourceLContext';
 const OrdersPage = () => {
@@ -43,11 +42,11 @@ const OrdersPage = () => {
       return;
     }
 
-    const orderList = state.orders.map((order: Order) => ({
+    const orderList = orders.map((order: Order) => ({
       orderId: order.id,
       clientName: order.clientName,
       clientAddress: order.clientAddress,
-      products: <OrderProductList productList={order.products} />,
+      products: order.products.map((product) => product.title),
       totalPrice: order.totalPrice,
     }));
 
@@ -78,6 +77,10 @@ const OrdersPage = () => {
     }
   };
 
+  useEffect(() => {
+    handleGetOrdersDetails();
+  }, []);
+
   return (
     <>
       <Container>
@@ -105,7 +108,6 @@ const OrdersPage = () => {
           onClose={handleHideCreateModal}
           clients={state.clients}
           products={state.products}
-          // onGetOrderDetails={handleGetOrdersDetails}
         />
       </div>
 
