@@ -90,7 +90,7 @@ const ResourceListTable = <T extends Resource>({
                   min={1}
                   defaultValue={
                     isOrderDetailsList && hasProductCount(resource)
-                      ? resource.productCount 
+                      ? resource.productCount
                       : productCounts[String(resource[resourceId])] || 1
                   }
                   onChange={(e) => {

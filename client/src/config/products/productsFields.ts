@@ -11,4 +11,3 @@ export const productsOrdersHeadings = [
   'Product Price',
   'Select Product',
 ];
-  
