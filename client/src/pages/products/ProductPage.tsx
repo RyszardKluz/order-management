@@ -2,15 +2,15 @@ import { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 
 import SearchInput from '../../components/SearchInput';
-import { useToast } from '../../hooks/useToast.jsx';
+import { useToast } from '../../hooks/useToast';
 
 import fetchResorce from '../../helpers/fetchResource.js';
 import searchResource from '../../helpers/searchResource.js';
-import AddResourceModal from '../../components/Modals/AddResourceModal.jsx';
-import EditResourceModal from '../../components/Modals/EditResourceModal.jsx';
+import AddResourceModal from '../../components/Modals/AddResourceModal';
+import EditResourceModal from '../../components/Modals/EditResourceModal';
 
-import ResourceList from '../../components/Lists/ResourceList.jsx';
-import CustomButton from '../../components/CustomButton.jsx';
+import ResourceList from '../../components/Lists/ResourceList';
+import CustomButton from '../../components/CustomButton';
 import {
   productsFields,
   productsHeaders,

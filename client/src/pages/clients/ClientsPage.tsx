@@ -8,7 +8,7 @@ import searchResource from '../../helpers/searchResource';
 
 import AddResourceModal from '../../components/Modals/AddResourceModal';
 import EditResourceModal from '../../components/Modals/EditResourceModal';
-import ResourceList from '../../components/Lists/ResourceList.jsx';
+import ResourceList from '../../components/Lists/ResourceList';
 import CustomButton from '../../components/CustomButton';
 import { ResourceProvider } from '../../store/ResourceLContext';
 
