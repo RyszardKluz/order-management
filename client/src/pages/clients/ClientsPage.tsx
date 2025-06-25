@@ -47,16 +47,20 @@ const ClientsPage = () => {
   }, []);
 
   const handleSearch = async (searchValue: string) => {
-    const data = await searchResource(
-      '/clients',
-      searchValue,
-      showToast,
-      'Client',
-      'GET',
-    );
-    updateState({ clients: data });
+    try {
+      const data = await searchResource(
+        '/clients',
+        searchValue,
+        showToast,
+        'Client',
+        'GET',
+      );
+      updateState({ clients: data });
+    } catch (error) {
+      showToast('danger', (error as Error).message);
+      updateState({ clients: [] });
+    }
   };
-
   const handleRowClick = (client: Client): void => {
     const id = client.id;
     updateState({ isEditModalVisible: true, selectedClientId: id });

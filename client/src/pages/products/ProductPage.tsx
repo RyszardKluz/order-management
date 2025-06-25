@@ -44,18 +44,22 @@ const ProductPage = () => {
   }, []);
 
   const handleSearch = async (searchValue: string) => {
-    const data = await searchResource(
-      '/products',
-      searchValue,
-      showToast,
-      'Product',
-      'GET',
-    );
-    updateState({ products: data });
+    try {
+      const data = await searchResource(
+        '/products',
+        searchValue,
+        showToast,
+        'Product',
+        'GET',
+      );
+      updateState({ products: data });
+    } catch (error) {
+      showToast('danger', (error as Error).message);
+      updateState({ products: [] });
+    }
   };
 
   const handleRowClick = (product: Product) => {
-    console.log(product);
     const id = product.id;
     updateState({ isEditModalVisible: true, selectedProductId: id });
   };
