@@ -2,19 +2,24 @@ import { useState } from 'react';
 import { Table } from 'react-bootstrap';
 import Checkbox from '../Checkbox';
 import { useResourceContext } from '../../store/ResourceLContext';
+import { isClientList, Resource, isProductList } from '../../types/resource';
 
-type HasProductCount = { productCount?: number };
+interface HasProductCount {
+  productCount: number;
+}
 
-type Props<T extends HasProductCount> = {
+type Props<T extends Resource> = {
   resourceId: keyof T;
   resourceList: T[];
   keyList: (keyof T)[];
+  columnHeadings: string[];
 };
 
-const ResourceListTable = <T extends HasProductCount>({
+const ResourceListTable = <T extends Resource>({
   resourceList,
   resourceId,
   keyList,
+  columnHeadings,
 }: Props<T>) => {
   const {
     onCheckboxClick,
@@ -24,7 +29,6 @@ const ResourceListTable = <T extends HasProductCount>({
     hasCountInput,
     isOrderDetailsList,
     isOrderList,
-    columnHeadings,
   } = useResourceContext<T>();
 
   const [productCounts, setProductCounts] = useState<Record<string, number>>(
@@ -44,6 +48,10 @@ const ResourceListTable = <T extends HasProductCount>({
       ...prev,
       [id]: value,
     }));
+  };
+
+  const hasProductCount = (resource: any): resource is HasProductCount => {
+    return typeof resource.productCount === 'number';
   };
 
   return (
@@ -81,8 +89,8 @@ const ResourceListTable = <T extends HasProductCount>({
                   style={{ width: '50px', fontSize: '0.8rem', padding: '2px' }}
                   min={1}
                   defaultValue={
-                    isOrderDetailsList
-                      ? resource.productCount || 1
+                    isOrderDetailsList && hasProductCount(resource)
+                      ? resource.productCount 
                       : productCounts[String(resource[resourceId])] || 1
                   }
                   onChange={(e) => {
@@ -100,21 +108,35 @@ const ResourceListTable = <T extends HasProductCount>({
                 />
               </td>
             )}
-            {hasCheckButton && (
-              <td>
-                <Checkbox
-                  handleClick={() => {
-                    onCheckboxClick
-                      ? onCheckboxClick({
+            {hasCheckButton &&
+              onCheckboxClick &&
+              isProductList(resourceList) && (
+                <td>
+                  <Checkbox
+                    handleClick={() => {
+                      onCheckboxClick(
+                        {
                           ...resource,
                           productCount:
                             productCounts[String(resource[resourceId])] || 1,
-                        })
-                      : undefined;
-                  }}
-                />
-              </td>
-            )}
+                        },
+                        'product',
+                      );
+                    }}
+                  />
+                </td>
+              )}
+            {hasCheckButton &&
+              onCheckboxClick &&
+              isClientList(resourceList) && (
+                <td>
+                  <Checkbox
+                    handleClick={() => {
+                      onCheckboxClick(resource, 'client', '1');
+                    }}
+                  />
+                </td>
+              )}
           </tr>
         ))}
       </tbody>
