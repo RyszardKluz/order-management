@@ -6,6 +6,7 @@
   "type": "commonjs",
   "main": "src/app.js",
   "scripts": {
+    "dev": "nodemon --watch src --ext ts --exec ts-node src/app.ts",
     "start": "nodemon dist/src/app.js",
     "lint": "eslint .",
     "format": "prettier --write ."
