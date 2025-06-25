@@ -35,8 +35,6 @@ class ProductsController {
     const { productId } = req.params;
     const { productName, productPrice } = req.body;
 
-    console.log(productId, productName);
-
     try {
       const product = await this.productsService.changeProduct(
         productId,
