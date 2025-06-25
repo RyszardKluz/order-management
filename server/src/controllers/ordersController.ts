@@ -1,5 +1,8 @@
+import AppError from '../errors/AppError';
+import { ProductModel } from '../models/Product';
 import OrdersService from '../services/OrdersService';
 import { ControllerFunction } from '../types/ControllerFunction';
+import OrderDTO, { Product } from '../types/OrderDTO';
 
 class OrdersController {
   private readonly ordersService: OrdersService;
@@ -8,6 +11,27 @@ class OrdersController {
   }
   createOrder: ControllerFunction = async (req, res, next): Promise<void> => {
     try {
+      const { clientName, clientAddress, clientId, products, totalPrice } =
+        req.body;
+
+      if (
+        !clientName ||
+        !clientAddress ||
+        !clientId ||
+        !products ||
+        !totalPrice ||
+        !Array.isArray(products) ||
+        products.some(
+          (product: Product) =>
+            !product.id ||
+            !product.price ||
+            !product.title ||
+            !product.productCount,
+        )
+      ) {
+        throw new AppError('Missing order detail!', 404);
+      }
+
       const order = await this.ordersService.createOrder(req.body);
       res
         .status(200)

@@ -1,37 +1,32 @@
-export interface Client {
-  id: string;
-  clientName: string;
-  clientSurname: string;
-  clientAddress: string;
-}
-
 export interface Product {
   id: string;
-  productPrice: number;
-  productName: string;
+  price: number;
+  title: string;
+  productCount?: number;
 }
 
 export interface OrderProduct extends Product {
-  productId: string;
-  productCount: number;
+  totalPrice: number;
 }
-export interface ClientFromDatabase extends Client {
+
+export interface Client {
   first_name: string;
+  last_name: string;
   id: string;
   address: string;
 }
 
 export interface Order {
-  orderId: string;
+  id: string;
   totalPrice: number;
   clientName: string;
   clientSurname: string;
   clientAddress: string;
-  products: OrderProduct[];
+  products: Product[];
 }
 
 export interface HasProductId {
-  productId: string;
+  id: string;
 }
 
 export type Resource = Order | Product | Client | OrderProduct;
@@ -48,12 +43,39 @@ export const isOrderProduct = (resource: any): resource is OrderProduct[] => {
   );
 };
 
+export const isProduct = (resource: any): resource is Product => {
+  return (
+    resource !== null &&
+    typeof resource === 'object' &&
+    typeof resource.id === 'string' &&
+    typeof resource.price === 'number' &&
+    typeof resource.title === 'string'
+  );
+};
+
+export const isClient = (resource: any): resource is Client => {
+  return (
+    resource !== null &&
+    typeof resource === 'object' &&
+    typeof resource.first_name === 'string' &&
+    typeof resource.address === 'string' &&
+    typeof resource.id === 'string'
+  );
+};
+
 export const isOrderProductList = (
   resource: any,
 ): resource is OrderProduct[] => {
   return Array.isArray(resource) && resource.every(isOrderProduct);
 };
 
+export const isProductList = (resource: any): resource is Product[] => {
+  return Array.isArray(resource) && resource.every(isProduct);
+};
+
+export const isClientList = (resource: any): resource is Client[] => {
+  return Array.isArray(resource) && resource.every(isClient);
+};
 export const hasProductId = (
   resourceList: any,
 ): resourceList is HasProductId[] => {

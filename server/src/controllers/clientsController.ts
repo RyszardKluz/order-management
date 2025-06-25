@@ -25,12 +25,12 @@ class ClientsController {
   };
 
   addClient: ControllerFunction = async (req, res, next): Promise<void> => {
-    const { clientName, clientSurname, clientAddress } = req.body;
+    const { first_name, last_name, address } = req.body;
     try {
       const newClient = await this.clientsService.addClient(
-        clientName,
-        clientSurname,
-        clientAddress,
+        first_name,
+        last_name,
+        address,
       );
       res
         .status(200)

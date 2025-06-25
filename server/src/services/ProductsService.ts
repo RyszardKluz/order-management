@@ -17,18 +17,18 @@ class ProductsService {
     }
   };
   addProduct = async (body: ProductType) => {
-    const { productName, productPrice } = body;
+    const { title, price } = body;
     if (
-      !productName ||
-      typeof productName !== 'string' ||
-      !productPrice ||
-      isNaN(productPrice)
+      !title ||
+      typeof title !== 'string' ||
+      !price ||
+      isNaN(price)
     ) {
       throw new AppError('Invalid product details', 400);
     }
     const product = await ProductRepository.addProduct(
-      productName,
-      productPrice,
+      title,
+      price,
     );
     return product;
   };

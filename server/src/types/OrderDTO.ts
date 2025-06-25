@@ -1,16 +1,17 @@
-type Products = {
-  productName: string;
-  productPrice: number;
+export type Product = {
+  id:string  
+  title: string;
+  price: number;
   productCount: number;
 };
 
 interface OrderDTO {
-  orderId: string;
+  id: string;
   totalPrice: number;
   clientName: string;
   clientSurname: string;
   clientAddress: string;
-  products: Products[];
+  products: Product[];
 }
 
 export default OrderDTO;

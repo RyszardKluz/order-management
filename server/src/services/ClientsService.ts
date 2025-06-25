@@ -20,7 +20,6 @@ class ClientsService {
     clientSurname: string,
     clientAddress: string,
   ): Promise<ClientModel> => {
-    console.log(clientName, clientAddress, clientSurname);
     if (
       !clientName ||
       typeof clientName !== 'string' ||

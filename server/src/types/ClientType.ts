@@ -1,8 +1,8 @@
 type ClientType = {
   clientId: string;
-  clientName: string;
-  clientSurname: string;
-  clientAddress: string;
+  first_name: string;
+  last_name: string;
+  address: string;
 };
 
 export default ClientType;

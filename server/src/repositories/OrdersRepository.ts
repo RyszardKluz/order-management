@@ -21,7 +21,7 @@ class OrdersRepository {
         );
 
         const orderItems = products.map((product) => ({
-          price: product.productPrice,
+          price: product.price,
           count: product.productCount,
           productId: product.id,
           orderId: newOrder.id,
@@ -80,15 +80,15 @@ class OrdersRepository {
       })) as unknown as OrderWithJoins[];
 
       const orders = ordersWithTotalPrice.map((order) => ({
-        orderId: order.id,
+        id: order.id,
         totalPrice: order.dataValues.totalPrice,
         clientName: order.client.first_name,
         clientSurname: order.client.last_name,
         clientAddress: order.client.address,
         products: order.order_items.map((item) => ({
-          productId: item.product.id,
-          productName: item.product.title,
-          productPrice: item.price,
+          id: item.product.id,
+          title: item.product.title,
+          price: item.price,
           productCount: item.count,
         })),
       }));
@@ -140,15 +140,15 @@ class OrdersRepository {
       }
 
       const order = {
-        orderId: orderWithTotalPrice.id,
+        id: orderWithTotalPrice.id,
         totalPrice: orderWithTotalPrice.totalPrice,
         clientName: orderWithTotalPrice.client.first_name,
         clientSurname: orderWithTotalPrice.client.last_name,
         clientAddress: orderWithTotalPrice.client.address,
         products: orderWithTotalPrice.order_items.map((item) => ({
-          productId: item.product.id,
-          productName: item.product.title,
-          productPrice: item.price,
+          id: item.product.id,
+          title: item.product.title,
+          price: item.price,
           productCount: item.count,
         })),
       };
