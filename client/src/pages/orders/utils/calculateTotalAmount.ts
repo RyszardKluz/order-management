@@ -1,15 +1,18 @@
-import { OrderProduct } from "../../../types/resource";
+import { Product } from '../../../types/resource';
 
-const calculateTotalAmount = (products: OrderProduct[]) => {
+const calculateTotalAmount = (products: Product[]) => {
   if (!products || products.length === 0) {
-    return 0
+    return 0;
   }
   let totalAmount = 0;
 
   for (const product of products) {
-    const price = product.price * product.productCount;
-    totalAmount += price;
-  } return totalAmount.toFixed(2)
+    if (product.productCount) {
+      const price = product.price * product.productCount;
+      totalAmount += price;
+    }
+  }
+  return totalAmount.toFixed(2);
 };
 
 export default calculateTotalAmount;
