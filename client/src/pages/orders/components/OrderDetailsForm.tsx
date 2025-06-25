@@ -4,17 +4,13 @@ import { FormEvent, useEffect, useState } from 'react';
 import calculateAmount from '../utils/calculateTotalAmount';
 import CustomButton from '../../../components/CustomButton';
 import submitHandler from '../../../helpers/submitHandler';
-import {
-  OrderProduct,
-  ClientFromDatabase,
-  Order,
-} from '../../../types/resource';
+import { Client, Product } from '../../../types/resource';
 import { ShowToastFunction } from '../../../types/toast';
 import { ResourceProvider } from '../../../store/ResourceLContext';
 
 type Props = {
-  products: OrderProduct[];
-  client: ClientFromDatabase | null;
+  products: Product[];
+  client: Client | null;
   onClose: () => void;
   onResetFormFields: () => void;
   onShowToast: ShowToastFunction;
@@ -24,7 +20,7 @@ interface IState {
   clientId: string;
   clientName: string;
   clientAddress: string;
-  products: OrderProduct[];
+  products: Product[];
   totalPrice: number;
   [key: string]: unknown;
 }
@@ -97,8 +93,8 @@ function OrderDetailsForm({
   };
 
   const handleUpdateProductCount = (id: string, value: number) => {
-    const updatedProducts = state.products.map((product: OrderProduct) =>
-      product.productId === id ? { ...product, productCount: value } : product,
+    const updatedProducts = state.products.map((product: Product) =>
+      product.id === id ? { ...product, productCount: value } : product,
     );
 
     updateState({ products: updatedProducts });
@@ -134,9 +130,14 @@ function OrderDetailsForm({
 
         <Form.Label>Order details</Form.Label>
         <InputGroup className="mb-3">
-          <ResourceProvider<OrderProduct>
+          <ResourceProvider<Product>
             value={{
-              columnHeadings: ['Product', 'ProductPrice', 'Count'],
+              columnHeadings: [
+                'Product Id',
+                'Product',
+                'ProductPrice',
+                'Count',
+              ],
               resourceList: products,
               isOrderDetailsList: true,
               onProductCountChange: handleUpdateProductCount,

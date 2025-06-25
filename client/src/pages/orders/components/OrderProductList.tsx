@@ -1,8 +1,8 @@
 import ListGroup from 'react-bootstrap/ListGroup';
-import { OrderProduct } from '../../../types/resource';
+import { Product } from '../../../types/resource';
 
 type Props = {
-  productList: OrderProduct[];
+  productList: Product[];
 };
 
 function OrderProductList({ productList }: Props) {
@@ -13,9 +13,9 @@ function OrderProductList({ productList }: Props) {
           <ListGroup.Item
             as="li"
             key={product.id || index}
-            title={`Price : ${product.productPrice} , Count :${product.productCount}`}
+            title={`Price : ${product.price} , Count :${product.productCount}`}
           >
-            {product.productName}
+            {product.title}
           </ListGroup.Item>
         );
       })}

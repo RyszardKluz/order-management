@@ -6,19 +6,15 @@ import OrderDetailsForm from './OrderDetailsForm';
 
 import { clientsOrdersHeadings } from '../../../config/clients/clientsFields';
 import { useState } from 'react';
-import {
-  Client,
-  ClientFromDatabase,
-  OrderProduct,
-  Product,
-} from '../../../types/resource';
+import { Client, OrderProduct, Product } from '../../../types/resource';
 import { ShowToastFunction } from '../../../types/toast';
 import { ResourceProvider } from '../../../store/ResourceLContext';
+import { productsOrdersHeadings } from '../../../config/products/productsFields';
 
 type Props = {
   isVisible: boolean;
   onClose: () => void;
-  clients: ClientFromDatabase[];
+  clients: Client[];
   products: OrderProduct[];
   onShowToast: ShowToastFunction;
 };
@@ -31,8 +27,7 @@ const NewOrderModal = ({
 }: Props) => {
   const [activeKey, setActiveKey] = useState<string | null>('0');
 
-  const [selectedClients, setSelectedClients] =
-    useState<ClientFromDatabase | null>(null);
+  const [selectedClients, setSelectedClients] = useState<Client | null>(null);
   const [selectedProducts, setSelectedProducts] = useState<OrderProduct[]>([]);
 
   const handleResetFormFields = () => {
@@ -41,12 +36,12 @@ const NewOrderModal = ({
   };
 
   const handleCheckboxClick = (
-    resource: OrderProduct | ClientFromDatabase,
+    resource: Product | Client,
     type: string,
     keyNumber?: string,
   ) => {
     if (type === 'client') {
-      setSelectedClients(resource as ClientFromDatabase);
+      setSelectedClients(resource as Client);
     } else if (type === 'product') {
       setSelectedProducts((prev) => [...prev, resource as OrderProduct]);
     }
@@ -90,7 +85,7 @@ const NewOrderModal = ({
                 <Accordion.Body
                   style={{ maxHeight: '60vh', overflowY: 'auto' }}
                 >
-                  <ResourceProvider<ClientFromDatabase>
+                  <ResourceProvider<Client>
                     value={{
                       resourceList: clients,
                       hasCheckButton: true,
@@ -114,10 +109,10 @@ const NewOrderModal = ({
                 <Accordion.Body
                   style={{ maxHeight: '60vh', overflowY: 'auto' }}
                 >
-                  <ResourceProvider<OrderProduct>
+                  <ResourceProvider<Product>
                     value={{
                       resourceList: products,
-                      columnHeadings: clientsOrdersHeadings,
+                      columnHeadings: productsOrdersHeadings,
                       isOrderDetailsList: false,
                       hasCountInput: true,
                       hasCheckButton: true,
