@@ -8,7 +8,7 @@ interface HasProductCount {
   productCount: number;
 }
 
-type Props<T extends Resource> = {
+type ResourceListTableProps<T extends Resource> = {
   resourceId: keyof T;
   resourceList: T[];
   keyList: (keyof T)[];
@@ -20,7 +20,7 @@ const ResourceListTable = <T extends Resource>({
   resourceId,
   keyList,
   columnHeadings,
-}: Props<T>) => {
+}: ResourceListTableProps<T>) => {
   const {
     onCheckboxClick,
     onRowSelect,

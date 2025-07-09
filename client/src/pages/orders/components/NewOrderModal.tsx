@@ -11,7 +11,7 @@ import { ShowToastFunction } from '../../../types/toast';
 import { ResourceProvider } from '../../../store/ResourceLContext';
 import { productsOrdersHeadings } from '../../../config/products/productsFields';
 
-type Props = {
+type NewOrderModalProps = {
   isVisible: boolean;
   onClose: () => void;
   clients: Client[];
@@ -24,7 +24,7 @@ const NewOrderModal = ({
   clients,
   products,
   onShowToast,
-}: Props) => {
+}: NewOrderModalProps) => {
   const [activeKey, setActiveKey] = useState<string | null>('0');
 
   const [selectedClients, setSelectedClients] = useState<Client | null>(null);

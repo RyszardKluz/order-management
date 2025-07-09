@@ -8,7 +8,7 @@ import { Client, Product } from '../../../types/resource';
 import { ShowToastFunction } from '../../../types/toast';
 import { ResourceProvider } from '../../../store/ResourceLContext';
 
-type Props = {
+type OrderDetailsFormProps = {
   products: Product[];
   client: Client | null;
   onClose: () => void;
@@ -30,7 +30,7 @@ function OrderDetailsForm({
   onClose,
   onResetFormFields,
   onShowToast,
-}: Props) {
+}: OrderDetailsFormProps) {
   const [state, setState] = useState<IState>({
     clientName: '',
     clientAddress: '',

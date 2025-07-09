@@ -1,6 +1,6 @@
 import { Button } from 'react-bootstrap';
 
-type Props = {
+type CustomButtonProps = {
   variantOption: string;
   type?: 'button' | 'submit' | 'reset';
   callback?: () => void;
@@ -16,7 +16,7 @@ const CustomButton = ({
   text,
   buttonClassName,
   isButtonHidden = false,
-}: Props) => {
+}: CustomButtonProps) => {
   return (
     <Button
       hidden={isButtonHidden}

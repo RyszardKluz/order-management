@@ -1,9 +1,9 @@
 import Form from 'react-bootstrap/Form';
-type Props = {
+type CheckboxProps = {
   handleClick: () => void;
 };
 
-const Checkbox = ({ handleClick }: Props) => {
+const Checkbox = ({ handleClick }: CheckboxProps) => {
   return (
     <>
       <Form.Check onClick={handleClick} type="radio" aria-label="radio 1" />

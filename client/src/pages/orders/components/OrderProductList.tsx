@@ -1,11 +1,11 @@
 import ListGroup from 'react-bootstrap/ListGroup';
 import { Product } from '../../../types/resource';
 
-type Props = {
+type OrderProductListProps = {
   productList: Product[];
 };
 
-function OrderProductList({ productList }: Props) {
+function OrderProductList({ productList }: OrderProductListProps) {
   return (
     <ListGroup as="ol" numbered>
       {productList.map((product, index) => {

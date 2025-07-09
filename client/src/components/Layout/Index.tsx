@@ -2,11 +2,11 @@ import React from 'react';
 import { Container, Navbar, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-type Props = {
+type IndexProps = {
   children: React.ReactNode;
 };
 
-const Layout = ({ children }: Props) => {
+const Layout = ({ children }: IndexProps) => {
   return (
     <>
       <Navbar
