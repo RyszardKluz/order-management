@@ -8,8 +8,10 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "jsx": "react-jsx",
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "types": ["jest", "node"],
+
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx","src","jest.setup.ts"],
   "exclude": ["node_modules"]
 }
